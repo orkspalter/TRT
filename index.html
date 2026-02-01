@@ -110,39 +110,575 @@
     // ====== Plan: 26 Wochen, je 3 Rezept-IDs (keine Wiederholungen) ======
     // Diese IDs befüllen wir im nächsten Schritt mit echten Rezeptdaten.
     const plan = [
-      ["r01","r02","r03"],
-      ["r04","r05","r06"],
-      ["r07","r08","r09"],
-      ["r10","r11","r12"],
-      ["r13","r14","r15"],
-      ["r16","r17","r18"],
-      ["r19","r20","r21"],
-      ["r22","r23","r24"],
-      ["r25","r26","r27"],
-      ["r28","r29","r30"],
-      ["r31","r32","r33"],
-      ["r34","r35","r36"],
-      ["r37","r38","r39"],
-      ["r40","r41","r42"],
-      ["r43","r44","r45"],
-      ["r46","r47","r48"],
-      ["r49","r50","r51"],
-      ["r52","r53","r54"],
-      ["r55","r56","r57"],
-      ["r58","r59","r60"],
-      ["r61","r62","r63"],
-      ["r64","r65","r66"],
-      ["r67","r68","r69"],
-      ["r70","r71","r72"],
-      ["r73","r74","r75"],
-      ["r76","r77","r78"]
-    ];
+  ["r01","r02","r03"],  // DE/ME: Ofen + Pasta + Salat
+  ["r04","r05","r06"],  // Mediterran + Fisch
+  ["r07","r08","r09"],  // DE: Eintopf + vegetarisch
+  ["r10","r11","r12"],  // Asiatisch leicht
+  ["r13","r14","r15"],
+  ["r16","r17","r18"],
+  ["r19","r20","r21"],
+  ["r22","r23","r24"],
+  ["r25","r26","r27"],
+  ["r28","r29","r30"],
+  ["r31","r32","r33"],
+  ["r34","r35","r36"],
+  ["r37","r38","r39"],
+  ["r40","r41","r42"],
+  ["r43","r44","r45"],
+  ["r46","r47","r48"],
+  ["r49","r50","r51"],
+  ["r52","r53","r54"],
+  ["r55","r56","r57"],
+  ["r58","r59","r60"],
+  ["r61","r62","r63"],
+  ["r64","r65","r66"],
+  ["r67","r68","r69"],
+  ["r70","r71","r72"],
+  ["r73","r74","r75"],
+  ["r76","r77","r78"]
+];
 
-    // ====== Rezepte-Datenbank (WIRD von mir als nächstes mit 78 Rezepten geliefert) ======
+
     const recipes = [
-      // Beispiel-Format:
-      // { id:"r01", title:"...", tags:["Vegetarisch","Mediterran"], ingredients:[...], steps:[...] }
-    ];
+  {
+    id: "r01",
+    title: "Blech-Gemüse mit Feta & Kräutern (vegetarisch)",
+    tags: ["Vegetarisch", "Mitteleuropäisch", "Ofen"],
+    ingredients: [
+      "1 große Süßkartoffel oder 4 Kartoffeln",
+      "2 Paprika",
+      "2 Zucchini",
+      "1 rote Zwiebel",
+      "1 Packung Feta",
+      "Olivenöl",
+      "Salz, Pfeffer",
+      "Paprikapulver, Oregano/Thymian",
+      "Optional: Zitronensaft"
+    ],
+    steps: [
+      "Backofen auf 220 °C vorheizen.",
+      "Gemüse in mundgerechte Stücke schneiden und auf ein Blech geben.",
+      "Mit Olivenöl, Salz, Pfeffer und Kräutern mischen.",
+      "Ca. 25 Minuten rösten.",
+      "Feta grob darüberbröseln und weitere 8–10 Minuten backen.",
+      "Mit etwas Zitronensaft abschmecken und servieren."
+    ]
+  },
+  {
+    id: "r02",
+    title: "Spaghetti Aglio e Olio mit Rucola (vegetarisch)",
+    tags: ["Vegetarisch", "Mediterran", "Schnell"],
+    ingredients: [
+      "1 Packung Spaghetti",
+      "3–4 Knoblauchzehen",
+      "1–2 getrocknete Chilis oder Chiliflocken",
+      "Olivenöl",
+      "1 Handvoll Rucola",
+      "Salz",
+      "Optional: Parmesan"
+    ],
+    steps: [
+      "Spaghetti in Salzwasser al dente kochen.",
+      "Knoblauch in dünne Scheiben schneiden.",
+      "Olivenöl in einer Pfanne erwärmen, Knoblauch und Chili sanft anrösten (nicht dunkel werden lassen).",
+      "Etwas Nudelwasser zur Pfanne geben, dann die Spaghetti darin schwenken.",
+      "Rucola unterheben, abschmecken und optional mit Parmesan servieren."
+    ]
+  },
+  {
+    id: "r03",
+    title: "Gurkensalat mit Dill & Joghurt (vegetarisch)",
+    tags: ["Vegetarisch", "Deutsch", "Beilage"],
+    ingredients: [
+      "2 Salatgurken",
+      "1 Becher Naturjoghurt",
+      "1–2 EL Essig",
+      "Dill (frisch oder getrocknet)",
+      "Salz, Pfeffer",
+      "Optional: 1 TL Senf, 1 TL Honig"
+    ],
+    steps: [
+      "Gurken in dünne Scheiben hobeln.",
+      "Joghurt mit Essig, Dill, Salz und Pfeffer verrühren.",
+      "Gurken untermischen und 10 Minuten ziehen lassen.",
+      "Optional mit Senf/Honig abrunden und servieren."
+    ]
+  },
+
+  {
+    id: "r04",
+    title: "Mediterranes Zitronen-Kräuter-Hähnchen (optional) mit Ofenkartoffeln",
+    tags: ["Optional Fleisch", "Mediterran", "Ofen"],
+    ingredients: [
+      "4 Hähnchenschenkel oder Hähnchenbrust (optional; vegetarisch: Halloumi statt Hähnchen)",
+      "6–8 Kartoffeln",
+      "1 Zitrone",
+      "Olivenöl",
+      "Rosmarin/Thymian",
+      "Salz, Pfeffer",
+      "Optional: Knoblauch"
+    ],
+    steps: [
+      "Backofen auf 220 °C vorheizen.",
+      "Kartoffeln in Spalten schneiden, mit Öl, Salz, Pfeffer und Kräutern mischen und auf ein Blech geben.",
+      "Hähnchen (oder Halloumi) mit Zitronensaft, etwas Zitronenabrieb, Öl und Gewürzen marinieren.",
+      "Alles zusammen ca. 35–45 Minuten backen (je nach Fleischstück).",
+      "Vor dem Servieren mit frischer Zitrone abschmecken."
+    ]
+  },
+  {
+    id: "r05",
+    title: "Tomaten-Oliven-Polenta (vegetarisch)",
+    tags: ["Vegetarisch", "Mediterran", "Sattmacher"],
+    ingredients: [
+      "1 Tasse Polenta",
+      "4 Tassen Wasser oder Gemüsebrühe",
+      "1 Glas/Becher passierte Tomaten",
+      "1 Handvoll Oliven",
+      "Salz, Pfeffer",
+      "Oregano/Basilikum",
+      "Optional: Parmesan oder Mozzarella"
+    ],
+    steps: [
+      "Wasser/Brühe aufkochen, Polenta einrieseln lassen und rühren.",
+      "Bei kleiner Hitze 5–10 Minuten quellen lassen (Packung beachten).",
+      "Passierte Tomaten und Gewürze unterrühren, Oliven dazugeben.",
+      "Optional Käse unterheben und kurz schmelzen lassen.",
+      "Mit Kräutern bestreuen und servieren."
+    ]
+  },
+  {
+    id: "r06",
+    title: "Lachs aus der Pfanne mit Zitronen-Spinat (Fisch)",
+    tags: ["Fisch", "Mitteleuropäisch", "Schnell"],
+    ingredients: [
+      "4 Lachsfilets",
+      "1 Zitrone",
+      "1 große Schüssel frischer Spinat",
+      "1 Becher Sahne oder Kochsahne (optional; leichter: Frischkäse + Wasser)",
+      "Salz, Pfeffer",
+      "Butter oder Öl",
+      "Optional: Knoblauch"
+    ],
+    steps: [
+      "Lachs salzen, pfeffern und in einer Pfanne in Öl/Butter braten (je Seite 3–4 Minuten).",
+      "Lachs herausnehmen und warm halten.",
+      "Spinat in die Pfanne geben und zusammenfallen lassen.",
+      "Optional etwas Sahne/Frischkäse einrühren, mit Zitronensaft abschmecken.",
+      "Lachs auf dem Zitronen-Spinat servieren."
+    ]
+  },
+
+  {
+    id: "r07",
+    title: "Kartoffel-Lauch-Suppe (vegetarisch)",
+    tags: ["Vegetarisch", "Deutsch", "Eintopf"],
+    ingredients: [
+      "6–8 Kartoffeln",
+      "2 Stangen Lauch",
+      "1 Zwiebel",
+      "Gemüsebrühe",
+      "Salz, Pfeffer",
+      "Optional: Sahne/Crème fraîche"
+    ],
+    steps: [
+      "Zwiebel und Lauch in etwas Öl anschwitzen.",
+      "Kartoffeln würfeln, dazugeben und kurz mitdünsten.",
+      "Mit Gemüsebrühe aufgießen, 15–20 Minuten kochen.",
+      "Nach Wunsch teilweise oder ganz pürieren.",
+      "Abschmecken und optional mit Sahne verfeinern."
+    ]
+  },
+  {
+    id: "r08",
+    title: "Käsespätzle mit Röstzwiebeln (vegetarisch)",
+    tags: ["Vegetarisch", "Mitteleuropäisch", "Herzhaft"],
+    ingredients: [
+      "1 Packung Spätzle (frisch oder aus dem Kühlregal)",
+      "2–3 Zwiebeln",
+      "1–2 Handvoll geriebener Käse (Emmentaler/Bergkäse)",
+      "Butter oder Öl",
+      "Salz, Pfeffer",
+      "Optional: Schnittlauch"
+    ],
+    steps: [
+      "Zwiebeln in Ringe schneiden und in Butter/Öl langsam goldbraun rösten.",
+      "Spätzle nach Packungsangabe erhitzen.",
+      "Spätzle mit Käse in der Pfanne mischen, bis der Käse schmilzt.",
+      "Mit Röstzwiebeln toppen und servieren."
+    ]
+  },
+  {
+    id: "r09",
+    title: "Karottensalat mit Apfel & Zitronen-Dressing (vegetarisch)",
+    tags: ["Vegetarisch", "Mitteleuropäisch", "Beilage"],
+    ingredients: [
+      "6–8 Karotten",
+      "2 Äpfel",
+      "1 Zitrone",
+      "Öl",
+      "Salz, Pfeffer",
+      "Optional: Petersilie, ein paar Nüsse"
+    ],
+    steps: [
+      "Karotten grob raspeln, Äpfel in feine Stifte schneiden.",
+      "Zitronensaft mit Öl, Salz und Pfeffer verrühren.",
+      "Alles mischen und 10 Minuten ziehen lassen.",
+      "Optional mit Petersilie/Nüssen bestreuen."
+    ]
+  },
+
+  {
+    id: "r10",
+    title: "Gemüse-Wok mit Erdnuss-Soße (vegetarisch, optional Hähnchen)",
+    tags: ["Vegetarisch", "Asiatisch", "Optional Fleisch"],
+    ingredients: [
+      "1–2 Paprika",
+      "1 Brokkoli",
+      "2 Karotten",
+      "1 Zwiebel",
+      "Sojasoße",
+      "Erdnussmus",
+      "Limettensaft oder Reisessig",
+      "Optional: 1 Packung Tofu oder Hähnchenstreifen",
+      "Beilage: Reis oder Nudeln"
+    ],
+    steps: [
+      "Reis/Nudeln kochen.",
+      "Gemüse in Streifen schneiden und im Wok/Pfanne heiß anbraten.",
+      "Optional Tofu/Hähnchen separat anbraten und dazugeben.",
+      "Soße rühren: Sojasoße + Erdnussmus + etwas Wasser + Limette/Essig.",
+      "Soße zum Wok geben, kurz einkochen lassen und servieren."
+    ]
+  },
+  {
+    id: "r11",
+    title: "Miso-Suppe mit Pilzen & Frühlingszwiebeln (vegetarisch)",
+    tags: ["Vegetarisch", "Asiatisch", "Leicht"],
+    ingredients: [
+      "Miso-Paste",
+      "1–2 Liter Wasser",
+      "Pilze (z.B. Champignons)",
+      "Frühlingszwiebeln",
+      "Tofu (optional)",
+      "Optional: Wakame/Algen, Sojasoße"
+    ],
+    steps: [
+      "Wasser erhitzen, Pilze darin 5–7 Minuten köcheln.",
+      "Hitze reduzieren, Miso-Paste in einer Tasse mit etwas Brühe glatt rühren.",
+      "Miso einrühren (nicht sprudelnd kochen lassen).",
+      "Tofu würfeln, Frühlingszwiebeln schneiden und kurz ziehen lassen.",
+      "Abschmecken und servieren."
+    ]
+  },
+  {
+    id: "r12",
+    title: "Sesam-Gurkensalat (vegetarisch, asiatisch)",
+    tags: ["Vegetarisch", "Asiatisch", "Beilage"],
+    ingredients: [
+      "2 Gurken",
+      "Sojasoße",
+      "Reisessig oder Limettensaft",
+      "Sesamöl (sparsam)",
+      "Sesam",
+      "Optional: Chili, Knoblauch"
+    ],
+    steps: [
+      "Gurken in Scheiben schneiden, leicht salzen und 5 Minuten ziehen lassen.",
+      "Dressing aus Sojasoße, Essig/Limette, etwas Sesamöl rühren.",
+      "Gurken abgießen, mit Dressing mischen.",
+      "Mit Sesam (und optional Chili) bestreuen."
+    ]
+  },
+
+  {
+    id: "r13",
+    title: "Ratatouille aus dem Ofen (vegetarisch, mediterran)",
+    tags: ["Vegetarisch", "Mediterran", "Ofen"],
+    ingredients: [
+      "2 Zucchini",
+      "1 Aubergine",
+      "2 Paprika",
+      "1 Zwiebel",
+      "1 Dose gehackte Tomaten",
+      "Olivenöl",
+      "Salz, Pfeffer",
+      "Thymian/Oregano"
+    ],
+    steps: [
+      "Backofen auf 200 °C vorheizen.",
+      "Gemüse würfeln, in eine Auflaufform geben.",
+      "Tomaten, Öl und Gewürze dazugeben und mischen.",
+      "Ca. 35–45 Minuten backen, zwischendurch umrühren.",
+      "Mit Brot, Reis oder Kartoffeln servieren."
+    ]
+  },
+  {
+    id: "r14",
+    title: "Couscous mit Kräutern, Zitrone & Gemüse (vegetarisch)",
+    tags: ["Vegetarisch", "Mediterran", "Schnell"],
+    ingredients: [
+      "Couscous",
+      "Gemüsebrühe oder heißes Wasser",
+      "1 Zitrone",
+      "Gurke, Tomaten, Paprika (nach Wahl)",
+      "Petersilie/Minze",
+      "Olivenöl",
+      "Salz, Pfeffer"
+    ],
+    steps: [
+      "Couscous mit heißer Brühe übergießen und 5–10 Minuten quellen lassen.",
+      "Gemüse klein schneiden, Kräuter hacken.",
+      "Couscous auflockern, mit Gemüse, Kräutern, Zitronensaft und Olivenöl mischen.",
+      "Abschmecken und servieren."
+    ]
+  },
+  {
+    id: "r15",
+    title: "Frittata mit Kartoffeln & Zwiebeln (vegetarisch)",
+    tags: ["Vegetarisch", "Mediterran", "Pfanne/Ofen"],
+    ingredients: [
+      "6–8 Eier",
+      "4 Kartoffeln",
+      "2 Zwiebeln",
+      "Salz, Pfeffer",
+      "Öl",
+      "Optional: Käse, Spinat"
+    ],
+    steps: [
+      "Kartoffeln in dünne Scheiben schneiden und in Öl fast gar braten.",
+      "Zwiebeln dazugeben und weich braten.",
+      "Eier verquirlen, würzen und über die Pfanne gießen.",
+      "Bei kleiner Hitze stocken lassen; optional kurz im Ofen/grill fertigstellen.",
+      "In Stücke schneiden und servieren."
+    ]
+  },
+
+  {
+    id: "r16",
+    title: "Gemüse-Lasagne (vegetarisch)",
+    tags: ["Vegetarisch", "Mitteleuropäisch", "Ofen"],
+    ingredients: [
+      "Lasagneplatten",
+      "1 Zucchini",
+      "1 Paprika",
+      "1 Zwiebel",
+      "1 Glas passierte Tomaten",
+      "1 Becher Crème fraîche oder Béchamel (Fertig oder selbst)",
+      "Käse zum Überbacken",
+      "Salz, Pfeffer, italienische Kräuter"
+    ],
+    steps: [
+      "Backofen auf 200 °C vorheizen.",
+      "Gemüse würfeln und in einer Pfanne anbraten, mit Tomaten ablöschen und würzen.",
+      "In einer Form abwechselnd Sauce, Lasagneplatten, Crème fraîche/Béchamel schichten.",
+      "Mit Käse abschließen.",
+      "Ca. 30–40 Minuten backen und 5 Minuten ruhen lassen."
+    ]
+  },
+  {
+    id: "r17",
+    title: "Feldsalat mit Walnüssen & Apfel (vegetarisch)",
+    tags: ["Vegetarisch", "Mitteleuropäisch", "Salat"],
+    ingredients: [
+      "Feldsalat",
+      "2 Äpfel",
+      "1 Handvoll Walnüsse",
+      "Essig",
+      "Öl",
+      "Salz, Pfeffer",
+      "Optional: Senf, Honig"
+    ],
+    steps: [
+      "Feldsalat waschen und trocknen.",
+      "Apfel würfeln, Walnüsse grob hacken.",
+      "Dressing aus Essig, Öl, Salz, Pfeffer (optional Senf/Honig) rühren.",
+      "Alles mischen und servieren."
+    ]
+  },
+  {
+    id: "r18",
+    title: "Bratkartoffeln mit Kräuterquark (vegetarisch)",
+    tags: ["Vegetarisch", "Deutsch", "Schnell"],
+    ingredients: [
+      "8–10 Kartoffeln (vorgekocht geht am besten)",
+      "Öl oder Butter",
+      "Salz, Pfeffer",
+      "Optional: Zwiebel",
+      "Für den Quark: 1 Becher Quark, Kräuter, Salz, Pfeffer, Spritzer Zitronensaft"
+    ],
+    steps: [
+      "Kartoffeln in Scheiben schneiden.",
+      "In einer großen Pfanne knusprig braten, salzen und pfeffern (optional mit Zwiebeln).",
+      "Quark mit Kräutern und Gewürzen verrühren.",
+      "Bratkartoffeln mit Kräuterquark servieren."
+    ]
+  },
+
+  {
+    id: "r19",
+    title: "Pasta al Limone (vegetarisch, cremig-zitronig)",
+    tags: ["Vegetarisch", "Mediterran", "Schnell"],
+    ingredients: [
+      "1 Packung Pasta",
+      "1–2 Zitronen",
+      "1 Becher Sahne oder Frischkäse",
+      "Butter oder Olivenöl",
+      "Salz, Pfeffer",
+      "Optional: Parmesan, Petersilie"
+    ],
+    steps: [
+      "Pasta kochen, etwas Nudelwasser aufheben.",
+      "Zitronenschale abreiben, Saft auspressen.",
+      "Sahne/Frischkäse mit etwas Nudelwasser cremig rühren, Zitronensaft/-abrieb dazugeben.",
+      "Mit Pasta mischen, abschmecken und optional Parmesan/Petersilie darüber."
+    ]
+  },
+  {
+    id: "r20",
+    title: "Griechische Gemüsepfanne mit Halloumi (vegetarisch)",
+    tags: ["Vegetarisch", "Mediterran", "Pfanne"],
+    ingredients: [
+      "1 Packung Halloumi",
+      "2 Paprika",
+      "1 Zucchini",
+      "1 rote Zwiebel",
+      "Olivenöl",
+      "Salz, Pfeffer",
+      "Oregano",
+      "Optional: Oliven"
+    ],
+    steps: [
+      "Gemüse in Stücke schneiden und in Olivenöl anbraten.",
+      "Würzen und 8–10 Minuten garen.",
+      "Halloumi in Scheiben schneiden und separat goldbraun braten.",
+      "Alles zusammen kurz schwenken, optional Oliven dazu und servieren."
+    ]
+  },
+  {
+    id: "r21",
+    title: "Tomaten-Bohnensalat (vegetarisch, mediterran)",
+    tags: ["Vegetarisch", "Mediterran", "Beilage"],
+    ingredients: [
+      "1 Dose weiße Bohnen oder Kidneybohnen",
+      "Tomaten",
+      "1 rote Zwiebel",
+      "Olivenöl",
+      "Essig oder Zitronensaft",
+      "Salz, Pfeffer",
+      "Petersilie"
+    ],
+    steps: [
+      "Bohnen abspülen, Tomaten würfeln, Zwiebel fein schneiden.",
+      "Mit Öl, Essig/Zitrone, Salz und Pfeffer mischen.",
+      "Petersilie unterheben und kurz ziehen lassen."
+    ]
+  },
+
+  {
+    id: "r22",
+    title: "Forelle (oder Lachs) aus dem Ofen mit Kräutern (Fisch)",
+    tags: ["Fisch", "Mitteleuropäisch", "Ofen"],
+    ingredients: [
+      "2–4 Forellen (oder 4 Fischfilets)",
+      "1 Zitrone",
+      'Kräuter (Petersilie/Dill), optional: Knoblauch',
+      "Salz, Pfeffer",
+      "Butter oder Olivenöl",
+      "Beilage: Kartoffeln oder Brot"
+    ],
+    steps: [
+      "Backofen auf 200 °C vorheizen.",
+      "Fisch salzen, pfeffern, mit Zitrone und Kräutern füllen/belegen.",
+      "Mit etwas Butter/Öl beträufeln.",
+      "Je nach Dicke 15–25 Minuten backen.",
+      "Mit Zitronensaft servieren."
+    ]
+  },
+  {
+    id: "r23",
+    title: "Kartoffelsalat süddeutsch (vegetarisch)",
+    tags: ["Vegetarisch", "Deutsch", "Beilage"],
+    ingredients: [
+      "8–10 Kartoffeln",
+      "1 Zwiebel",
+      "Gemüsebrühe",
+      "Essig",
+      "Öl",
+      "Salz, Pfeffer",
+      "Optional: Senf, Schnittlauch"
+    ],
+    steps: [
+      "Kartoffeln kochen, pellen, in Scheiben schneiden.",
+      "Zwiebel fein würfeln.",
+      "Brühe mit Essig, Öl, Salz, Pfeffer (optional Senf) verrühren.",
+      "Über die warmen Kartoffeln geben, mischen und 20 Minuten ziehen lassen.",
+      "Optional Schnittlauch darüber."
+    ]
+  },
+  {
+    id: "r24",
+    title: "Rahmspinat mit Spiegelei & Kartoffeln (vegetarisch)",
+    tags: ["Vegetarisch", "Deutsch", "Klassiker"],
+    ingredients: [
+      "Kartoffeln",
+      "Spinat (TK oder frisch)",
+      "1 Zwiebel (optional)",
+      "Milch/Sahne oder Frischkäse",
+      "4 Eier",
+      "Salz, Pfeffer, Muskat"
+    ],
+    steps: [
+      "Kartoffeln kochen.",
+      "Spinat in einem Topf erwärmen, optional mit Zwiebel andünsten.",
+      "Mit Milch/Sahne/Frischkäse cremig rühren, würzen (Muskat).",
+      "Eier als Spiegeleier braten.",
+      "Mit Kartoffeln und Spinat servieren."
+    ]
+  },
+
+  {
+    id: "r25",
+    title: "Kürbis-Kokos-Suppe (vegetarisch, leicht asiatisch)",
+    tags: ["Vegetarisch", "Asiatisch inspiriert", "Suppe"],
+    ingredients: [
+      "1 Hokkaido-Kürbis",
+      "1 Zwiebel",
+      "1 Dose Kokosmilch",
+      "Gemüsebrühe",
+      "Currypulver oder Currypaste",
+      "Salz, Pfeffer",
+      "Optional: Ingwer, Limettensaft"
+    ],
+    steps: [
+      "Zwiebel (und optional Ingwer) anschwitzen.",
+      "Kürbis würfeln, kurz mitdünsten.",
+      "Mit Brühe aufgießen und weich kochen (ca. 15 Minuten).",
+      "Kokosmilch und Curry zugeben, pürieren.",
+      "Abschmecken (optional Limette) und servieren."
+    ]
+  },
+  {
+    id: "r26",
+    title: "Gebratener Reis mit Gemüse & Ei (vegetarisch, asiatisch)",
+    tags: ["Vegetarisch", "Asiatisch", "Resteverwertung"],
+    ingredients: [
+      "Gekochter Reis (vom Vortag ideal)",
+      "Gemüse nach Wahl (Erbsen, Karotten, Paprika, Lauchzwiebeln)",
+      "4 Eier",
+      "Sojasoße",
+      "Öl",
+      "Optional: Sesam, Chili"
+    ],
+    steps: [
+      "Gemüse klein schneiden und in einer großen Pfanne/Wok anbraten.",
+      "Eier in der Pfanne stocken lassen und rühren.",
+      "Reis dazugeben und kräftig anbraten, bis er heiß ist.",
+      "Mit Sojasoße abschmecken, optional Sesam/Chili darüber."
+    ]
+  }
+];
+
 
     // ISO-Kalenderwoche
     function getISOWeekNumber(date) {
