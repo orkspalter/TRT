@@ -1,15 +1,14 @@
 {
-  "name": "Wochenrezept",
-  "short_name": "Rezept",
-  "start_url": "./index.html",
+  "name": "Timm's Rezepte der Woche",
+  "short_name": "Timm Rezepte",
+  "description": "Jede Kalenderwoche 3 zufällig ausgewählte Rezepte – mit Archiv.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#fafafa",
-  "theme_color": "#2e7d32",
+  "background_color": "#f6f6f6",
+  "theme_color": "#6b3fa0",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
