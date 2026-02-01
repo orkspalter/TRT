@@ -306,13 +306,6 @@
       saveWeekSelection(currentKey, newSelection);
       showWeek(currentKey);
     });
-
-    document.getElementById("resetSeenButton").addEventListener("click", () => {
-      localStorage.removeItem(STORAGE_SELECTED_WEEK);
-      localStorage.removeItem(STORAGE_WEEK_RECIPES);
-      initApp();
-    });
-
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("sw.js").catch(() => {});
