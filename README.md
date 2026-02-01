@@ -1,2 +1,2 @@
 # TRT
-Timm's Rezept des Tageds
+Timm's Rezept des Tages
