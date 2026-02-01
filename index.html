@@ -62,8 +62,7 @@
           </div>
         </div>
         <div class="controls">
-          <button class="btn-primary" id="jumpToThisWeekButton" title="Aktuelle Kalenderwoche setzen">📅 Zu dieser Woche</button>
-          <button class="btn-ghost" id="shuffleButton" title="Neue Rezepte der Woche ziehen">🎲 Neu mischen</button>
+      <button class="btn-ghost" id="shuffleButton" title="Neue Rezepte der Woche ziehen">🎲 Neu mischen</button>
       </div>
       </div>
 
@@ -293,12 +292,7 @@
     }
 
     // Buttons
-    document.getElementById("jumpToThisWeekButton").addEventListener("click", () => {
-      const weekKey = getDefaultWeekKey();
-      showWeek(weekKey);
-    });
-
-    document.getElementById("shuffleButton").addEventListener("click", () => {
+      document.getElementById("shuffleButton").addEventListener("click", () => {
       // Nur für aktuelle (ausgewählte) Woche neu mischen
       const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
       const currentKey = stored?.weekKey || getDefaultWeekKey();
