@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Archiv – Timm's Rezepte der Woche</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6b3fa0">
+  <style>
+    :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:12px;--shadow:0 4px 12px rgba(0,0,0,.08);--border:#e6e6e6;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+    .app{width:100%;max-width:980px;}
+    header{text-align:center;margin-bottom:16px;}
+    header h1{font-size:1.85rem;margin-bottom:6px;color:var(--primary-dark);}
+    header a{color:var(--primary-dark);text-decoration:none;font-weight:500;}
+    header a:hover{text-decoration:underline;}
+
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
+    .muted{color:var(--muted);font-size:.9rem;margin-bottom:8px;}
+    .week-block{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px;background:#fff;}
+    .week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:.95rem;}
+    .week-header strong{color:var(--primary-dark);}
+    .badge{background:#efe6fb;border-radius:999px;padding:2px 8px;font-size:.8rem;color:var(--primary-dark);}
+    ul{padding-left:18px;margin:4px 0;}
+    li{margin-bottom:3px;}
+    .empty{padding:12px;border-radius:12px;border:1px dashed var(--border);color:var(--muted);background:#fff;}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Archiv der Wochenrezepte</h1>
+      <p><a href="index.html">Zurück zur Startseite</a></p>
+    </header>
+
+    <main class="card">
+      <p class="muted">
+        Hier siehst du für jede Kalenderwoche, welche drei Rezepte ausgelost wurden (aus diesem Browser).
+      </p>
+
+      <div id="archiveContainer"></div>
+    </main>
+  </div>
+
+  <script>
+    // Gleiches recipes-Array wie auf der Startseite (vereinfacht hier:
+    // Wenn du magst, kannst du das komplette Array hier erneut einfügen
+    // oder in eine separate JS-Datei auslagern.
+    const recipes = [/* ... r01 bis r78 ... */];
+
+    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+
+    function loadJSON(key, fallback) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      try { return JSON.parse(raw); } catch { return fallback; }
+    }
+
+    function renderArchive() {
+      const container = document.getElementById("archiveContainer");
+      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
+      const weekKeys = Object.keys(archive).sort(); // aufsteigend
+
+      if (!weekKeys.length) {
+        container.innerHTML = `<div class="empty">Noch keine Wochen im Archiv gespeichert.</div>`;
+        return;
+      }
+
+      container.innerHTML = weekKeys.map(key => {
+        const recipeIds = archive[key];
+        const [year, week] = key.split("-");
+        const recipeList = recipeIds
+          .map(id => recipes.find(r => r.id === id))
+          .filter(Boolean);
+
+        const items = recipeList.length
+          ? `<ul>${recipeList.map(r => `<li>${r.title}</li>`).join("")}</ul>`
+          : `<div class="muted">Rezeptdaten für diese IDs wurden im Code entfernt.</div>`;
+
+        return `
+          <section class="week-block">
+            <div class="week-header">
+              <strong>KW ${Number(week)}/${year}</strong>
+              <span class="badge">${recipeIds.length} Rezepte</span>
+            </div>
+            ${items}
+          </section>
+        `;
+      }).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", renderArchive);
+  </script>
+</body>
+</html>
