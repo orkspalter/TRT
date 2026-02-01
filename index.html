@@ -15,8 +15,9 @@
     header{text-align:center;margin-bottom:16px;}
     header h1{font-size:1.85rem;margin-bottom:6px;color:var(--primary-dark);}
     header p{color:var(--muted);font-size:.95rem;}
+    header a{color:var(--primary-dark);text-decoration:none;font-weight:500;}
+    header a:hover{text-decoration:underline;}
 
-    .grid{display:grid;grid-template-columns:1fr;gap:12px;}
     .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
     .topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
     .meta-row{display:flex;flex-wrap:wrap;gap:8px;font-size:.9rem;color:var(--muted);}
@@ -41,70 +42,41 @@
     .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;}
     .tag{border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.82rem;color:var(--muted);background:#fafafa;}
 
-    .archive{display:flex;flex-direction:column;gap:10px;}
-    .archive-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
-    .archive-list{display:flex;flex-direction:column;gap:6px;}
-    .archive-item{width:100%;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;display:flex;justify-content:space-between;gap:10px;}
-    .archive-item:hover{border-color:#d8cfee;}
-    .archive-item strong{color:var(--primary-dark);}
-    .archive-item span{color:var(--muted);}
     .muted{color:var(--muted);font-size:.9rem;}
     .divider{height:1px;background:var(--border);margin:12px 0;}
-    .empty{padding:12px;border:1px dashed var(--border);border-radius:12px;color:var(--muted);background:#fff;}
     .error{padding:12px;border:1px solid #f1c5c5;border-radius:12px;color:#7a1f1f;background:#fff5f5;}
-
-    @media (min-width: 900px){
-      .grid{grid-template-columns: 2fr 1fr;align-items:start;}
-      header h1{font-size:2.05rem;}
-    }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
       <h1>Timm's Rezepte der Woche</h1>
-      <p>Fester Halbjahres-Plan (26 Wochen), je Woche 3 Rezepte – ohne Wiederholungen.</p>
+      <p><a href="archive.html">Archiv</a></p>
     </header>
 
-    <div class="grid">
-      <main class="card">
-        <div class="topbar">
-          <div class="meta-row">
-            <div class="meta-pill"><span>KW</span><span id="weekNumber">–</span></div>
-          </div>
-          <div class="controls">
-            <button class="btn-primary" id="jumpToThisWeekButton" title="Zur aktuellen Kalenderwoche springen">📅 Zu dieser Woche</button>
-            <button class="btn-ghost" id="resetSeenButton" title="Lokale Auswahl zurücksetzen">♻️ Auswahl zurücksetzen</button>
+    <main class="card">
+      <div class="topbar">
+        <div class="meta-row">
+          <div class="meta-pill">
+            <span>KW</span><span id="weekNumber">–</span>
           </div>
         </div>
-
-        <div class="muted">
-          Du siehst die Rezepte für die ausgewählte Planwoche (1–26). Standard: aktuelle KW modulo 26.
+        <div class="controls">
+          <button class="btn-primary" id="jumpToThisWeekButton" title="Aktuelle Kalenderwoche setzen">📅 Zu dieser Woche</button>
+          <button class="btn-ghost" id="shuffleButton" title="Neue Rezepte der Woche ziehen">🎲 Neu mischen</button>
+          <button class="btn-ghost" id="resetSeenButton" title="Lokale Auswahl zurücksetzen">♻️ Auswahl zurücksetzen</button>
         </div>
+      </div>
 
-        <div class="divider"></div>
+      <div class="muted">
+        Es werden zufällig drei Rezepte für deine aktuelle Kalenderwoche ausgewählt und im Archiv gespeichert.
+      </div>
 
-        <div id="currentRecipes"></div>
-      </main>
+      <div class="divider"></div>
 
-      <aside class="card archive">
-        <div class="archive-head">
-          <h2 style="font-size:1.15rem;color:var(--primary-dark);">Wochen-Auswahl</h2>
-          <div class="controls">
-            <button class="btn-ghost" id="prevWeekButton" title="Vorherige Planwoche">←</button>
-            <button class="btn-ghost" id="nextWeekButton" title="Nächste Planwoche">→</button>
-          </div>
-        </div>
-
-        <div class="muted">Tippe eine Planwoche an.</div>
-
-        <div class="divider"></div>
-
-        <div id="planList" class="archive-list"></div>
-      </aside>
-    </div>
+      <div id="currentRecipes"></div>
+    </main>
   </div>
-
   <script>
     // ====== 26 Wochen × 3 Rezepte ======
     const plan = [
@@ -218,7 +190,7 @@
       {id:"r78",title:"Klassischer Gemüseeintopf mit Erbsen (vegetarisch)",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Möhren","Erbsen (TK)","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran"],steps:["Zwiebel anschwitzen, Kartoffeln/Möhren würfeln und dazugeben.","Mit Brühe aufgießen und 15–20 Minuten kochen.","Erbsen die letzten 5 Minuten zugeben.","Abschmecken und servieren."]}
     ];
 
-    // ISO-Kalenderwoche
+  // ==== Kalenderwoche ====
     function getISOWeekNumber(date) {
       const tmp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
       const dayNum = tmp.getUTCDay() || 7;
@@ -228,7 +200,8 @@
       return { year: tmp.getUTCFullYear(), week: weekNo };
     }
 
-    const STORAGE_SELECTED_PLAN_WEEK = "timm-selected-plan-week-v1";
+    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
+    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1"; // Archiv: { "2026-05": ["r01","r02","r03"], ... }
 
     function loadJSON(key, fallback) {
       const raw = localStorage.getItem(key);
@@ -245,8 +218,12 @@
 
     function renderRecipeCards(recipeIds, container) {
       const list = recipeIds.map(id => recipes.find(r => r.id === id)).filter(Boolean);
+      if (!recipeIds.length) {
+        container.innerHTML = `<div class="error">Keine Rezepte gefunden.</div>`;
+        return;
+      }
       if (list.length !== recipeIds.length) {
-        container.innerHTML = `<div class="error">Fehlende Rezeptdaten im Plan.</div>`;
+        container.innerHTML = `<div class="error">Mindestens ein Rezept zur gespeicherten Auswahl fehlt im Code.</div>`;
         return;
       }
 
@@ -269,71 +246,74 @@
       `).join("<div style='height:10px'></div>");
     }
 
-    function renderPlanList(selectedIndex) {
-      const listEl = document.getElementById("planList");
-      listEl.innerHTML = plan.map((weekRecipes, idx) => `
-        <button class="archive-item" data-idx="${idx}">
-          <strong>Planwoche ${idx+1}</strong>
-          <span>${weekRecipes.length} Rezepte</span>
-        </button>
-      `).join("");
-
-      listEl.querySelectorAll("button.archive-item").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.getAttribute("data-idx"));
-          saveJSON(STORAGE_SELECTED_PLAN_WEEK, { idx });
-          showPlanWeek(idx);
-        });
-      });
+    function getCurrentWeekKey(date = new Date()) {
+      const { year, week } = getISOWeekNumber(date);
+      return `${year}-${String(week).padStart(2,"0")}`; // z.B. "2026-05"
     }
 
-    function getDefaultPlanIndexForThisWeek() {
-      const { week } = getISOWeekNumber(new Date());
-      return (week - 1) % plan.length;
+    function pickRandomThreeRecipes() {
+      const ids = recipes.map(r => r.id);
+      if (ids.length <= 3) return ids;
+      const shuffled = [...ids].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, 3);
     }
 
-    function showPlanWeek(idx) {
-      const now = new Date();
-      const w = getISOWeekNumber(now);
-      setWeekHeader(w.year, w.week);
-      renderRecipeCards(plan[idx], document.getElementById("currentRecipes"));
-      renderPlanList(idx);
+    function loadWeekSelection(weekKey) {
+      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
+      return archive[weekKey] || null;
+    }
+
+    function saveWeekSelection(weekKey, recipeIds) {
+      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
+      archive[weekKey] = recipeIds;
+      saveJSON(STORAGE_WEEK_RECIPES, archive);
+    }
+
+    function showWeek(weekKey) {
+      const [yearStr, weekStr] = weekKey.split("-");
+      setWeekHeader(Number(yearStr), Number(weekStr));
+
+      let selected = loadWeekSelection(weekKey);
+      if (!selected) {
+        selected = pickRandomThreeRecipes();
+        saveWeekSelection(weekKey, selected);
+      }
+
+      renderRecipeCards(selected, document.getElementById("currentRecipes"));
+      saveJSON(STORAGE_SELECTED_WEEK, { weekKey });
+    }
+
+    function getDefaultWeekKey() {
+      return getCurrentWeekKey();
     }
 
     function initApp() {
-      const stored = loadJSON(STORAGE_SELECTED_PLAN_WEEK, null);
-      const idx = stored?.idx ?? getDefaultPlanIndexForThisWeek();
-      showPlanWeek(idx);
+      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
+      const weekKey = stored?.weekKey || getDefaultWeekKey();
+      showWeek(weekKey);
     }
 
+    // Buttons
     document.getElementById("jumpToThisWeekButton").addEventListener("click", () => {
-      const idx = getDefaultPlanIndexForThisWeek();
-      saveJSON(STORAGE_SELECTED_PLAN_WEEK, { idx });
-      showPlanWeek(idx);
+      const weekKey = getDefaultWeekKey();
+      showWeek(weekKey);
+    });
+
+    document.getElementById("shuffleButton").addEventListener("click", () => {
+      // Nur für aktuelle (ausgewählte) Woche neu mischen
+      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
+      const currentKey = stored?.weekKey || getDefaultWeekKey();
+      const newSelection = pickRandomThreeRecipes();
+      saveWeekSelection(currentKey, newSelection);
+      showWeek(currentKey);
     });
 
     document.getElementById("resetSeenButton").addEventListener("click", () => {
-      localStorage.removeItem(STORAGE_SELECTED_PLAN_WEEK);
+      localStorage.removeItem(STORAGE_SELECTED_WEEK);
+      localStorage.removeItem(STORAGE_WEEK_RECIPES);
       initApp();
     });
 
-    document.getElementById("prevWeekButton").addEventListener("click", () => {
-      const stored = loadJSON(STORAGE_SELECTED_PLAN_WEEK, null);
-      let idx = stored?.idx ?? getDefaultPlanIndexForThisWeek();
-      idx = (idx - 1 + plan.length) % plan.length;
-      saveJSON(STORAGE_SELECTED_PLAN_WEEK, { idx });
-      showPlanWeek(idx);
-    });
-
-    document.getElementById("nextWeekButton").addEventListener("click", () => {
-      const stored = loadJSON(STORAGE_SELECTED_PLAN_WEEK, null);
-      let idx = stored?.idx ?? getDefaultPlanIndexForThisWeek();
-      idx = (idx + 1) % plan.length;
-      saveJSON(STORAGE_SELECTED_PLAN_WEEK, { idx });
-      showPlanWeek(idx);
-    });
-
-    // Service Worker Registrierung.[web:69]
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("sw.js").catch(() => {});
