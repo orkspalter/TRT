@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wochenrezept</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PWA Manifest (optional, für Installierbarkeit) -->
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-dark: #1b5e20;
+      --bg: #fafafa;
+      --card-bg: #ffffff;
+      --text: #222222;
+      --muted: #666666;
+      --radius: 12px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #f0f8f4, #f5f5f5);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+      color: var(--primary-dark);
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .meta-pill {
+      background: #e8f5e9;
+      border-radius: 999px;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-pill span {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .recipe-title {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .images img {
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      max-height: 180px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      margin: 12px 0 6px;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin-bottom: 6px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .steps {
+      list-style: decimal;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #dddddd;
+      color: var(--muted);
+    }
+
+    .info-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 20px;
+      }
+      header h1 {
+        font-size: 2rem;
+      }
+      .recipe-title {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Wochenrezept</h1>
+      <p>Jede Woche automatisch ein zufälliges Rezept für 4 Personen.</p>
+    </header>
+
+    <main class="card">
+      <div class="meta-row">
+        <div class="meta-pill">
+          <span>Woche:</span>
+          <span id="weekNumber">–</span>
+        </div>
+        <div class="meta-pill">
+          <span>Zeitraum:</span>
+          <span id="weekRange">–</span>
+        </div>
+        <div class="meta-pill">
+          <span>Portionen:</span>
+          <span>4 Personen</span>
+        </div>
+      </div>
+
+      <h2 class="recipe-title" id="recipeTitle">Rezept wird geladen …</h2>
+
+      <div class="images" id="imageContainer"></div>
+
+      <section>
+        <h3 class="section-title">Zutaten</h3>
+        <ul id="ingredientsList"></ul>
+      </section>
+
+      <section>
+        <h3 class="section-title">Schritte</h3>
+        <ol class="steps" id="stepsList"></ol>
+      </section>
+
+      <div class="controls">
+        <button class="btn-primary" id="rerollButton" title="Neues Zufallsrezept für diese Woche wählen">
+          🔄 Rezept für diese Woche neu ziehen
+        </button>
+        <button class="btn-ghost" id="resetButton" title="Gespeichertes Wochenrezept zurücksetzen">
+          ♻️ Woche zurücksetzen
+        </button>
+      </div>
+
+      <p class="info-text">
+        Das aktuell gezogene Wochenrezept bleibt bis zum Beginn der nächsten Kalenderwoche gespeichert
+        (oder bis du es manuell zurücksetzt).
+      </p>
+    </main>
+
+    <p class="tagline">
+      Tipp: Füge diese Seite zum Startbildschirm hinzu, um sie wie eine App zu benutzen.
+    </p>
+  </div>
+
+  <script>
+    // Beispiel-Datenbasis: Du kannst hier beliebig viele Rezepte ergänzen.
+    // Statt realer Fotos werden hier Platzhalterbilder (data URLs/unsplash) verwendet.
+    const recipes = [
+      {
+        id: "spaghetti-bolognese",
+        title: "Spaghetti Bolognese",
+        servings: 4,
+        images: [
+          "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1600093463592-9f61807aef11?auto=format&fit=crop&w=800&q=80"
+        ],
+        ingredients: [
+          "400 g Spaghetti",
+          "500 g gemischtes Hackfleisch",
+          "1 Zwiebel, fein gewürfelt",
+          "1 Knoblauchzehe, gehackt",
+          "1 Dose gehackte Tomaten (400 g)",
+          "2 EL Tomatenmark",
+          "2 EL Olivenöl",
+          "Salz, Pfeffer, italienische Kräuter nach Geschmack",
+          "Parmesan zum Servieren"
+        ],
+        steps: [
+          "Spaghetti nach Packungsanweisung in reichlich Salzwasser al dente kochen.",
+          "Zwiebel und Knoblauch in Olivenöl glasig anschwitzen.",
+          "Hackfleisch zugeben und krümelig anbraten, bis es leicht gebräunt ist.",
+          "Tomatenmark einrühren und kurz mitrösten.",
+          "Gehackte Tomaten dazugeben, mit Salz, Pfeffer und Kräutern würzen und 10–15 Minuten köcheln lassen.",
+          "Spaghetti abgießen, mit der Sauce mischen oder getrennt servieren und mit Parmesan bestreuen."
+        ]
+      },
+      {
+        id: "ofen-gemuese-mit-huhn",
+        title: "Ofengemüse mit Hähnchen",
+        servings: 4,
+        images: [
+          "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+        ],
+        ingredients: [
+          "4 Hähnchenoberkeulen oder -brustfilets",
+          "600 g gemischtes Gemüse (z.B. Paprika, Zucchini, Karotten, Kartoffeln)",
+          "3 EL Olivenöl",
+          "1 TL Paprikapulver",
+          "1 TL getrockneter Rosmarin oder Thymian",
+          "Salz und Pfeffer"
+        ],
+        steps: [
+          "Backofen auf 200 °C Ober-/Unterhitze vorheizen.",
+          "Gemüse in mundgerechte Stücke schneiden und auf ein Backblech geben.",
+          "Olivenöl, Paprikapulver, Kräuter, Salz und Pfeffer über Gemüse und Hähnchen geben und alles gut vermengen.",
+          "Hähnchenteile auf das Gemüse legen.",
+          "Im Ofen ca. 30–40 Minuten backen, bis das Hähnchen gar ist und das Gemüse weich und leicht gebräunt ist.",
+          "Nach Wunsch mit frischen Kräutern bestreuen und servieren."
+        ]
+      },
+      {
+        id: "gemuese-curry-kokos",
+        title: "Cremiges Gemüse-Curry mit Kokosmilch",
+        servings: 4,
+        images: [
+          "https://images.unsplash.com/photo-1604908176997-1251884b08a2?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80"
+        ],
+        ingredients: [
+          "300 g Basmatireis",
+          "1 Zwiebel, gewürfelt",
+          "1 Knoblauchzehe, gehackt",
+          "1 EL Currypaste oder 2 TL Currypulver",
+          "400 ml Kokosmilch",
+          "400 g gemischtes Gemüse (z.B. Brokkoli, Paprika, Karotten, Erbsen)",
+          "1 EL Pflanzenöl",
+          "Salz, Pfeffer, Limettensaft nach Geschmack"
+        ],
+        steps: [
+          "Reis nach Packungsanweisung garen.",
+          "Zwiebel und Knoblauch im Öl andünsten.",
+          "Currypaste oder Currypulver zugeben und kurz anrösten.",
+          "Gemüse hinzufügen und 2–3 Minuten mitbraten.",
+          "Mit Kokosmilch ablöschen und ca. 10–15 Minuten köcheln lassen, bis das Gemüse gar, aber noch bissfest ist.",
+          "Mit Salz, Pfeffer und Limettensaft abschmecken und mit Reis servieren."
+        ]
+      }
+    ];
+
+    // Helfer: Kalenderwoche bestimmen (ISO-8601)
+    function getISOWeekNumber(date) {
+      const tmp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = tmp.getUTCDay() || 7;
+      tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
+      return { year: tmp.getUTCFullYear(), week: weekNo };
+    }
+
+    function getWeekDateRange(date) {
+      const day = date.getDay() || 7; // Montag = 1, Sonntag = 7
+      const monday = new Date(date);
+      monday.setDate(date.getDate() - (day - 1));
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      const fmt = d => `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+      return `${fmt(monday)} – ${fmt(sunday)}`;
+    }
+
+    const STORAGE_KEY = "weekly-recipe-selection-v1";
+
+    function loadStoredSelection() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function saveSelection(selection) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(selection));
+    }
+
+    function pickRandomRecipe() {
+      const index = Math.floor(Math.random() * recipes.length);
+      return recipes[index];
+    }
+
+    function renderRecipe(selection) {
+      const { recipeId, year, week } = selection;
+      const recipe = recipes.find(r => r.id === recipeId);
+      if (!recipe) return;
+
+      const now = new Date();
+      const weekInfo = getISOWeekNumber(now);
+      const weekRange = getWeekDateRange(now);
+
+      document.getElementById("weekNumber").textContent = `${weekInfo.week}/${weekInfo.year}`;
+      document.getElementById("weekRange").textContent = weekRange;
+      document.getElementById("recipeTitle").textContent = recipe.title;
+
+      const imageContainer = document.getElementById("imageContainer");
+      imageContainer.innerHTML = "";
+      recipe.images.slice(0, 2).forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = recipe.title;
+        imageContainer.appendChild(img);
+      });
+
+      const ingredientsList = document.getElementById("ingredientsList");
+      ingredientsList.innerHTML = "";
+      recipe.ingredients.forEach(i => {
+        const li = document.createElement("li");
+        li.textContent = i;
+        ingredientsList.appendChild(li);
+      });
+
+      const stepsList = document.getElementById("stepsList");
+      stepsList.innerHTML = "";
+      recipe.steps.forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        stepsList.appendChild(li);
+      });
+    }
+
+    function initApp() {
+      const now = new Date();
+      const { year, week } = getISOWeekNumber(now);
+
+      let selection = loadStoredSelection();
+
+      if (!selection || selection.year !== year || selection.week !== week) {
+        // Neue Woche oder noch keine Auswahl gespeichert → neues Rezept ziehen
+        const recipe = pickRandomRecipe();
+        selection = {
+          year,
+          week,
+          recipeId: recipe.id
+        };
+        saveSelection(selection);
+      }
+
+      renderRecipe(selection);
+
+      // Buttons
+      document.getElementById("rerollButton").addEventListener("click", () => {
+        const current = getISOWeekNumber(new Date());
+        const recipe = pickRandomRecipe();
+        const newSelection = {
+          year: current.year,
+          week: current.week,
+          recipeId: recipe.id
+        };
+        saveSelection(newSelection);
+        renderRecipe(newSelection);
+      });
+
+      document.getElementById("resetButton").addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEY);
+        const current = getISOWeekNumber(new Date());
+        const recipe = pickRandomRecipe();
+        const newSelection = {
+          year: current.year,
+          week: current.week,
+          recipeId: recipe.id
+        };
+        saveSelection(newSelection);
+        renderRecipe(newSelection);
+      });
+    }
+
+    // Optional: einfachen Service Worker registrieren (PWA-Grundlage)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {
+          // Ignorieren, wenn keine Datei vorhanden ist
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
