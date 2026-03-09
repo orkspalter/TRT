@@ -7,61 +7,108 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6b3fa0">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
   <style>
-    :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:12px;--shadow:0 4px 12px rgba(0,0,0,.08);--border:#e6e6e6;}
+    :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:16px;--border:#e6e6e6;}
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+    
+    /* Typografie: Nunito für Fließtext */
+    body{font-family:'Nunito',system-ui,sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+    
     .app{width:100%;max-width:980px;}
-    header{text-align:center;margin-bottom:16px;}
-    header h1{font-size:1.85rem;margin-bottom:6px;color:var(--primary-dark);}
-    header p{color:var(--muted);font-size:.95rem;}
-    header a{color:var(--primary-dark);text-decoration:none;font-weight:500;}
+    header{text-align:center;margin-bottom:24px;}
+    
+    /* Typografie: Playfair Display für Überschriften */
+    header h1, .recipe-title, .section-title {font-family:'Playfair Display',serif;}
+    
+    header h1{font-size:2.2rem;margin-bottom:6px;color:var(--primary-dark);}
+    header p{color:var(--muted);font-size:1rem;}
+    header a{color:var(--primary-dark);text-decoration:none;font-weight:700;}
     header a:hover{text-decoration:underline;}
 
-    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
-    .topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
-    .meta-row{display:flex;flex-wrap:wrap;gap:8px;font-size:.9rem;color:var(--muted);}
-    .meta-pill{background:#efe6fb;border-radius:999px;padding:4px 10px;display:inline-flex;align-items:center;gap:6px;}
-    .meta-pill span{font-weight:600;color:var(--primary-dark);}
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,0.06);padding:24px;}
+    .topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;}
+    .meta-row{display:flex;flex-wrap:wrap;gap:8px;font-size:1rem;color:var(--muted);}
+    .meta-pill{background:#efe6fb;border-radius:999px;padding:6px 14px;display:inline-flex;align-items:center;gap:6px;}
+    .meta-pill span{font-weight:700;color:var(--primary-dark);}
 
-    /* Neue, abgesetzte Rezept-Karten */
-    .recipe-card{border:none;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-bottom:30px;}
-    .recipe-body{padding:18px;}
-    .recipe-title{font-size:1.25rem;margin-bottom:6px;}
-    .section-title{font-size:1rem;margin:10px 0 6px;}
-    ul{padding-left:18px;margin-bottom:6px;}
-    li{margin-bottom:4px;}
-    ol{padding-left:18px;}
+    /* 4. Sanfte Animationen & Hover-Effekt */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .recipe-card{
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+      margin-bottom:32px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.4s ease-out backwards;
+    }
+    .recipe-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+    }
+    
+    .recipe-body{padding:24px;}
+    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark);}
+    .section-title{font-size:1.2rem;margin:0 0 12px;color:#333;}
+    
+    ul{padding-left:22px;margin-bottom:16px; line-height:1.6;}
+    li{margin-bottom:6px;}
+    ol{padding-left:22px; line-height:1.6;}
     .steps{list-style:decimal;}
-    .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;}
-    .tag{border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.82rem;color:var(--muted);background:#fafafa;}
+    
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
+    .tag{border:1px solid; border-radius:999px; padding:4px 12px; font-size:0.9rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
+    
+    /* 5. Farbliche Codierung für Tags */
+    .tag-green { background: #e6f4ea; color: #137333; border-color: #ceead6; }
+    .tag-red { background: #fce8e6; color: #c5221f; border-color: #fad2cf; }
+    .tag-yellow { background: #fef7e0; color: #b06000; border-color: #fbe9a2; }
+    .tag-blue { background: #e8f0fe; color: #1967d2; border-color: #d2e3fc; }
+    .tag-default { background: #f8f9fa; color: #5f6368; border-color: #dadce0; }
 
-    /* Styling für den neuen Tausch-Button pro Rezept */
-    .btn-swap {width:100%;background:var(--card-bg);border:none;border-top:1px solid var(--border);color:var(--primary);padding:14px;border-radius:0;font-weight:bold;cursor:pointer;}
-    .btn-swap:hover {background:#f9f9f9;}
+    .btn-swap {width:100%;background:#fafafa;border:none;border-top:1px solid var(--border);color:var(--primary);padding:16px;font-size:1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background 0.2s;}
+    .btn-swap:hover {background:#f1ecf8;}
 
-    .muted{color:var(--muted);font-size:.9rem;}
-    .divider{height:1px;background:var(--border);margin:12px 0;}
+    .muted{color:var(--muted);font-size:1rem; line-height:1.5;}
+    .divider{height:1px;background:var(--border);margin:20px 0;}
+
+    /* 3. CSS-Grid: Zweispaltiges Layout für größere Bildschirme */
+    @media (min-width: 768px) {
+      .recipe-content {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr; /* Zutaten links schmaler, Zubereitung rechts breiter */
+        gap: 32px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
       <h1>Timm's Rezepte der Woche</h1>
-      <p><a href="archive.html">Archiv</a></p>
+      <p><a href="archive.html">📚 Zum Archiv</a></p>
     </header>
 
     <main class="card">
       <div class="topbar">
         <div class="meta-row">
           <div class="meta-pill">
-            <span>KW</span><span id="weekNumber">–</span>
+            <span>📅 KW</span><span id="weekNumber">–</span>
           </div>
         </div>
       </div>
 
       <div class="muted">
-        Es werden zufällig drei Rezepte für deine aktuelle Kalenderwoche ausgewählt und im Archiv gespeichert.
+        Es werden zufällig drei Rezepte für deine aktuelle Kalenderwoche ausgewählt und automatisch im Archiv gespeichert.
       </div>
 
       <div class="divider"></div>
@@ -70,8 +117,7 @@
     </main>
   </div>
   <script>
-    // ====== 26 Wochen × 3 Rezepte ======
-    const plan = [
+     const plan = [
       ["r01","r02","r03"],["r04","r05","r06"],["r07","r08","r09"],["r10","r11","r12"],
       ["r13","r14","r15"],["r16","r17","r18"],["r19","r20","r21"],["r22","r23","r24"],
       ["r25","r26","r27"],["r28","r29","r30"],["r31","r32","r33"],["r34","r35","r36"],
@@ -80,7 +126,6 @@
       ["r61","r62","r63"],["r64","r65","r66"],["r67","r68","r69"],["r70","r71","r72"],
       ["r73","r74","r75"],["r76","r77","r78"]
     ];
-
     // ====== Rezepte r01..r78 (küchentauglich) ======
     const recipes = [
       {id:"r01",title:"Blech-Gemüse mit Feta & Kräutern (vegetarisch)",tags:["Vegetarisch","Mitteleuropäisch","Ofen"],ingredients:["1 große Süßkartoffel oder 4 Kartoffeln","2 Paprika","2 Zucchini","1 rote Zwiebel","1 Packung Feta","Olivenöl","Salz, Pfeffer","Paprikapulver, Oregano/Thymian","Optional: Zitronensaft"],steps:["Backofen auf 220 °C vorheizen.","Gemüse in mundgerechte Stücke schneiden und auf ein Blech geben.","Mit Olivenöl, Salz, Pfeffer und Kräutern mischen.","Ca. 25 Minuten rösten.","Feta grob darüberbröseln und weitere 8–10 Minuten backen.","Mit etwas Zitronensaft abschmecken und servieren."]},
@@ -181,17 +226,31 @@
       {id:"r77",title:"Mediterrane Gemüsepfanne mit Eierküchlein (vegetarisch)",tags:["Vegetarisch","Mediterran","Pfanne"],ingredients:["Gemüse (z.B. Zucchini, Paprika, Zwiebel)","Eier","Salz, Pfeffer","Kräuter","Olivenöl"],steps:["Gemüse anbraten und würzen.","Eier verquirlen, würzen und kleine Eierküchlein in einer zweiten Pfanne ausbacken (oder direkt daneben).","Alles zusammen mit Kräutern servieren."]},
       {id:"r78",title:"Klassischer Gemüseeintopf mit Erbsen (vegetarisch)",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Möhren","Erbsen (TK)","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran"],steps:["Zwiebel anschwitzen, Kartoffeln/Möhren würfeln und dazugeben.","Mit Brühe aufgießen und 15–20 Minuten kochen.","Erbsen die letzten 5 Minuten zugeben.","Abschmecken und servieren."]}
     ];
-
-    // ====== Logik ======
-    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
+        const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
     const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+
+    // 2. & 5. Automatische Emojis und Farben für Tags!
+    function renderTag(tagText) {
+      const t = tagText.toLowerCase();
+      let emoji = "🏷️";
+      let colorClass = "tag-default";
+
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) { emoji = "🌱"; colorClass = "tag-green"; }
+      else if (t.includes("ofen") || t.includes("backen") || t.includes("heiß")) { emoji = "🔥"; colorClass = "tag-red"; }
+      else if (t.includes("schnell") || t.includes("einfach")) { emoji = "⏱️"; colorClass = "tag-yellow"; }
+      else if (t.includes("pasta") || t.includes("nudel")) { emoji = "🍝"; colorClass = "tag-yellow"; }
+      else if (t.includes("suppe") || t.includes("eintopf")) { emoji = "🥣"; colorClass = "tag-blue"; }
+      else if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) { emoji = "🥩"; colorClass = "tag-red"; }
+      else if (t.includes("fisch") || t.includes("lachs")) { emoji = "🐟"; colorClass = "tag-blue"; }
+
+      return `<span class="tag ${colorClass}">${emoji} ${tagText}</span>`;
+    }
 
     function getWeekNumber(d) {
       d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
       d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
       const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-      const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-      return weekNo;
+      return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
     }
 
     function getCurrentWeekKey() {
@@ -237,17 +296,28 @@
 
         const card = document.createElement("div");
         card.className = "recipe-card";
+        // Animation Delay berechnen (damit sie nacheinander einblenden)
+        card.style.animationDelay = `${index * 0.1}s`; 
+
         card.innerHTML = `
           <div class="recipe-body">
             <h2 class="recipe-title">${r.title}</h2>
             <div class="tag-row">
-              ${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+              ${r.tags.map(t => renderTag(t)).join("")}
             </div>
             <div class="divider"></div>
-            <h3 class="section-title">Zutaten</h3>
-            <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
-            <h3 class="section-title">Zubereitung</h3>
-            <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+            
+            <div class="recipe-content">
+              <div class="ingredients-col">
+                <h3 class="section-title">🛒 Zutaten</h3>
+                <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+              </div>
+              <div class="steps-col">
+                <h3 class="section-title">👨‍🍳 Zubereitung</h3>
+                <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+              </div>
+            </div>
+
           </div>
           <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
         `;
@@ -255,7 +325,6 @@
       });
     }
 
-    // Neue Funktion für das einzelne Tauschen
     window.swapSingleRecipe = function(indexToReplace) {
       const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
       if (!stored) return;
@@ -289,13 +358,9 @@
       saveJSON(STORAGE_SELECTED_WEEK, { weekKey });
     }
 
-    function getDefaultWeekKey() {
-      return getCurrentWeekKey();
-    }
-
     function initApp() {
       const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
-      const weekKey = stored?.weekKey || getDefaultWeekKey();
+      const weekKey = stored?.weekKey || getCurrentWeekKey();
       showWeek(weekKey);
     }
 
