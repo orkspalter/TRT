@@ -17,13 +17,27 @@
 
     .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;}
     .muted{color:var(--muted);font-size:.9rem;margin-bottom:8px;}
-    .week-block{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px;background:#fff;}
-    .week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:.95rem;}
+    
+    /* Neues Suchfeld Styling */
+    .search-input {width: 100%; padding: 14px; margin-bottom: 24px; border-radius: 8px; border: 1px solid var(--border); font-size: 1rem; background: #fafafa;}
+    .search-input:focus {outline: none; border-color: var(--primary); background: #fff;}
+
+    /* Styling wie auf der Startseite für detaillierte Karten */
+    .week-block{margin-bottom:40px;}
+    .week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:1.2rem;border-bottom:2px solid var(--primary);padding-bottom:8px;}
     .week-header strong{color:var(--primary-dark);}
-    .badge{background:#efe6fb;border-radius:999px;padding:2px 8px;font-size:.8rem;color:var(--primary-dark);}
-    ul{padding-left:18px;margin:4px 0;}
-    li{margin-bottom:3px;}
-    .empty{padding:12px;border-radius:12px;border:1px dashed var(--border);color:var(--muted);background:#fff;}
+    .recipe-card{border:none;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-bottom:24px;}
+    .recipe-body{padding:18px;}
+    .recipe-title{font-size:1.25rem;margin-bottom:6px;}
+    .section-title{font-size:1rem;margin:10px 0 6px;}
+    ul{padding-left:18px;margin-bottom:6px;}
+    li{margin-bottom:4px;}
+    ol{padding-left:18px;}
+    .steps{list-style:decimal;}
+    .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;}
+    .tag{border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.82rem;color:var(--muted);background:#fafafa;}
+    .divider{height:1px;background:var(--border);margin:12px 0;}
+    .empty{padding:12px;border-radius:12px;border:1px dashed var(--border);color:var(--muted);background:#fff;text-align:center;}
   </style>
 </head>
 <body>
@@ -35,14 +49,17 @@
 
     <main class="card">
       <p class="muted">
-        Hier siehst du für jede Kalenderwoche, welche drei Rezepte ausgelost wurden (aus diesem Browser).
+        Hier siehst du die gespeicherten Rezepte. Nutze die Suche, um nach Zutaten, Titeln oder Schlagwörtern zu filtern.
       </p>
+
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Archiv durchsuchen (z.B. Paprika, Vegan, Nudeln)...">
 
       <div id="archiveContainer"></div>
     </main>
   </div>
 
   <script>
+   // ====== Rezepte r01..r78 (küchentauglich) ======
     const recipes = [
       {id:"r01",title:"Blech-Gemüse mit Feta & Kräutern (vegetarisch)",tags:["Vegetarisch","Mitteleuropäisch","Ofen"],ingredients:["1 große Süßkartoffel oder 4 Kartoffeln","2 Paprika","2 Zucchini","1 rote Zwiebel","1 Packung Feta","Olivenöl","Salz, Pfeffer","Paprikapulver, Oregano/Thymian","Optional: Zitronensaft"],steps:["Backofen auf 220 °C vorheizen.","Gemüse in mundgerechte Stücke schneiden und auf ein Blech geben.","Mit Olivenöl, Salz, Pfeffer und Kräutern mischen.","Ca. 25 Minuten rösten.","Feta grob darüberbröseln und weitere 8–10 Minuten backen.","Mit etwas Zitronensaft abschmecken und servieren."]},
       {id:"r02",title:"Spaghetti Aglio e Olio mit Rucola (vegetarisch)",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["1 Packung Spaghetti","3–4 Knoblauchzehen","1–2 getrocknete Chilis oder Chiliflocken","Olivenöl","1 Handvoll Rucola","Salz","Optional: Parmesan"],steps:["Spaghetti in Salzwasser al dente kochen.","Knoblauch in dünne Scheiben schneiden.","Olivenöl in einer Pfanne erwärmen, Knoblauch und Chili sanft anrösten (nicht dunkel werden lassen).","Etwas Nudelwasser zur Pfanne geben, dann die Spaghetti darin schwenken.","Rucola unterheben, abschmecken und optional mit Parmesan servieren."]},
@@ -142,6 +159,7 @@
       {id:"r77",title:"Mediterrane Gemüsepfanne mit Eierküchlein (vegetarisch)",tags:["Vegetarisch","Mediterran","Pfanne"],ingredients:["Gemüse (z.B. Zucchini, Paprika, Zwiebel)","Eier","Salz, Pfeffer","Kräuter","Olivenöl"],steps:["Gemüse anbraten und würzen.","Eier verquirlen, würzen und kleine Eierküchlein in einer zweiten Pfanne ausbacken (oder direkt daneben).","Alles zusammen mit Kräutern servieren."]},
       {id:"r78",title:"Klassischer Gemüseeintopf mit Erbsen (vegetarisch)",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Möhren","Erbsen (TK)","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran"],steps:["Zwiebel anschwitzen, Kartoffeln/Möhren würfeln und dazugeben.","Mit Brühe aufgießen und 15–20 Minuten kochen.","Erbsen die letzten 5 Minuten zugeben.","Abschmecken und servieren."]}
     ];
+
     const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
 
     function loadJSON(key, fallback) {
@@ -153,36 +171,71 @@
     function renderArchive() {
       const container = document.getElementById("archiveContainer");
       const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
-      const weekKeys = Object.keys(archive).sort(); // aufsteigend
+      // Absteigend sortieren: Neueste Woche zuerst
+      const weekKeys = Object.keys(archive).sort((a,b) => b.localeCompare(a)); 
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+
+      container.innerHTML = "";
 
       if (!weekKeys.length) {
         container.innerHTML = `<div class="empty">Noch keine Wochen im Archiv gespeichert.</div>`;
         return;
       }
 
-      container.innerHTML = weekKeys.map(key => {
+      weekKeys.forEach(key => {
         const recipeIds = archive[key];
         const [year, week] = key.split("-");
-        const recipeList = recipeIds
-          .map(id => recipes.find(r => r.id === id))
-          .filter(Boolean);
+        
+        // Rezepte laden
+        let recipeList = recipeIds.map(id => recipes.find(r => r.id === id)).filter(Boolean);
+        
+        // Suchlogik anwenden
+        if (searchQuery) {
+          recipeList = recipeList.filter(r => {
+            const textToSearch = (r.title + " " + r.tags.join(" ") + " " + r.ingredients.join(" ")).toLowerCase();
+            return textToSearch.includes(searchQuery);
+          });
+        }
 
-        const items = recipeList.length
-          ? `<ul>${recipeList.map(r => `<li>${r.title}</li>`).join("")}</ul>`
-          : `<div class="muted">Rezeptdaten für diese IDs wurden im Code entfernt.</div>`;
+        // Woche ausblenden, falls die Suche hier keine Treffer hat
+        if (recipeList.length === 0) return;
 
-        return `
-          <section class="week-block">
-            <div class="week-header">
-              <strong>KW ${Number(week)}/${year}</strong>
-              <span class="badge">${recipeIds.length} Rezepte</span>
-            </div>
-            ${items}
-          </section>
+        const weekSection = document.createElement("section");
+        weekSection.className = "week-block";
+        weekSection.innerHTML = `
+          <div class="week-header">
+            <strong>KW ${Number(week)}/${year}</strong>
+          </div>
         `;
-      }).join("");
+
+        recipeList.forEach(r => {
+          const card = document.createElement("div");
+          card.className = "recipe-card";
+          card.innerHTML = `
+            <div class="recipe-body">
+              <h2 class="recipe-title">${r.title}</h2>
+              <div class="tag-row">
+                ${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+              </div>
+              <div class="divider"></div>
+              <h3 class="section-title">Zutaten</h3>
+              <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+              <h3 class="section-title">Zubereitung</h3>
+              <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+            </div>
+          `;
+          weekSection.appendChild(card);
+        });
+
+        container.appendChild(weekSection);
+      });
+
+      if (container.innerHTML === "") {
+        container.innerHTML = `<div class="empty">Keine Rezepte zur Suche "${searchQuery}" gefunden.</div>`;
+      }
     }
 
+    document.getElementById("searchInput").addEventListener("input", renderArchive);
     document.addEventListener("DOMContentLoaded", renderArchive);
   </script>
 </body>
