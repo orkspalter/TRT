@@ -221,12 +221,17 @@
       let colorClass = "tag-default";
 
       if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) { emoji = "🌱"; colorClass = "tag-green"; }
-      else if (t.includes("ofen") || t.includes("backen") || t.includes("heiß")) { emoji = "🔥"; colorClass = "tag-red"; }
       else if (t.includes("schnell") || t.includes("einfach")) { emoji = "⏱️"; colorClass = "tag-yellow"; }
       else if (t.includes("pasta") || t.includes("nudel")) { emoji = "🍝"; colorClass = "tag-yellow"; }
-      else if (t.includes("suppe") || t.includes("eintopf")) { emoji = "🥣"; colorClass = "tag-blue"; }
+      else if (t.includes("suppe") || t.includes("eintopf")) { emoji = "🍲"; colorClass = "tag-blue"; }
       else if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) { emoji = "🥩"; colorClass = "tag-red"; }
       else if (t.includes("fisch") || t.includes("lachs")) { emoji = "🐟"; colorClass = "tag-blue"; }
+      else if (t.includes("asiatisch")) { emoji = "🍜"; colorClass = "tag-yellow"; }
+      else if (t.includes("deutsch")) { emoji = "🇩🇪"; colorClass = "tag-default"; }
+      else if (t.includes("leicht")) { emoji = "🪽"; colorClass = "tag-blue"; }
+      else if (t.includes("mediterran")) { emoji = "💃"; colorClass = "tag-red"; }
+      else if (t.includes("salat")) { emoji = "🥬"; colorClass = "tag-green"; }
+      else if (t.includes("sattmacher")) { emoji = "🫃"; colorClass = "tag-yellow"; }
 
       return `<span class="tag ${colorClass}">${emoji} ${tagText}</span>`;
     }
