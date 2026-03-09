@@ -24,16 +24,10 @@
     .meta-pill{background:#efe6fb;border-radius:999px;padding:4px 10px;display:inline-flex;align-items:center;gap:6px;}
     .meta-pill span{font-weight:600;color:var(--primary-dark);}
 
-    .controls{display:flex;flex-wrap:wrap;gap:8px;}
-    button{border:none;border-radius:999px;padding:8px 14px;font-size:.95rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-    .btn-primary{background:var(--primary);color:#fff;}
-    .btn-primary:hover{background:var(--primary-dark);}
-    .btn-ghost{background:transparent;border:1px solid #ddd;color:var(--muted);}
-
-    .recipe-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;}
-    .recipe-body{padding:14px;}
+    /* Neue, abgesetzte Rezept-Karten */
+    .recipe-card{border:none;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-bottom:30px;}
+    .recipe-body{padding:18px;}
     .recipe-title{font-size:1.25rem;margin-bottom:6px;}
-    .recipe-note{color:var(--muted);font-size:.92rem;margin-bottom:8px;}
     .section-title{font-size:1rem;margin:10px 0 6px;}
     ul{padding-left:18px;margin-bottom:6px;}
     li{margin-bottom:4px;}
@@ -42,9 +36,12 @@
     .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;}
     .tag{border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.82rem;color:var(--muted);background:#fafafa;}
 
+    /* Styling für den neuen Tausch-Button pro Rezept */
+    .btn-swap {width:100%;background:var(--card-bg);border:none;border-top:1px solid var(--border);color:var(--primary);padding:14px;border-radius:0;font-weight:bold;cursor:pointer;}
+    .btn-swap:hover {background:#f9f9f9;}
+
     .muted{color:var(--muted);font-size:.9rem;}
     .divider{height:1px;background:var(--border);margin:12px 0;}
-    .error{padding:12px;border:1px solid #f1c5c5;border-radius:12px;color:#7a1f1f;background:#fff5f5;}
   </style>
 </head>
 <body>
@@ -61,9 +58,6 @@
             <span>KW</span><span id="weekNumber">–</span>
           </div>
         </div>
-        <div class="controls">
-      <button class="btn-primary" id="shuffleButton" title="Neue Rezepte der Woche ziehen">🎲 Neu mischen</button>
-      </div>
       </div>
 
       <div class="muted">
@@ -188,18 +182,22 @@
       {id:"r78",title:"Klassischer Gemüseeintopf mit Erbsen (vegetarisch)",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Möhren","Erbsen (TK)","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran"],steps:["Zwiebel anschwitzen, Kartoffeln/Möhren würfeln und dazugeben.","Mit Brühe aufgießen und 15–20 Minuten kochen.","Erbsen die letzten 5 Minuten zugeben.","Abschmecken und servieren."]}
     ];
 
-  // ==== Kalenderwoche ====
-    function getISOWeekNumber(date) {
-      const tmp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      const dayNum = tmp.getUTCDay() || 7;
-      tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
-      const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
-      return { year: tmp.getUTCFullYear(), week: weekNo };
+    // ====== Logik ======
+    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
+    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+      return weekNo;
     }
 
-    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
-    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1"; // Archiv: { "2026-05": ["r01","r02","r03"], ... }
+    function getCurrentWeekKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${getWeekNumber(now)}`;
+    }
 
     function loadJSON(key, fallback) {
       const raw = localStorage.getItem(key);
@@ -214,46 +212,9 @@
       document.getElementById("weekNumber").textContent = `${week}/${year}`;
     }
 
-    function renderRecipeCards(recipeIds, container) {
-      const list = recipeIds.map(id => recipes.find(r => r.id === id)).filter(Boolean);
-      if (!recipeIds.length) {
-        container.innerHTML = `<div class="error">Keine Rezepte gefunden.</div>`;
-        return;
-      }
-      if (list.length !== recipeIds.length) {
-        container.innerHTML = `<div class="error">Mindestens ein Rezept zur gespeicherten Auswahl fehlt im Code.</div>`;
-        return;
-      }
-
-      container.innerHTML = list.map(r => `
-        <article class="recipe-card">
-          <div class="recipe-body">
-            <h3 class="recipe-title">${r.title}</h3>
-            <div class="recipe-note">Schritt-für-Schritt-Anleitung (für 4 Personen).</div>
-            <div class="tag-row">
-              ${(r.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}
-            </div>
-
-            <h4 class="section-title">Zutaten</h4>
-            <ul>${(r.ingredients || []).map(i => `<li>${i}</li>`).join("")}</ul>
-
-            <h4 class="section-title">Schritte</h4>
-            <ol class="steps">${(r.steps || []).map(s => `<li>${s}</li>`).join("")}</ol>
-          </div>
-        </article>
-      `).join("<div style='height:10px'></div>");
-    }
-
-    function getCurrentWeekKey(date = new Date()) {
-      const { year, week } = getISOWeekNumber(date);
-      return `${year}-${String(week).padStart(2,"0")}`; // z.B. "2026-05"
-    }
-
     function pickRandomThreeRecipes() {
-      const ids = recipes.map(r => r.id);
-      if (ids.length <= 3) return ids;
-      const shuffled = [...ids].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, 3);
+      const shuffled = [...recipes].sort(() => 0.5 - Math.random());
+      return [shuffled[0].id, shuffled[1].id, shuffled[2].id];
     }
 
     function loadWeekSelection(weekKey) {
@@ -266,6 +227,53 @@
       archive[weekKey] = recipeIds;
       saveJSON(STORAGE_WEEK_RECIPES, archive);
     }
+
+    function renderRecipeCards(recipeIds, containerElement) {
+      containerElement.innerHTML = "";
+      
+      recipeIds.forEach((id, index) => {
+        const r = recipes.find(x => x.id === id);
+        if (!r) return;
+
+        const card = document.createElement("div");
+        card.className = "recipe-card";
+        card.innerHTML = `
+          <div class="recipe-body">
+            <h2 class="recipe-title">${r.title}</h2>
+            <div class="tag-row">
+              ${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+            </div>
+            <div class="divider"></div>
+            <h3 class="section-title">Zutaten</h3>
+            <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+            <h3 class="section-title">Zubereitung</h3>
+            <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+          </div>
+          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
+        `;
+        containerElement.appendChild(card);
+      });
+    }
+
+    // Neue Funktion für das einzelne Tauschen
+    window.swapSingleRecipe = function(indexToReplace) {
+      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
+      if (!stored) return;
+      
+      let currentSelection = loadWeekSelection(stored.weekKey);
+      if (!currentSelection) return;
+      
+      let newRecipe;
+      do {
+        const randomIdx = Math.floor(Math.random() * recipes.length);
+        newRecipe = recipes[randomIdx];
+      } while (currentSelection.includes(newRecipe.id));
+
+      currentSelection[indexToReplace] = newRecipe.id;
+      
+      saveWeekSelection(stored.weekKey, currentSelection);
+      showWeek(stored.weekKey);
+    };
 
     function showWeek(weekKey) {
       const [yearStr, weekStr] = weekKey.split("-");
@@ -291,15 +299,6 @@
       showWeek(weekKey);
     }
 
-    // Buttons
-      document.getElementById("shuffleButton").addEventListener("click", () => {
-      // Nur für aktuelle (ausgewählte) Woche neu mischen
-      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
-      const currentKey = stored?.weekKey || getDefaultWeekKey();
-      const newSelection = pickRandomThreeRecipes();
-      saveWeekSelection(currentKey, newSelection);
-      showWeek(currentKey);
-    });
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("sw.js").catch(() => {});
