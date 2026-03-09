@@ -282,7 +282,7 @@
             <div class="recipe-body">
               <h2 class="recipe-title">${r.title}</h2>
               <div class="tag-row">
-                ${r.tags.map(t => renderTag(t)).join("")}
+                ${r.tags.filter(t => !["Pfanne", "Pfanne/Ofen", "Familienküche", "Beilage", "Asiatisch inspiriert"].includes(t)).map(t => renderTag(t)).join("")}
               </div>
               <div class="divider"></div>
               
