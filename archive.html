@@ -323,16 +323,18 @@
 
         recipeList.forEach((r, index) => {
           const card = document.createElement("div");
-        recipeList.forEach((r, index) => {
-          const card = document.createElement("div");
           card.className = "recipe-card";
+          card.style.animationDelay = `${index * 0.1}s`; 
+
+          card.innerHTML = `
+            <div class="recipe-body">
           card.style.animationDelay = `${index * 0.1}s`; 
 
           card.innerHTML = `
             <div class="recipe-body">
               <h2 class="recipe-title">${r.title}</h2>
               <div class="tag-row">
-                ${r.tags.filter(t => !["Pfanne", "Pfanne/Ofen", "ofen", "Familienküche", "Beilage", "Asiatisch inspiriert"].includes(t)).map(t => renderTag(t)).join("")}
+                ${r.tags.filter(t => !["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Asiatisch inspiriert"].includes(t)).map(t => renderTag(t)).join("")}
               </div>
               <div class="divider"></div>
               
