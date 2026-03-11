@@ -62,10 +62,43 @@
     .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark);}
     .section-title{font-size:1.2rem;margin:0 0 12px;color:#333;}
     
-    ul{padding-left:22px;margin-bottom:16px; line-height:1.6;}
-    li{margin-bottom:6px;}
-    ol{padding-left:22px; line-height:1.6;}
-    .steps{list-style:decimal;}
+    /* 1. Zutatenliste: Violette Aufzählungszeichen */
+    ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; }
+    ul li { margin-bottom: 8px; }
+    ul li::marker { color: var(--primary); font-size: 1.2em; }
+
+    /* 2. Zubereitung: Nummerierte Liste mit violetten Kreisen */
+    ol.steps { 
+      list-style: none; /* Schaltet die Standard-Zahlen aus */
+      padding-left: 0; 
+      counter-reset: step-counter; /* Startet den Zähler */
+      line-height: 1.6; 
+    }
+    
+    ol.steps li { 
+      counter-increment: step-counter; /* Zählt pro Listenpunkt hoch */
+      margin-bottom: 14px; 
+      display: flex; 
+      align-items: flex-start; 
+      gap: 12px; 
+    }
+    
+    /* Das Design für den Kreis selbst */
+    ol.steps li::before { 
+      content: counter(step-counter); 
+      background: var(--primary); 
+      color: #fff; 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      min-width: 24px; 
+      height: 24px; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-shrink: 0; 
+      margin-top: 2px; /* Richtet den Kreis optisch am Text aus */
+    }
     
     .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
     .tag{border:1px solid; border-radius:999px; padding:4px 12px; font-size:0.9rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
