@@ -18,7 +18,7 @@
     /* Typografie: Nunito für Fließtext */
     body{font-family:'Nunito',system-ui,sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
     
-    .app{width:100%;max-width:980px;}
+    .app{width:100%;max-width:1400px;}
     header{text-align:center;margin-bottom:24px;}
     
     /* Typografie: Playfair Display für Überschriften */
@@ -89,9 +89,18 @@
       gap: 32px;
     }
 
-    @media (min-width: 768px) {
+   /* Mobile First: Immer untereinander (1 Spalte) */
+    #currentRecipes {
+      display: grid;
+      grid-template-columns: 1fr; 
+      gap: 32px;
+    }
+
+    /* Ab 900px Breite (Desktop/Laptop): Genau 3 Spalten nebeneinander */
+    @media (min-width: 900px) {
       #currentRecipes {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+        grid-template-columns: repeat(3, 1fr); 
+        align-items: stretch; /* Sorgt dafür, dass alle 3 Karten exakt gleich hoch sind */
       }
     }
   </style>
