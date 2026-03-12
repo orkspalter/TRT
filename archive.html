@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Archiv – Timm's Rezepte der Woche</title>
+  <title>Rezeptdatenbank – Timm's Rezepte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#6b3fa0">
 
@@ -26,12 +26,27 @@
     .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,0.06);padding:24px;}
     .muted{color:var(--muted);font-size:1rem;margin-bottom:12px; line-height:1.5;}
     
-    .search-input {width: 100%; padding: 16px; margin-bottom: 32px; border-radius: 12px; border: 2px solid var(--border); font-size: 1.1rem; font-family:'Nunito',sans-serif; background: #fafafa; transition: border-color 0.2s;}
+    /* Suche und Filter */
+    .search-input {width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 2px solid var(--border); font-size: 1.1rem; font-family:'Nunito',sans-serif; background: #fafafa; transition: border-color 0.2s;}
     .search-input:focus {outline: none; border-color: var(--primary); background: #fff;}
 
-    .week-block{margin-bottom:48px;}
-    .week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:1.4rem;font-family:'Playfair Display',serif;border-bottom:2px solid var(--primary);padding-bottom:8px;}
-    .week-header strong{color:var(--primary-dark);}
+    .filter-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border); }
+    .filter-btn { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--muted); transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); }
+    .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 4px 10px rgba(107, 63, 160, 0.3); }
+
+    /* Grid Layout für die Datenbank */
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    @media (min-width: 768px) {
+      .recipes-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .recipes-grid { grid-template-columns: repeat(3, 1fr); }
+    }
     
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(15px); }
@@ -50,54 +65,19 @@
       flex-direction: column;
     }
     .recipe-body{padding:24px; flex-grow: 1;}
-    .recipe-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px rgba(0,0,0,0.12);
-    }
+    .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
     
-    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark);}
+    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark); line-height:1.2;}
     .section-title{font-size:1.2rem;margin:0 0 12px;color:#333;}
     
-    /* Zutatenliste: Edler Gedankenstrich */
+    /* Listen Styling */
     ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; list-style: none; }
     ul li { margin-bottom: 8px; position: relative; }
-    ul li::before { 
-      content: '—  '; 
-      color: var(--primary); 
-      font-weight: 700;
-      position: absolute;
-      left: -20px;
-    }
+    ul li::before { content: '—  '; color: var(--primary); font-weight: 700; position: absolute; left: -20px; }
 
-    /* Zubereitung: Nummerierte Liste mit violetten Kreisen */
-    ol.steps { 
-      list-style: none; 
-      padding-left: 0; 
-      counter-reset: step-counter; 
-      line-height: 1.6; 
-    }
-    ol.steps li { 
-      counter-increment: step-counter; 
-      margin-bottom: 14px; 
-      display: flex; 
-      align-items: flex-start; 
-      gap: 12px; 
-    }
-    ol.steps li::before { 
-      content: counter(step-counter); 
-      background: var(--primary); 
-      color: #fff; 
-      font-size: 0.85rem; 
-      font-weight: 700; 
-      min-width: 24px; 
-      height: 24px; 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      flex-shrink: 0; 
-      margin-top: 2px; 
-    }
+    ol.steps { list-style: none; padding-left: 0; counter-reset: step-counter; line-height: 1.6; }
+    ol.steps li { counter-increment: step-counter; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; }
+    ol.steps li::before { content: counter(step-counter); background: var(--primary); color: #fff; font-size: 0.85rem; font-weight: 700; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
     
     .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
     .tag{border:1px solid; border-radius:999px; padding:4px 12px; font-size:0.9rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
@@ -109,126 +89,149 @@
     .tag-default { background: #f8f9fa; color: #5f6368; border-color: #dadce0; }
 
     .divider{height:1px;background:var(--border);margin:20px 0;}
-    .empty{padding:24px;border-radius:12px;border:2px dashed var(--border);color:var(--muted);background:#fafafa;text-align:center;font-size:1.1rem;}
-
-    .recipes-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-
-    @media (min-width: 900px) {
-      .recipes-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
+    .empty{padding:24px;border-radius:12px;border:2px dashed var(--border);color:var(--muted);background:#fafafa;text-align:center;font-size:1.1rem; grid-column: 1 / -1;}
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>Archiv der Wochenrezepte</h1>
-      <p><a href="index.html">🏠 Zurück zur Startseite</a></p>
+      <h1>Kochbuch & Rezeptdatenbank</h1>
+      <p><a href="index.html">🏠 Zurück zur Startseite (Wochenplan)</a></p>
     </header>
 
     <main class="card">
       <p class="muted">
-        Hier siehst du alle Rezepte, die in den vergangenen Wochen ausgewählt wurden. Nutze die Suche, um nach Zutaten, Titeln oder Schlagwörtern zu filtern.
+        Hier findest du alle hinterlegten Rezepte. Suche nach Zutaten oder nutze die Schlagwörter, um die Auswahl zu filtern.
       </p>
 
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Archiv durchsuchen (z.B. Paprika, Vegan, Nudeln)...">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rezept oder Zutat suchen (z.B. Paprika, Feta, Nudeln)...">
+      
+      <div id="filterContainer" class="filter-container"></div>
 
-      <div id="archiveContainer"></div>
+      <div id="databaseContainer" class="recipes-grid"></div>
     </main>
   </div>
+
   <script>
     // ====== HIER DEIN KOMPLETTES BESTEHENDES RECIPES-ARRAY EINFÜGEN! ======
     const recipes = [
       {id:"r01",title:"Blech-Gemüse mit Feta & Kräutern (vegetarisch)",tags:["Vegetarisch","Mitteleuropäisch","Ofen"],ingredients:["1 große Süßkartoffel oder 4 Kartoffeln","2 Paprika","2 Zucchini","1 rote Zwiebel","1 Packung Feta","Olivenöl","Salz, Pfeffer","Paprikapulver, Oregano/Thymian","Optional: Zitronensaft"],steps:["Backofen auf 220 °C vorheizen.","Gemüse in mundgerechte Stücke schneiden und auf ein Blech geben.","Mit Olivenöl, Salz, Pfeffer und Kräutern mischen.","Ca. 25 Minuten rösten.","Feta grob darüberbröseln und weitere 8–10 Minuten backen.","Mit etwas Zitronensaft abschmecken und servieren."]},
       {id:"r02",title:"Spaghetti Aglio e Olio mit Rucola (vegetarisch)",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["1 Packung Spaghetti","3–4 Knoblauchzehen","1–2 getrocknete Chilis oder Chiliflocken","Olivenöl","1 Handvoll Rucola","Salz","Optional: Parmesan"],steps:["Spaghetti in Salzwasser al dente kochen.","Knoblauch in dünne Scheiben schneiden.","Olivenöl in einer Pfanne erwärmen, Knoblauch und Chili sanft anrösten (nicht dunkel werden lassen).","Etwas Nudelwasser zur Pfanne geben, dann die Spaghetti darin schwenken.","Rucola unterheben, abschmecken und optional mit Parmesan servieren."]},
-      {id:"r03",title:"Gurkensalat mit Dill & Joghurt (vegetarisch)",tags:["Vegetarisch","Deutsch","Beilage"],ingredients:["2 Salatgurken","1 Becher Naturjoghurt","1–2 EL Essig","Dill (frisch oder getrocknet)","Salz, Pfeffer","Optional: 1 TL Senf, 1 TL Honig"],steps:["Gurken in dünne Scheiben hobeln.","Joghurt mit Essig, Dill, Salz und Pfeffer verrühren.","Gurken untermischen und 10 Minuten ziehen lassen.","Optional mit Senf/Honig abrunden und servieren."]}
-      // ACHTUNG: Hier unbedingt noch r04 bis r78 wieder reinkopieren!
+      // ... R03 BIS R78 EINFÜGEN ...
     ];
 
-    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+    // Diese Tags wollen wir nicht als Buttons anzeigen
+    const IGNORE_TAGS = ["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Asiatisch inspiriert"];
+    
+    // Status für die angeklickten Filter
+    let selectedTags = [];
 
-    function renderTag(tagText) {
+    function getEmojiForTag(tagText) {
       const t = tagText.toLowerCase();
-      let emoji = "🏷️";
-      let colorClass = "tag-default";
-
-      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) { emoji = "🌱"; colorClass = "tag-green"; }
-      else if (t.includes("schnell") || t.includes("einfach")) { emoji = "⏱️"; colorClass = "tag-yellow"; }
-      else if (t.includes("pasta") || t.includes("nudel")) { emoji = "🍝"; colorClass = "tag-yellow"; }
-      else if (t.includes("suppe") || t.includes("eintopf")) { emoji = "🍲"; colorClass = "tag-blue"; }
-      else if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) { emoji = "🥩"; colorClass = "tag-red"; }
-      else if (t.includes("fisch") || t.includes("lachs")) { emoji = "🐟"; colorClass = "tag-blue"; }
-      else if (t.includes("asiatisch")) { emoji = "🍜"; colorClass = "tag-yellow"; }
-      else if (t.includes("deutsch")) { emoji = "🇩🇪"; colorClass = "tag-default"; }
-      else if (t.includes("leicht")) { emoji = "🪽"; colorClass = "tag-blue"; }
-      else if (t.includes("mediterran")) { emoji = "💃"; colorClass = "tag-red"; }
-      else if (t.includes("salat")) { emoji = "🥬"; colorClass = "tag-green"; }
-      else if (t.includes("sattmacher")) { emoji = "🫃"; colorClass = "tag-yellow"; }
-
-      return `<span class="tag ${colorClass}">${emoji} ${tagText}</span>`;
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) return "🌱";
+      if (t.includes("schnell") || t.includes("einfach")) return "⏱️";
+      if (t.includes("pasta") || t.includes("nudel")) return "🍝";
+      if (t.includes("suppe") || t.includes("eintopf")) return "🍲";
+      if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) return "🥩";
+      if (t.includes("fisch") || t.includes("lachs")) return "🐟";
+      if (t.includes("asiatisch")) return "🍜";
+      if (t.includes("deutsch")) return "🇩🇪";
+      if (t.includes("leicht")) return "🪽";
+      if (t.includes("mediterran")) return "💃";
+      if (t.includes("salat")) return "🥬";
+      if (t.includes("sattmacher")) return "🫃";
+      return "🏷️";
     }
 
-    function loadJSON(key, fallback) {
-      const raw = localStorage.getItem(key);
-      if (!raw) return fallback;
-      try { return JSON.parse(raw); } catch { return fallback; }
+    function getColorClassForTag(tagText) {
+      const t = tagText.toLowerCase();
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat")) return "tag-green";
+      if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher")) return "tag-yellow";
+      if (t.includes("fleisch") || t.includes("mediterran") || t.includes("ofen")) return "tag-red";
+      if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht")) return "tag-blue";
+      return "tag-default";
     }
 
-    function renderArchive() {
-      const container = document.getElementById("archiveContainer");
-      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
-      const weekKeys = Object.keys(archive).sort((a,b) => b.localeCompare(a)); 
-      const searchInput = document.getElementById("searchInput");
-      const searchQuery = searchInput ? searchInput.value.toLowerCase() : "";
+    // Hilfsfunktion für die Rezeptkarte
+    function renderTagSpan(tagText) {
+      return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
+    }
 
-      container.innerHTML = "";
+    // 1. Sammle alle einzigartigen Tags aus den Rezepten zusammen
+    function getUniqueTags() {
+      const allTags = new Set();
+      recipes.forEach(r => {
+        r.tags.forEach(t => {
+          if (!IGNORE_TAGS.includes(t)) allTags.add(t);
+        });
+      });
+      return Array.from(allTags).sort();
+    }
 
-      if (!weekKeys.length) {
-        container.innerHTML = `<div class="empty">Noch keine Wochen im Archiv gespeichert.</div>`;
+    // 2. Zeichne die Filter-Buttons
+    function renderFilters() {
+      const container = document.getElementById("filterContainer");
+      const uniqueTags = getUniqueTags();
+      
+      container.innerHTML = uniqueTags.map(tag => {
+        const isActive = selectedTags.includes(tag);
+        const activeClass = isActive ? "active" : "";
+        const emoji = getEmojiForTag(tag);
+        return `<button class="filter-btn ${activeClass}" onclick="toggleFilter('${tag}')">${emoji} ${tag}</button>`;
+      }).join("");
+    }
+
+    // 3. Wird aufgerufen, wenn man auf einen Filter klickt
+    window.toggleFilter = function(tag) {
+      if (selectedTags.includes(tag)) {
+        selectedTags = selectedTags.filter(t => t !== tag); // Entfernen
+      } else {
+        selectedTags.push(tag); // Hinzufügen
+      }
+      renderFilters(); // Buttons neu zeichnen (wegen der Farbe)
+      renderDatabase(); // Datenbank neu filtern
+    };
+
+    // 4. Zeichne die Datenbank-Kacheln
+    function renderDatabase() {
+      const container = document.getElementById("databaseContainer");
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+
+      let filteredRecipes = recipes;
+
+      // A) Nach Suchbegriff filtern
+      if (searchQuery) {
+        filteredRecipes = filteredRecipes.filter(r => {
+          const textToSearch = (r.title + " " + r.tags.join(" ") + " " + r.ingredients.join(" ")).toLowerCase();
+          return textToSearch.includes(searchQuery);
+        });
+      }
+
+      // B) Nach angeklickten Tags filtern (Zeigt nur Rezepte, die ALLE gewählten Tags haben)
+      if (selectedTags.length > 0) {
+        filteredRecipes = filteredRecipes.filter(r => {
+          // r.tags muss jeden Tag enthalten, der in selectedTags steht
+          return selectedTags.every(selectedTag => r.tags.includes(selectedTag));
+        });
+      }
+
+      // Wenn nichts gefunden wurde
+      if (filteredRecipes.length === 0) {
+        container.innerHTML = `<div class="empty">Keine Rezepte für diese Auswahl gefunden.</div>`;
         return;
       }
 
-      weekKeys.forEach(key => {
-        const recipeIds = archive[key];
-        const [year, week] = key.split("-");
-        
-        let recipeList = recipeIds.map(id => recipes.find(r => r && r.id === id)).filter(Boolean);
-        
-        if (searchQuery) {
-          recipeList = recipeList.filter(r => {
-            const textToSearch = (r.title + " " + r.tags.join(" ") + " " + r.ingredients.join(" ")).toLowerCase();
-            return textToSearch.includes(searchQuery);
-          });
-        }
+      // Kacheln generieren
+      container.innerHTML = filteredRecipes.map((r, index) => {
+        // Die unerwünschten Tags auch aus der Kachel-Ansicht filtern
+        const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
 
-        if (recipeList.length === 0) return;
-
-        const weekSection = document.createElement("section");
-        weekSection.className = "week-block";
-        weekSection.innerHTML = `
-          <div class="week-header">
-            <strong>📅 KW ${Number(week)}/${year}</strong>
-          </div>
-          <div class="recipes-grid"></div> 
-        `;
-
-        const gridContainer = weekSection.querySelector(".recipes-grid");
-
-        recipeList.forEach((r, index) => {
-          const card = document.createElement("div");
-          card.className = "recipe-card";
-          card.style.animationDelay = `${index * 0.1}s`; 
-
-          card.innerHTML = `
+        return `
+          <div class="recipe-card" style="animation-delay: ${index * 0.05}s">
             <div class="recipe-body">
               <h2 class="recipe-title">${r.title}</h2>
               <div class="tag-row">
-                ${r.tags.filter(t => !["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Asiatisch inspiriert"].includes(t)).map(t => renderTag(t)).join("")}
+                ${visibleTags.map(t => renderTagSpan(t)).join("")}
               </div>
               <div class="divider"></div>
               
@@ -243,20 +246,19 @@
                 </div>
               </div>
             </div>
-          `;
-          gridContainer.appendChild(card);
-        });
-
-        container.appendChild(weekSection);
-      });
-
-      if (container.innerHTML === "") {
-        container.innerHTML = `<div class="empty">Keine Rezepte zur Suche "${searchQuery}" gefunden.</div>`;
-      }
+          </div>
+        `;
+      }).join("");
     }
 
-    document.getElementById("searchInput").addEventListener("input", renderArchive);
-    document.addEventListener("DOMContentLoaded", renderArchive);
+    // Event-Listener für die Textsuche
+    document.getElementById("searchInput").addEventListener("input", renderDatabase);
+    
+    // Start der App
+    document.addEventListener("DOMContentLoaded", () => {
+      renderFilters();
+      renderDatabase();
+    });
   </script>
 </body>
 </html>
