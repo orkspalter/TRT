@@ -280,22 +280,21 @@ function getEmojiForTag(tagText) {
       if (t.includes("mediterran")) return "💃";
       if (t.includes("salat")) return "🥬";
       if (t.includes("sattmacher")) return "🫃";
-      if (t.includes("klassiker")) return "👵"; // Oma-Klassiker!
+      if (t.includes("klassiker")) return "👵"; 
       if (t.includes("curry")) return "🔥";
       if (t.includes("bowl")) return "🥣";
       if (t.includes("herzhaft")) return "🧂";
       if (t.includes("resteverwertung")) return "♻️";
       
-      // Standard-Symbol für alles andere
       return "🍴";
     }
 
-    function getColorClassForTag(tagText) {
-      
-      // ===== DIESE FUNKTION HAT GEFEHLT =====
+    // ===== DIESE FUNKTION MUSS EIGENSTÄNDIG STEHEN =====
     function renderTag(tagText) {
       return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
     }
+
+    function getColorClassForTag(tagText) {
       const t = tagText.toLowerCase();
       
       // GRÜN (Gesund, Gemüse, Nachhaltig)
@@ -310,7 +309,7 @@ function getEmojiForTag(tagText) {
       // BLAU (Leichtes, Flüssiges, Maritimes)
       if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht") || t.includes("bowl")) return "tag-blue";
       
-      // VIOLETT (Dein App-Standard für z.B. "Saisonal" oder "Gesund")
+      // VIOLETT (Standard)
       return "tag-purple";
     }
 
