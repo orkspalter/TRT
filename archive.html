@@ -124,30 +124,42 @@
     .divider{height:1px;background:var(--border);margin:20px 0;}
     .empty{padding:24px;border-radius:12px;border:2px dashed var(--border);color:var(--muted);background:#fafafa;text-align:center;font-size:1.1rem; grid-column: 1 / -1;}
  
-    /* Paginierung (Blätterfunktion) */
+  /* Paginierung (Nummern) */
     .pagination-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 16px;
+      flex-wrap: wrap; /* Wichtig fürs Handy, falls die Zahlenreihe länger wird */
+      gap: 8px;
       margin-top: 32px;
       padding-top: 24px;
       border-top: 2px solid var(--border);
     }
-    .page-btn {
-      background: #f3ecfb;
-      border: 1px solid #e2d3f0;
+    .page-num {
+      background: #fff;
+      border: 1.5px solid var(--primary-dark);
       color: var(--primary-dark);
-      padding: 10px 20px;
-      border-radius: 999px;
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      border-radius: 8px;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-family: 'Nunito', sans-serif;
     }
-    .page-btn:hover { background: var(--primary); color: #fff; }
-    .page-info { font-weight: 600; color: var(--muted); }
+    .page-num:hover {
+      background: #f3ecfb; /* Dein helles Violett beim Drüberfahren */
+    }
+    .page-num.active {
+      background: var(--primary-dark);
+      color: #fff;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -456,29 +468,23 @@
         `;
       }).join("");
 
-      // ====== NEU: BUTTONS UNTEN ZEICHNEN ======
-      renderPaginationButtons(totalPages);
-    }
-
-    // ====== NEU: FUNKTIONEN FÜR DIE BUTTONS ======
+      // 5. Nummern-Buttons generieren
     function renderPaginationButtons(totalPages) {
       const paginationContainer = document.getElementById("paginationContainer");
-      if (!paginationContainer) return; // Verhindert Fehler, falls das HTML fehlt
+      if (!paginationContainer) return; 
       
       if (totalPages <= 1) {
-        paginationContainer.innerHTML = ""; // Keine Buttons nötig
+        paginationContainer.innerHTML = ""; // Bei nur einer Seite gar nichts anzeigen
         return;
       }
 
       let html = "";
-      if (currentPage > 1) {
-        html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">⬅️ Zurück</button>`;
-      }
       
-      html += `<span class="page-info">Seite ${currentPage} von ${totalPages}</span>`;
-      
-      if (currentPage < totalPages) {
-        html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Weiter ➡️</button>`;
+      // Eine Schleife, die von 1 bis zur maximalen Seitenzahl hochzählt
+      for (let i = 1; i <= totalPages; i++) {
+        // Die aktuelle Seite bekommt die Klasse "active", damit sie farbig ausgefüllt ist
+        const activeClass = (i === currentPage) ? "active" : "";
+        html += `<button class="page-num ${activeClass}" onclick="changePage(${i})">${i}</button>`;
       }
 
       paginationContainer.innerHTML = html;
