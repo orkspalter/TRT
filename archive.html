@@ -277,6 +277,7 @@
 
     function getEmojiForTag(tagText) {
       const t = tagText.toLowerCase();
+      
       if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) return "🌱";
       if (t.includes("schnell") || t.includes("einfach")) return "⏱️";
       if (t.includes("pasta") || t.includes("nudel")) return "🍝";
@@ -289,21 +290,33 @@
       if (t.includes("mediterran")) return "💃";
       if (t.includes("salat")) return "🥬";
       if (t.includes("sattmacher")) return "🫃";
-      if (t.includes("Klassiker")) return "👵";
-      if (t.includes("Curry")) return "🔥";
-      if (t.includes("Bowl")) return "🥣";
-      if (t.includes("Herzhaft")) return "🧂";
-      if (t.includes("Resteverwertung")) return "♻️";
+      if (t.includes("klassiker")) return "👵"; // Oma-Klassiker!
+      if (t.includes("curry")) return "🔥";
+      if (t.includes("bowl")) return "🥣";
+      if (t.includes("herzhaft")) return "🧂";
+      if (t.includes("resteverwertung")) return "♻️";
+      
+      // Standard-Symbol für alles andere
       return "🍴";
     }
 
     function getColorClassForTag(tagText) {
       const t = tagText.toLowerCase();
-      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat")) return "tag-green";
-      if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher")) return "tag-yellow";
-      if (t.includes("fleisch") || t.includes("mediterran") || t.includes("ofen")) return "tag-red";
-      if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht")) return "tag-blue";
-      return "tag-default";
+      
+      // GRÜN (Gesund, Gemüse, Nachhaltig)
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat") || t.includes("resteverwertung")) return "tag-green";
+      
+      // GELB (Nudeln, Sattmacher, Tradition)
+      if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher") || t.includes("klassiker")) return "tag-yellow";
+      
+      // ROT (Würzig, Deftig, Heiß)
+      if (t.includes("fleisch") || t.includes("mediterran") || t.includes("curry") || t.includes("herzhaft")) return "tag-red";
+      
+      // BLAU (Leichtes, Flüssiges, Maritimes)
+      if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht") || t.includes("bowl")) return "tag-blue";
+      
+      // VIOLETT (Dein App-Standard für z.B. "Saisonal" oder "Gesund")
+      return "tag-purple";
     }
 
     function renderTagSpan(tagText) {
