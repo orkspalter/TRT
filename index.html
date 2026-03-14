@@ -291,6 +291,11 @@ function getEmojiForTag(tagText) {
     }
 
     function getColorClassForTag(tagText) {
+      
+      // ===== DIESE FUNKTION HAT GEFEHLT =====
+    function renderTag(tagText) {
+      return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
+    }
       const t = tagText.toLowerCase();
       
       // GRÜN (Gesund, Gemüse, Nachhaltig)
