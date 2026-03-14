@@ -123,6 +123,31 @@
 
     .divider{height:1px;background:var(--border);margin:20px 0;}
     .empty{padding:24px;border-radius:12px;border:2px dashed var(--border);color:var(--muted);background:#fafafa;text-align:center;font-size:1.1rem; grid-column: 1 / -1;}
+ 
+    /* Paginierung (Blätterfunktion) */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 2px solid var(--border);
+    }
+    .page-btn {
+      background: #f3ecfb;
+      border: 1px solid #e2d3f0;
+      color: var(--primary-dark);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .page-btn:hover { background: var(--primary); color: #fff; }
+    .page-info { font-weight: 600; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -141,6 +166,8 @@
       
       <div id="filterContainer" class="filter-container"></div>
       <div id="databaseContainer" class="recipes-grid"></div>
+      
+      <div id="paginationContainer" class="pagination-container"></div>
     </main>
   </div>
 
@@ -354,6 +381,9 @@
       renderFilters(); 
       renderDatabase(); 
     };
+// ====== NEUE VARIABLEN FÜR DIE SEITEN ======
+    let currentPage = 1;
+    const RECIPES_PER_PAGE = 10;
 
     function renderDatabase() {
       const container = document.getElementById("databaseContainer");
@@ -376,10 +406,21 @@
 
       if (filteredRecipes.length === 0) {
         container.innerHTML = `<div class="empty">Keine Rezepte für diese Auswahl gefunden.</div>`;
+        const pagContainer = document.getElementById("paginationContainer");
+        if(pagContainer) pagContainer.innerHTML = ""; // Buttons verstecken
         return;
       }
 
-      container.innerHTML = filteredRecipes.map((r, index) => {
+      // ====== NEU: REZEPTE ZERSCHNEIDEN (PAGINIERUNG) ======
+      const totalPages = Math.ceil(filteredRecipes.length / RECIPES_PER_PAGE);
+      if (currentPage > totalPages) currentPage = totalPages; // Sicherheits-Check
+
+      const startIndex = (currentPage - 1) * RECIPES_PER_PAGE;
+      const endIndex = startIndex + RECIPES_PER_PAGE;
+      const recipesToShow = filteredRecipes.slice(startIndex, endIndex);
+
+      // ====== ACHTUNG: Hier steht jetzt "recipesToShow.map" ======
+      container.innerHTML = recipesToShow.map((r, index) => {
         const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
 
         // Das SVG-Icon der lila Speicherdiskette
@@ -415,9 +456,47 @@
           </div>
         `;
       }).join("");
+
+      // ====== NEU: BUTTONS UNTEN ZEICHNEN ======
+      renderPaginationButtons(totalPages);
     }
 
-    document.getElementById("searchInput").addEventListener("input", renderDatabase);
+    // ====== NEU: FUNKTIONEN FÜR DIE BUTTONS ======
+    function renderPaginationButtons(totalPages) {
+      const paginationContainer = document.getElementById("paginationContainer");
+      if (!paginationContainer) return; // Verhindert Fehler, falls das HTML fehlt
+      
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = ""; // Keine Buttons nötig
+        return;
+      }
+
+      let html = "";
+      if (currentPage > 1) {
+        html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">⬅️ Zurück</button>`;
+      }
+      
+      html += `<span class="page-info">Seite ${currentPage} von ${totalPages}</span>`;
+      
+      if (currentPage < totalPages) {
+        html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Weiter ➡️</button>`;
+      }
+
+      paginationContainer.innerHTML = html;
+    }
+
+    window.changePage = function(newPage) {
+      currentPage = newPage;
+      renderDatabase();
+      // Sanft wieder hoch zum Suchfeld scrollen
+      document.querySelector(".search-input").scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // ====== EVENT-LISTENER ======
+    document.getElementById("searchInput").addEventListener("input", () => {
+      currentPage = 1; // Wichtig: Beim Suchen wieder auf Seite 1 springen!
+      renderDatabase();
+    });
     
     document.addEventListener("DOMContentLoaded", () => {
       renderFilters();
@@ -426,4 +505,3 @@
   </script>
 </body>
 </html>
-
