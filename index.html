@@ -130,21 +130,7 @@
       <p><a href="archive.html">📚 Zur Rezeptdatenbank</a></p>
     </header>
 
-    <main class="card">
-      <div class="topbar">
-        <div class="meta-row">
-          <div class="meta-pill">
-            <span>📅 KW</span><span id="weekNumber">–</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="muted">
-        Es werden zufällig drei Rezepte für deine aktuelle Kalenderwoche ausgewählt und automatisch im Archiv gespeichert.
-      </div>
-
-      <div class="divider"></div>
-
+<main class="card">
       <div id="currentRecipes"></div>
     </main>
   </div>
@@ -344,10 +330,6 @@ function getEmojiForTag(tagText) {
       localStorage.setItem(key, JSON.stringify(value));
     }
 
-    function setWeekHeader(year, week) {
-      document.getElementById("weekNumber").textContent = `${week}/${year}`;
-    }
-
     function pickRandomThreeRecipes() {
       const shuffled = [...recipes].sort(() => 0.5 - Math.random());
       return [shuffled[0].id, shuffled[1].id, shuffled[2].id];
@@ -429,7 +411,6 @@ function getEmojiForTag(tagText) {
 
     function showWeek(weekKey) {
       const [yearStr, weekStr] = weekKey.split("-");
-      setWeekHeader(Number(yearStr), Number(weekStr));
 
       let selected = loadWeekSelection(weekKey);
       if (!selected) {
