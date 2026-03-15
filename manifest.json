@@ -1,7 +1,7 @@
 {
-  "name": "Timm's Rezepte der Woche",
-  "short_name": "Timm Rezepte",
-  "description": "Kochbuch und fester Halbjahres-Plan.",
+  "name": "Timm's Tipp des Tages",
+  "short_name": "TTT",
+  "description": "Rezeptegenerator",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
