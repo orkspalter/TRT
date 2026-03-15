@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <title>Impressum - Timm's Tipps des Tages</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <style>
     body {
       margin: 0;
       padding: 0;
-      /* Hellviolett wie in deinem Logo-Hintergrund */
-      background-color: #e4ccff; 
+      background-color: #e6ccff; 
       font-family: 'Nunito', system-ui, sans-serif;
       overflow: hidden; 
+      width: 100vw;
+      height: 100vh;
     }
 
-    /* Container für den Zurück-Button */
     .back-btn-container {
       position: absolute;
       top: 24px;
@@ -23,14 +22,12 @@
       z-index: 100;
     }
     
-    /* Zurück-Button im Stil der Schlagwort-Buttons aus dem Archiv */
     .back-btn {
       padding: 8px 16px;
       border-radius: 999px;
       border: 1px solid #e6e6e6;
       background: #fff;
       cursor: pointer;
-      font-family: 'Nunito', sans-serif;
       font-weight: 700;
       font-size: 0.95rem;
       color: #666;
@@ -48,19 +45,14 @@
       transform: translateY(-1px);
     }
 
-    /* Die Eigenschaften für unsere Logo-Ameisen */
     .ant-logo {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 40px; 
       height: 40px;
       z-index: 10;
       pointer-events: none;
       will-change: transform; 
-      margin-top: -20px; 
-      margin-left: -20px;
-      border-radius: 8px;
+      display: none; /* Wird per JS eingeblendet */
     }
   </style>
 </head>
@@ -71,40 +63,43 @@
   </div>
 
   <script>
-    // --- KONFIGURATION ---
     const NUM_ANTS = 120; 
     const LOGO_SIZE = 40; 
-    const IMG_SRC = './mask-icon-192.jpg'; 
+    const IMG_SRC = 'mask-icon-192.png'; // Jetzt korrekt auf .png geändert
 
     const ants = [];
+    const testImg = new Image();
+    testImg.src = IMG_SRC;
 
-    // 1. Logos erschaffen
-    for (let i = 0; i < NUM_ANTS; i++) {
-      const img = document.createElement('img');
-      img.src = IMG_SRC;
-      img.className = 'ant-logo';
-      // Kleiner lila Ersatz, falls das Bild nicht gefunden wird
-      img.onerror = function() { this.style.background = 'rgba(107, 63, 160, 0.3)'; };
-      document.body.appendChild(img);
+    testImg.onload = function() {
+      for (let i = 0; i < NUM_ANTS; i++) {
+        const img = document.createElement('img');
+        img.src = IMG_SRC;
+        img.className = 'ant-logo';
+        img.style.display = 'block';
+        document.body.appendChild(img);
 
-      ants.push({
-        element: img,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 5
-      });
-    }
+        ants.push({
+          element: img,
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5
+        });
+      }
+      requestAnimationFrame(animate);
+    };
 
-    // 2. Die Animations-Schleife
+    testImg.onerror = function() {
+      console.error("Logo konnte nicht gefunden werden. Prüfe, ob 'mask-icon-192.png' im Hauptverzeichnis liegt.");
+    };
+
     function animate() {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
       for (let i = 0; i < NUM_ANTS; i++) {
         let a = ants[i];
-
-        // Ameisen-Zittern
         a.vx += (Math.random() - 0.5) * 0.8;
         a.vy += (Math.random() - 0.5) * 0.8;
 
@@ -115,52 +110,35 @@
         a.x += a.vx;
         a.y += a.vy;
 
-        // Abprallen an den Rändern
         if (a.x < 0) { a.x = 0; a.vx *= -1; }
         if (a.x > width) { a.x = width; a.vx *= -1; }
         if (a.y < 0) { a.y = 0; a.vy *= -1; }
         if (a.y > height) { a.y = height; a.vy *= -1; }
       }
 
-      // 3. Kollisionen berechnen
       for (let i = 0; i < NUM_ANTS; i++) {
         for (let j = i + 1; j < NUM_ANTS; j++) {
-          let a = ants[i];
-          let b = ants[j];
-          
-          let dx = a.x - b.x;
-          let dy = a.y - b.y;
+          let a = ants[i]; let b = ants[j];
+          let dx = a.x - b.x; let dy = a.y - b.y;
           let distance = Math.sqrt(dx * dx + dy * dy);
-
           if (distance < LOGO_SIZE) {
-            let tempVx = a.vx;
-            let tempVy = a.vy;
-            a.vx = b.vx;
-            a.vy = b.vy;
-            b.vx = tempVx;
-            b.vy = tempVy;
-
+            let tempVx = a.vx; let tempVy = a.vy;
+            a.vx = b.vx; a.vy = b.vy;
+            b.vx = tempVx; b.vy = tempVy;
             let overlap = LOGO_SIZE - distance;
-            a.x += (dx / distance) * (overlap / 2);
-            a.y += (dy / distance) * (overlap / 2);
-            b.x -= (dx / distance) * (overlap / 2);
-            b.y -= (dy / distance) * (overlap / 2);
+            a.x += (dx / distance) * (overlap / 2); a.y += (dy / distance) * (overlap / 2);
+            b.x -= (dx / distance) * (overlap / 2); b.y -= (dy / distance) * (overlap / 2);
           }
         }
       }
 
-      // 4. Positionen updaten
       for (let i = 0; i < NUM_ANTS; i++) {
         let a = ants[i];
         let angle = Math.atan2(a.vy, a.vx) * 180 / Math.PI; 
-        a.element.style.transform = `translate(${a.x}px, ${a.y}px) rotate(${angle + 90}deg)`;
+        a.element.style.transform = `translate(${a.x - 20}px, ${a.y - 20}px) rotate(${angle + 90}deg)`;
       }
-
       requestAnimationFrame(animate);
     }
-
-    // Start
-    animate();
   </script>
 </body>
 </html>
