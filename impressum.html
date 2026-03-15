@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Timm's Tipps des Tages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      /* Das Hellviolett aus dem Hintergrund deines Logos */
+      background-color: #e4ccff; 
+      font-family: 'Nunito', system-ui, sans-serif;
+      overflow: hidden; /* Verhindert Scrollbalken durch herumkrabbelnde Logos */
+    }
+
+    /* Container für den Zurück-Button */
+    .back-btn-container {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      z-index: 100; /* Sehr wichtig: Muss ÜBER den Logos liegen, damit er klickbar bleibt! */
+    }
+    
+    /* Ein bisschen Styling für den Button, damit er gut aussieht */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #6b3fa0;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(107, 63, 160, 0.3);
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .back-btn:hover {
+      background-color: #4e2a7a;
+      transform: translateY(-2px);
+    }
+
+    /* Die Eigenschaften für unsere Logo-Ameisen */
+    .ant-logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px; /* Größe der Logos */
+      height: 40px;
+      z-index: 10; /* Liegen UNTER dem Zurück-Button */
+      pointer-events: none; /* Man kann nicht versehentlich draufklicken */
+      will-change: transform; /* Hardware-Beschleunigung für flüssigere Animation */
+      margin-top: -20px; /* Verschiebt den Mittelpunkt für korrekte Rotation */
+      margin-left: -20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back-btn-container">
+    <a href="index.html" class="back-btn">⬅️ Zurück</a>
+  </div>
+
+  <script>
+    // --- KONFIGURATION ---
+    const NUM_ANTS = 120; // Anzahl der Logos
+    const LOGO_SIZE = 40; // Muss mit CSS übereinstimmen
+    const IMG_SRC = 'mask-icon-192.jpg'; // Dein Logo-Dateiname
+
+    const ants = [];
+
+    // 1. Logos erschaffen und auf dem Bildschirm verteilen
+    for (let i = 0; i < NUM_ANTS; i++) {
+      const img = document.createElement('img');
+      img.src = IMG_SRC;
+      img.className = 'ant-logo';
+      document.body.appendChild(img);
+
+      ants.push({
+        element: img,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 5, // Start-Geschwindigkeit X
+        vy: (Math.random() - 0.5) * 5  // Start-Geschwindigkeit Y
+      });
+    }
+
+    // 2. Die ständige Animations-Schleife
+    function animate() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Bewegung und Zittern (Ameisen-Verhalten)
+      for (let i = 0; i < NUM_ANTS; i++) {
+        let a = ants[i];
+
+        // Leichtes Zufalls-Zittern bei jedem Frame
+        a.vx += (Math.random() - 0.5) * 0.8;
+        a.vy += (Math.random() - 0.5) * 0.8;
+
+        // Geschwindigkeits-Begrenzung (nicht zu lahm, nicht zu rasant)
