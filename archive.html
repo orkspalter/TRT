@@ -326,7 +326,7 @@
       const showMoreButton = uniqueTags.length > limit;
       const tagsToRender = isExpanded ? uniqueTags : uniqueTags.slice(0, limit);
 
-      // 1. NEU: Der Favoriten-Button kommt immer als erstes!
+      // 1. NEU: Der Favoriten-Button kommt immer als erstes!!
       const isFavActive = selectedTags.includes("Favoriten");
       let html = `<button class="filter-btn ${isFavActive ? 'active' : ''}" onclick="toggleFilter('Favoriten')">💜 Favoriten</button>`;
 
