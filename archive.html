@@ -54,7 +54,13 @@
     .recipe-body{padding:24px; flex-grow: 1;}
     .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
     
-    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark); line-height:1.2;}
+    /* Layout für Titel und Favoriten-Herz */
+    .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; }
+    .fav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
+    .fav-btn:hover { transform: scale(1.15); }
+    .fav-btn svg { fill: #ccc; transition: fill 0.3s; }
+    .fav-btn.active svg { fill: var(--primary-dark); }
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .section-title { font-size: 1.2rem; margin: 0; color: #333; }
     
@@ -204,7 +210,25 @@
     let isExpanded = false;
     let currentPage = 1;
     const RECIPES_PER_PAGE = 10;
+  const STORAGE_FAVORITES = "timm-favorites-v1";
 
+    function getFavorites() {
+      const raw = localStorage.getItem(STORAGE_FAVORITES);
+      if (!raw) return [];
+      try { return JSON.parse(raw); } catch { return []; }
+    }
+
+    window.toggleFavorite = function(recipeId, btnElement) {
+      let favs = getFavorites();
+      if (favs.includes(recipeId)) {
+        favs = favs.filter(id => id !== recipeId);
+        btnElement.classList.remove('active');
+      } else {
+        favs.push(recipeId);
+        btnElement.classList.add('active');
+      }
+      localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(favs));
+    };
     // Kopierfunktion
     window.copyRecipe = function(recipeId, btnElement) {
       const r = recipes.find(x => x.id === recipeId);
@@ -273,7 +297,12 @@
       const showMoreButton = uniqueTags.length > limit;
       const tagsToRender = isExpanded ? uniqueTags : uniqueTags.slice(0, limit);
 
-      let html = tagsToRender.map(tag => {
+      // 1. NEU: Der Favoriten-Button kommt immer als erstes!
+      const isFavActive = selectedTags.includes("Favoriten");
+      let html = `<button class="filter-btn ${isFavActive ? 'active' : ''}" onclick="toggleFilter('Favoriten')">💜 Favoriten</button>`;
+
+      // 2. Danach werden die normalen Tags gerendert
+      html += tagsToRender.map(tag => {
         const isActive = selectedTags.includes(tag);
         const activeClass = isActive ? "active" : "";
         const emoji = getEmojiForTag(tag);
@@ -307,15 +336,32 @@
       let filteredRecipes = recipes;
 
       if (searchQuery) {
+        const favs = getFavorites();
         filteredRecipes = filteredRecipes.filter(r => {
+          // Prüfen, ob nach Favoriten gesucht wird
+          if (searchQuery === "❤️" || searchQuery.includes("favorit")) {
+            return favs.includes(r.id);
+          }
+          // Ansonsten normale Textsuche
           const textToSearch = (r.title + " " + r.tags.join(" ") + " " + r.ingredients.join(" ")).toLowerCase();
           return textToSearch.includes(searchQuery);
         });
       }
 
       if (selectedTags.length > 0) {
+        // Favoriten laden und prüfen, ob der Favoriten-Filter angeklickt wurde
+        const favs = getFavorites();
+        const requireFav = selectedTags.includes("Favoriten");
+        
+        // Alle anderen ausgewählten Tags (ohne "Favoriten")
+        const normalTags = selectedTags.filter(t => t !== "Favoriten");
+
         filteredRecipes = filteredRecipes.filter(r => {
-          return selectedTags.every(selectedTag => r.tags.includes(selectedTag));
+          // 1. Check: Wenn der Favoriten-Filter aktiv ist, MUSS das Rezept ein Herz haben
+          if (requireFav && !favs.includes(r.id)) return false;
+          
+          // 2. Check: Das Rezept muss außerdem alle anderen ausgewählten Tags besitzen
+          return normalTags.every(selectedTag => r.tags.includes(selectedTag));
         });
       }
 
@@ -333,11 +379,22 @@
 
       container.innerHTML = recipesToShow.map((r, index) => {
         const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
+        
+        // Neu: Favoriten-Status abrufen & Herz-Icon
+        const favs = getFavorites();
+        const isFav = favs.includes(r.id);
+        const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
         const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
+        
         return `
           <div class="recipe-card" style="animation-delay: ${index * 0.05}s">
             <div class="recipe-body">
-              <h2 class="recipe-title">${r.title}</h2>
+              <div class="title-row">
+                <h2 class="recipe-title">${r.title}</h2>
+                <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
+                  ${heartSvg}
+                </button>
+              </div>
               <div class="tag-row">${visibleTags.map(t => `<span class="tag ${getColorClassForTag(t)}">${getEmojiForTag(t)} ${t}</span>`).join("")}</div>
               <div class="divider"></div>
               <div class="section-header">
