@@ -11,11 +11,36 @@
   <link rel="apple-touch-icon" href="icon-192.png?v=2">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
   <style>
+    /* LOKALE SCHRIFTARTEN */
+    @font-face {
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('./fonts/nunito-regular.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('./fonts/nunito-600.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('./fonts/nunito-700.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('./fonts/playfair-700.woff2') format('woff2');
+    }
     :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:16px;--border:#e6e6e6;}
     *{box-sizing:border-box;margin:0;padding:0;}
     
@@ -160,6 +185,10 @@
 <main class="card">
       <div id="currentRecipes"></div>
     </main>
+    <footer style="text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.9rem;">
+      <a href="impressum.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Impressum</a>
+      <a href="datenschutz.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Datenschutz</a>
+    </footer>
   </div>
 
   <script>
@@ -462,10 +491,58 @@ function getEmojiForTag(tagText) {
         newRecipe = recipes[randomIdx];
       } while (currentSelection.includes(newRecipe.id));
 
+      // 1. Im Speicher aktualisieren
       currentSelection[indexToReplace] = newRecipe.id;
-      
       saveWeekSelection(stored.weekKey, currentSelection);
-      showWeek(stored.weekKey);
+      
+      // 2. Nur das HTML von GENAU DIESER Karte austauschen
+      const container = document.getElementById("currentRecipes");
+      const r = newRecipe;
+      
+      const favs = getFavorites();
+      const isFav = favs.includes(r.id);
+      const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+      const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
+      const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
+
+      // Wir bauen eine komplett neue Einzel-Karte...
+      const newCard = document.createElement("div");
+      newCard.className = "recipe-card";
+      newCard.style.animationDelay = "0s"; // Wichtig: 0s, damit sie beim Klicken sofort animiert wird
+
+      newCard.innerHTML = `
+        <div class="recipe-body">
+          <div class="title-row">
+            <h2 class="recipe-title">${r.title}</h2>
+            <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
+              ${heartSvg}
+            </button>
+          </div>
+          <div class="tag-row">
+            ${visibleTags.map(t => renderTag(t)).join("")}
+          </div>
+          <div class="divider"></div>
+          <div class="recipe-content">
+            <div class="ingredients-col">
+              <div class="section-header">
+                <h3 class="section-title">🛒 Zutaten</h3>
+                <button class="copy-btn" onclick="copyRecipe('${r.id}', this)" title="Zutaten und Rezept kopieren">
+                  ${floppyIcon}
+                </button>
+              </div>
+              <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+            </div>
+            <div class="steps-col">
+              <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+              <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+            </div>
+          </div>
+        </div>
+        <button class="btn-swap" onclick="swapSingleRecipe(${indexToReplace})">🔄 Nur dieses Rezept austauschen</button>
+      `;
+
+      // ... und ersetzen im Container punktgenau die alte Karte durch die neue.
+      container.replaceChild(newCard, container.children[indexToReplace]);
     };
 
     function showWeek(weekKey) {
