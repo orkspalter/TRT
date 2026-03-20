@@ -6,95 +6,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#6b3fa0">
 
-  <!-- PWA & Logos (mit Cache-Buster v=2 für Updates) -->
-  <link rel="manifest" href="manifest.json?v=2">
-  <link rel="apple-touch-icon" href="icon-192.png?v=2">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
-
   <style>
     /* LOKALE SCHRIFTARTEN */
     @font-face {
-      font-family: 'Nunito';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/nunito-regular.woff2') format('woff2');
+      font-family: 'Nunito'; font-style: normal; font-weight: 400; font-display: swap;
+      src: url('./fonts/nunito-regular.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Nunito';
-      font-style: normal;
-      font-weight: 600;
-      font-display: swap;
-      src: url('fonts/nunito-600.woff2') format('woff2');
+      font-family: 'Nunito'; font-style: normal; font-weight: 600; font-display: swap;
+      src: url('./fonts/nunito-600.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Nunito';
-      font-style: normal;
-      font-weight: 700;
-      font-display: swap;
-      src: url('fonts/nunito-700.woff2') format('woff2');
+      font-family: 'Nunito'; font-style: normal; font-weight: 700; font-display: swap;
+      src: url('./fonts/nunito-700.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Playfair Display';
-      font-style: normal;
-      font-weight: 700;
-      font-display: swap;
-      src: url('fonts/playfair-700.woff2') format('woff2');
+      font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap;
+      src: url('./fonts/playfair-700.woff2') format('woff2');
     }
-    :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:16px;--border:#e6e6e6;}
-    *{box-sizing:border-box;margin:0;padding:0;}
-    
-    body{font-family:'Nunito',system-ui,sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
-    
-    .app{width:100%;max-width:1400px;}
-    header{text-align:center;margin-bottom:24px;}
-    header h1, .recipe-title, .section-title {font-family:'Playfair Display',serif;}
-    header h1{font-size:2.2rem;margin-bottom:6px;color:var(--primary-dark);}
-    header p{color:var(--muted);font-size:1rem;}
-    header a{color:var(--primary-dark);text-decoration:none;font-weight:700;}
-    header a:hover{text-decoration:underline;}
 
-    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,0.06);padding:24px;}
-    .topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;}
-    .meta-row{display:flex;flex-wrap:wrap;gap:8px;font-size:1rem;color:var(--muted);}
-    .meta-pill{background:#efe6fb;border-radius:999px;padding:6px 14px;display:inline-flex;align-items:center;gap:6px;}
-    .meta-pill span{font-weight:700;color:var(--primary-dark);}
+    :root {
+      --primary: #6b3fa0;
+      --primary-dark: #4e2a7a;
+      --card-bg: #fff;
+      --text: #222;
+      --muted: #666;
+      --radius: 16px;
+      --border: #e6e6e6;
+    }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', system-ui, sans-serif;
+      background: radial-gradient(circle at top, #f3ecfb, #f6f6f6);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      line-height: 1.6;
     }
+
+    /* --- FARBIGE SCROLLBAR --- */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+    * { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
+
+    .app { max-width: 800px; margin: 0 auto; }
     
-    .recipe-card{
-      border:1px solid var(--border);
-      border-radius:16px;
-      overflow:hidden;
-      background:#fff;
-      box-shadow:0 4px 12px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeIn 0.4s ease-out backwards;
-      display: flex; 
-      flex-direction: column;
-    }
-    .recipe-body{padding:24px; flex-grow: 1;}
-    .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { font-family: 'Playfair Display', serif; color: var(--primary-dark); font-size: 2.2rem; margin-bottom: 8px;}
     
-    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark); line-height:1.2;}
-    
-    /* Layout für Titel und Favoriten-Herz */
-    .title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
+    .nav-links { display: flex; justify-content: center; gap: 15px; }
+    .nav-links a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .nav-links a:hover { text-decoration: underline; }
+
+    .recipe-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      animation: fadeIn 0.4s ease-out;
     }
-    .recipe-title {
-      font-size: 1.6rem;
-      color: var(--primary-dark);
-      line-height: 1.2;
-      margin: 0; 
+
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(10px); } 
+      to { opacity: 1; transform: translateY(0); } 
     }
+
+    .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .recipe-title { font-family: 'Playfair Display', serif; color: var(--primary-dark); font-size: 1.5rem; margin: 0; line-height: 1.3; }
+
+    /* --- DAS LEUCHTENDE HERZ --- */
     .fav-btn {
       background: transparent;
       border: none;
@@ -104,422 +90,136 @@
       align-items: center;
       transition: transform 0.2s;
     }
-    
-    .fav-btn:hover { 
-      transform: scale(1.15); 
-      /* Hier gibt es jetzt KEINE Hintergrundfarbe (keinen Kreis) mehr! */
-    }
-    
-    .fav-btn svg { 
-      fill: #ccc; 
-      transition: fill 0.3s, filter 0.3s; 
-    }
-    
-    /* Hier passiert die Magie: Das Herz wird lila und bekommt einen hellvioletten Leuchtschein */
-    .fav-btn:hover svg { 
-      fill: var(--primary); 
-      filter: drop-shadow(0 0 6px #e4ccff); 
-    }
-    
-    .fav-btn.active svg { 
-      fill: var(--primary-dark); 
-      filter: none; /* Wenn es aktiv ist, leuchtet es nicht mehr, sondern bleibt dunkel-lila */
-    }
+    .fav-btn:hover { transform: scale(1.15); }
+    .fav-btn svg { fill: #ccc; transition: fill 0.3s, filter 0.3s; }
+    .fav-btn:hover svg { fill: var(--primary); filter: drop-shadow(0 0 6px #e4ccff); }
+    .fav-btn.active svg { fill: var(--primary-dark); filter: none; }
 
-    /* Layout für Überschrift mit Kopier-Button */
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .section-title { font-size: 1.2rem; margin: 0; color: #333; }
-    
-    .copy-btn {
-      background: #f3ecfb;
-      border: 1px solid #e2d3f0;
-      border-radius: 8px;
-      padding: 6px 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--primary-dark);
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tag { background: #f3ecfb; color: var(--primary-dark); padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+    .recipe-content { display: grid; gap: 20px; }
+    @media (min-width: 600px) { .recipe-content { grid-template-columns: 1fr 1fr; } }
+
+    .section-title { font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 10px; font-weight: 700; }
+    ul, ol { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+
+    .btn-swap {
+      width: 100%;
+      background: #fff;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: var(--radius);
       font-weight: 700;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 16px;
       transition: all 0.2s;
     }
-    .copy-btn:hover { background: var(--primary); color: #fff; }
-    .copy-btn:hover svg { fill: #fff; }
-    .copy-btn svg { transition: fill 0.2s; }
-    
-    /* Listen Styling */
-    ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; list-style: none; }
-    ul li { margin-bottom: 8px; position: relative; }
-    ul li::before { content: '—  '; color: var(--primary); font-weight: 700; position: absolute; left: -20px; }
+    .btn-swap:hover { border-color: var(--primary); color: var(--primary-dark); background: #fcfcfc; }
 
-    ol.steps { list-style: none; padding-left: 0; counter-reset: step-counter; line-height: 1.6; margin-top: 12px; }
-    ol.steps li { counter-increment: step-counter; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; }
-    ol.steps li::before { content: counter(step-counter); background: var(--primary); color: #fff; font-size: 0.85rem; font-weight: 700; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-    
-    .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
-    .tag{border:1px solid; border-radius:999px; padding:4px 12px; font-size:0.9rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
+    /* --- SKELETON LOADER ANIMATION --- */
+    @keyframes skeleton-loading { 0% { background-color: #efefef; } 100% { background-color: #fcfcfc; } }
+    .skeleton { animation: skeleton-loading 0.8s linear infinite alternate; border-radius: 8px; }
 
-    .tag-purple { background: #f3ecfb; color: var(--primary-dark); border-color: #e2d3f0; }
-    .tag-green { background: #e6f4ea; color: #137333; border-color: #ceead6; }
-    .tag-red { background: #fce8e6; color: #c5221f; border-color: #fad2cf; }
-    .tag-yellow { background: #fef7e0; color: #b06000; border-color: #fbe9a2; }
-    .tag-blue { background: #e8f0fe; color: #1967d2; border-color: #d2e3fc; }
-    .tag-default { background: #f8f9fa; color: #5f6368; border-color: #dadce0; }
-
-    .btn-swap {width:100%;background:#fafafa;border:none;border-top:1px solid var(--border);color:var(--primary);padding:16px;font-size:1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background 0.2s;}
-    .btn-swap:hover {background:#f1ecf8;}
-
-    .muted{color:var(--muted);font-size:1rem; line-height:1.5;}
-    .divider{height:1px;background:var(--border);margin:20px 0;}
-
-    #currentRecipes {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-
-    @media (min-width: 900px) {
-      #currentRecipes {
-        grid-template-columns: repeat(3, 1fr); 
-        align-items: stretch;
-      }
-    }
-  /* --- NEUE UPGRADES --- */
-    
-    /* Farbige Scrollbar */
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
-    * { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
-
-    /* Skeleton-Animation */
-    @keyframes skeleton-loading {
-      0% { background-color: #efefef; }
-      100% { background-color: #fcfcfc; }
-    }
-    .skeleton {
-      animation: skeleton-loading 0.8s linear infinite alternate;
-      border-radius: 8px;
-    }  
   </style>
 </head>
 <body>
   <div class="app">
     <header>
       <h1>Timm's Tipps des Tages</h1>
-      <p><a href="archive.html">📚 Zur Rezeptdatenbank</a></p>
+      <div class="nav-links">
+        <a href="archive.html">📚 Archiv & Favoriten</a>
+      </div>
     </header>
 
-<main class="card">
-      <div id="currentRecipes"></div>
-    </main>
-    <footer style="text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.9rem;">
-      <a href="impressum.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Impressum</a>
-      <a href="datenschutz.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Datenschutz</a>
+    <main id="currentRecipes">
+      </main>
+
+    <footer style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
+      <a href="impressum.html" style="color: var(--muted); text-decoration: none;">Impressum</a> | 
+      <a href="datenschutz.html" style="color: var(--muted); text-decoration: none;">Datenschutz</a>
     </footer>
   </div>
 
+  <script src="rezepte.js"></script>
+
   <script>
+    const STORAGE_SELECTED_WEEK = "tipps_selected_week";
+    const STORAGE_FAVORITES = "tipps_favorites";
+    const IGNORE_TAGS = ["Optional Fleisch", "Optional vegetarisch"];
 
-    // ====== REZEPTE ======
-    const recipes = [
-      {id:"r01",title:"Blech-Gemüse mit Feta & Kräutern",tags:["Vegetarisch"],ingredients:["1 große Süßkartoffel oder 4 Kartoffeln","2 Paprika","2 Zucchini","1 rote Zwiebel","1 Packung Feta","Olivenöl","Salz, Pfeffer","Paprikapulver, Oregano/Thymian","Optional: Zitronensaft"],steps:["Backofen auf 220 °C vorheizen.","Gemüse in mundgerechte Stücke schneiden und auf ein Blech geben.","Mit Olivenöl, Salz, Pfeffer und Kräutern mischen.","Ca. 25 Minuten rösten.","Feta grob darüberbröseln und weitere 8–10 Minuten backen.","Mit etwas Zitronensaft abschmecken und servieren."]},
-      {id:"r02",title:"Spaghetti Aglio e Olio mit Rucola",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["1 Packung Spaghetti","3–4 Knoblauchzehen","1–2 getrocknete Chilis oder Chiliflocken","Olivenöl","1 Handvoll Rucola","Salz","Optional: Parmesan"],steps:["Spaghetti in Salzwasser al dente kochen.","Knoblauch in dünne Scheiben schneiden.","Olivenöl in einer Pfanne erwärmen, Knoblauch und Chili sanft anrösten (nicht dunkel werden lassen).","Etwas Nudelwasser zur Pfanne geben, dann die Spaghetti darin schwenken.","Rucola unterheben, abschmecken und optional mit Parmesan servieren."]},
-      {id:"r03",title:"Gurkensalat mit Dill & Joghurt",tags:["Vegetarisch","Deutsch"],ingredients:["2 Salatgurken","1 Becher Naturjoghurt","1–2 EL Essig","Dill (frisch oder getrocknet)","Salz, Pfeffer","Optional: 1 TL Senf, 1 TL Honig"],steps:["Gurken in dünne Scheiben hobeln.","Joghurt mit Essig, Dill, Salz und Pfeffer verrühren.","Gurken untermischen und 10 Minuten ziehen lassen.","Optional mit Senf/Honig abrunden und servieren."]},
-      {id:"r04",title:"Mediterranes Zitronen-Kräuter-Hähnchen (optional) mit Ofenkartoffeln",tags:["Optional Fleisch","Mediterran"],ingredients:["4 Hähnchenschenkel oder Hähnchenbrust (optional; vegetarisch: Halloumi statt Hähnchen)","6–8 Kartoffeln","1 Zitrone","Olivenöl","Rosmarin/Thymian","Salz, Pfeffer","Optional: Knoblauch"],steps:["Backofen auf 220 °C vorheizen.","Kartoffeln in Spalten schneiden, mit Öl, Salz, Pfeffer und Kräutern mischen und auf ein Blech geben.","Hähnchen (oder Halloumi) mit Zitronensaft, etwas Zitronenabrieb, Öl und Gewürzen marinieren.","Alles zusammen ca. 35–45 Minuten backen (je nach Fleischstück).","Vor dem Servieren mit frischer Zitrone abschmecken."]},
-      {id:"r05",title:"Tomaten-Oliven-Polenta",tags:["Vegetarisch","Mediterran","Sattmacher"],ingredients:["1 Tasse Polenta","4 Tassen Wasser oder Gemüsebrühe","1 Glas/Becher passierte Tomaten","1 Handvoll Oliven","Salz, Pfeffer","Oregano/Basilikum","Optional: Parmesan oder Mozzarella"],steps:["Wasser/Brühe aufkochen, Polenta einrieseln lassen und rühren.","Bei kleiner Hitze 5–10 Minuten quellen lassen (Packung beachten).","Passierte Tomaten und Gewürze unterrühren, Oliven dazugeben.","Optional Käse unterheben und kurz schmelzen lassen.","Mit Kräutern bestreuen und servieren."]},
-      {id:"r06",title:"Lachs aus der Pfanne mit Zitronen-Spinat",tags:["Fisch","Schnell"],ingredients:["4 Lachsfilets","1 Zitrone","1 große Schüssel frischer Spinat","1 Becher Sahne oder Kochsahne (optional; leichter: Frischkäse + Wasser)","Salz, Pfeffer","Butter oder Öl","Optional: Knoblauch"],steps:["Lachs salzen, pfeffern und in einer Pfanne in Öl/Butter braten (je Seite 3–4 Minuten).","Lachs herausnehmen und warm halten.","Spinat in die Pfanne geben und zusammenfallen lassen.","Optional etwas Sahne/Frischkäse einrühren, mit Zitronensaft abschmecken.","Lachs auf dem Zitronen-Spinat servieren."]},
-      {id:"r07",title:"Kartoffel-Lauch-Suppe",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["6–8 Kartoffeln","2 Stangen Lauch","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Sahne/Crème fraîche"],steps:["Zwiebel und Lauch in etwas Öl anschwitzen.","Kartoffeln würfeln, dazugeben und kurz mitdünsten.","Mit Gemüsebrühe aufgießen, 15–20 Minuten kochen.","Nach Wunsch teilweise oder ganz pürieren.","Abschmecken und optional mit Sahne verfeinern."]},
-      {id:"r08",title:"Käsespätzle mit Röstzwiebeln",tags:["Vegetarisch","Herzhaft"],ingredients:["1 Packung Spätzle (frisch oder aus dem Kühlregal)","2–3 Zwiebeln","1–2 Handvoll geriebener Käse (Emmentaler/Bergkäse)","Butter oder Öl","Salz, Pfeffer","Optional: Schnittlauch"],steps:["Zwiebeln in Ringe schneiden und in Butter/Öl langsam goldbraun rösten.","Spätzle nach Packungsangabe erhitzen.","Spätzle mit Käse in der Pfanne mischen, bis der Käse schmilzt.","Mit Röstzwiebeln toppen und servieren."]},
-      {id:"r09",title:"Karottensalat mit Apfel & Zitronen-Dressing",tags:["Vegetarisch"],ingredients:["6–8 Karotten","2 Äpfel","1 Zitrone","Öl","Salz, Pfeffer","Optional: Petersilie, ein paar Nüsse"],steps:["Karotten grob raspeln, Äpfel in feine Stifte schneiden.","Zitronensaft mit Öl, Salz und Pfeffer verrühren.","Alles mischen und 10 Minuten ziehen lassen.","Optional mit Petersilie/Nüssen bestreuen."]},
-      {id:"r10",title:"Gemüse-Wok mit Erdnuss-Soße (optional Hähnchen)",tags:["Vegetarisch","Asiatisch","Optional Fleisch"],ingredients:["1–2 Paprika","1 Brokkoli","2 Karotten","1 Zwiebel","Sojasoße","Erdnussmus","Limettensaft oder Reisessig","Optional: 1 Packung Tofu oder Hähnchenstreifen","Beilage: Reis oder Nudeln"],steps:["Reis/Nudeln kochen.","Gemüse in Streifen schneiden und im Wok/Pfanne heiß anbraten.","Optional Tofu/Hähnchen separat anbraten und dazugeben.","Soße rühren: Sojasoße + Erdnussmus + etwas Wasser + Limette/Essig.","Soße zum Wok geben, kurz einkochen lassen und servieren."]},
-      {id:"r11",title:"Miso-Suppe mit Pilzen & Frühlingszwiebeln",tags:["Vegetarisch","Asiatisch","Leicht"],ingredients:["Miso-Paste","1–2 Liter Wasser","Pilze (z.B. Champignons)","Frühlingszwiebeln","Tofu (optional)","Optional: Wakame/Algen, Sojasoße"],steps:["Wasser erhitzen, Pilze darin 5–7 Minuten köcheln.","Hitze reduzieren, Miso-Paste in einer Tasse mit etwas Brühe glatt rühren.","Miso einrühren (nicht sprudelnd kochen lassen).","Tofu würfeln, Frühlingszwiebeln schneiden und kurz ziehen lassen.","Abschmecken und servieren."]},
-      {id:"r12",title:"Sesam-Gurkensalat (asiatisch)",tags:["Vegetarisch","Asiatisch"],ingredients:["2 Gurken","Sojasoße","Reisessig oder Limettensaft","Sesamöl (sparsam)","Sesam","Optional: Chili, Knoblauch"],steps:["Gurken in Scheiben schneiden, leicht salzen und 5 Minuten ziehen lassen.","Dressing aus Sojasoße, Essig/Limette, etwas Sesamöl rühren.","Gurken abgießen, mit Dressing mischen.","Mit Sesam (und optional Chili) bestreuen."]},
-      {id:"r13",title:"Ratatouille aus dem Ofen (mediterran)",tags:["Vegetarisch","Mediterran"],ingredients:["2 Zucchini","1 Aubergine","2 Paprika","1 Zwiebel","1 Dose gehackte Tomaten","Olivenöl","Salz, Pfeffer","Thymian/Oregano"],steps:["Backofen auf 200 °C vorheizen.","Gemüse würfeln, in eine Auflaufform geben.","Tomaten, Öl und Gewürze dazugeben und mischen.","Ca. 35–45 Minuten backen, zwischendurch umrühren.","Mit Brot, Reis oder Kartoffeln servieren."]},
-      {id:"r14",title:"Couscous mit Kräutern, Zitrone & Gemüse",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["Couscous","Gemüsebrühe oder heißes Wasser","1 Zitrone","Gurke, Tomaten, Paprika (nach Wahl)","Petersilie/Minze","Olivenöl","Salz, Pfeffer"],steps:["Couscous mit heißer Brühe übergießen und 5–10 Minuten quellen lassen.","Gemüse klein schneiden, Kräuter hacken.","Couscous auflockern, mit Gemüse, Kräutern, Zitronensaft und Olivenöl mischen.","Abschmecken und servieren."]},
-      {id:"r15",title:"Frittata mit Kartoffeln & Zwiebeln",tags:["Vegetarisch","Mediterran"],ingredients:["6–8 Eier","4 Kartoffeln","2 Zwiebeln","Salz, Pfeffer","Öl","Optional: Käse, Spinat"],steps:["Kartoffeln in dünne Scheiben schneiden und in Öl fast gar braten.","Zwiebeln dazugeben und weich braten.","Eier verquirlen, würzen und über die Pfanne gießen.","Bei kleiner Hitze stocken lassen; optional kurz im Ofen/grill fertigstellen.","In Stücke schneiden und servieren."]},
-      {id:"r16",title:"Gemüse-Lasagne",tags:["Vegetarisch"],ingredients:["Lasagneplatten","1 Zucchini","1 Paprika","1 Zwiebel","1 Glas passierte Tomaten","1 Becher Crème fraîche oder Béchamel (Fertig oder selbst)","Käse zum Überbacken","Salz, Pfeffer, italienische Kräuter"],steps:["Backofen auf 200 °C vorheizen.","Gemüse würfeln und in einer Pfanne anbraten, mit Tomaten ablöschen und würzen.","In einer Form abwechselnd Sauce, Lasagneplatten, Crème fraîche/Béchamel schichten.","Mit Käse abschließen.","Ca. 30–40 Minuten backen und 5 Minuten ruhen lassen."]},
-      {id:"r17",title:"Feldsalat mit Walnüssen & Apfel",tags:["Vegetarisch","Salat"],ingredients:["Feldsalat","2 Äpfel","1 Handvoll Walnüsse","Essig","Öl","Salz, Pfeffer","Optional: Senf, Honig"],steps:["Feldsalat waschen und trocknen.","Apfel würfeln, Walnüsse grob hacken.","Dressing aus Essig, Öl, Salz, Pfeffer (optional Senf/Honig) rühren.","Alles mischen und servieren."]},
-      {id:"r18",title:"Bratkartoffeln mit Kräuterquark",tags:["Vegetarisch","Deutsch","Schnell"],ingredients:["8–10 Kartoffeln (vorgekocht geht am besten)","Öl oder Butter","Salz, Pfeffer","Optional: Zwiebel","Für den Quark: 1 Becher Quark, Kräuter, Salz, Pfeffer, Spritzer Zitronensaft"],steps:["Kartoffeln in Scheiben schneiden.","In einer großen Pfanne knusprig braten, salzen und pfeffern (optional mit Zwiebeln).","Quark mit Kräutern und Gewürzen verrühren.","Bratkartoffeln mit Kräuterquark servieren."]},
-      {id:"r19",title:"Pasta al Limone (cremig-zitronig)",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["1 Packung Pasta","1–2 Zitronen","1 Becher Sahne oder Frischkäse","Butter oder Olivenöl","Salz, Pfeffer","Optional: Parmesan, Petersilie"],steps:["Pasta kochen, etwas Nudelwasser aufheben.","Zitronenschale abreiben, Saft auspressen.","Sahne/Frischkäse mit etwas Nudelwasser cremig rühren, Zitronensaft/-abrieb dazugeben.","Mit Pasta mischen, abschmecken und optional Parmesan/Petersilie darüber."]},
-      {id:"r20",title:"Griechische Gemüsepfanne mit Halloumi",tags:["Vegetarisch","Mediterran"],ingredients:["1 Packung Halloumi","2 Paprika","1 Zucchini","1 rote Zwiebel","Olivenöl","Salz, Pfeffer","Oregano","Optional: Oliven"],steps:["Gemüse in Stücke schneiden und in Olivenöl anbraten.","Würzen und 8–10 Minuten garen.","Halloumi in Scheiben schneiden und separat goldbraun braten.","Alles zusammen kurz schwenken, optional Oliven dazu und servieren."]},
-      {id:"r21",title:"Tomaten-Bohnensalat (mediterran)",tags:["Vegetarisch","Mediterran"],ingredients:["1 Dose weiße Bohnen oder Kidneybohnen","Tomaten","1 rote Zwiebel","Olivenöl","Essig oder Zitronensaft","Salz, Pfeffer","Petersilie"],steps:["Bohnen abspülen, Tomaten würfeln, Zwiebel fein schneiden.","Mit Öl, Essig/Zitrone, Salz und Pfeffer mischen.","Petersilie unterheben und kurz ziehen lassen."]},
-      {id:"r22",title:"Forelle (oder Lachs) aus dem Ofen mit Kräutern",tags:["Fisch"],ingredients:["2–4 Forellen (oder 4 Fischfilets)","1 Zitrone","Kräuter (Petersilie/Dill), optional: Knoblauch","Salz, Pfeffer","Butter oder Olivenöl","Beilage: Kartoffeln oder Brot"],steps:["Backofen auf 200 °C vorheizen.","Fisch salzen, pfeffern, mit Zitrone und Kräutern füllen/belegen.","Mit etwas Butter/Öl beträufeln.","Je nach Dicke 15–25 Minuten backen.","Mit Zitronensaft servieren."]},
-      {id:"r23",title:"Kartoffelsalat süddeutsch",tags:["Vegetarisch","Deutsch"],ingredients:["8–10 Kartoffeln","1 Zwiebel","Gemüsebrühe","Essig","Öl","Salz, Pfeffer","Optional: Senf, Schnittlauch"],steps:["Kartoffeln kochen, pellen, in Scheiben schneiden.","Zwiebel fein würfeln.","Brühe mit Essig, Öl, Salz, Pfeffer (optional Senf) verrühren.","Über die warmen Kartoffeln geben, mischen und 20 Minuten ziehen lassen.","Optional Schnittlauch darüber."]},
-      {id:"r24",title:"Rahmspinat mit Spiegelei & Kartoffeln",tags:["Vegetarisch","Deutsch","Klassiker"],ingredients:["Kartoffeln","Spinat (TK oder frisch)","1 Zwiebel (optional)","Milch/Sahne oder Frischkäse","4 Eier","Salz, Pfeffer, Muskat"],steps:["Kartoffeln kochen.","Spinat in einem Topf erwärmen, optional mit Zwiebel andünsten.","Mit Milch/Sahne/Frischkäse cremig rühren, würzen (Muskat).","Eier als Spiegeleier braten.","Mit Kartoffeln und Spinat servieren."]},
-      {id:"r25",title:"Kürbis-Kokos-Suppe (leicht asiatisch)",tags:["Vegetarisch","Suppe"],ingredients:["1 Hokkaido-Kürbis","1 Zwiebel","1 Dose Kokosmilch","Gemüsebrühe","Currypulver oder Currypaste","Salz, Pfeffer","Optional: Ingwer, Limettensaft"],steps:["Zwiebel (und optional Ingwer) anschwitzen.","Kürbis würfeln, kurz mitdünsten.","Mit Brühe aufgießen und weich kochen (ca. 15 Minuten).","Kokosmilch und Curry zugeben, pürieren.","Abschmecken (optional Limette) und servieren."]},
-      {id:"r26",title:"Gebratener Reis mit Gemüse & Ei (asiatisch)",tags:["Vegetarisch","Asiatisch","Resteverwertung"],ingredients:["Gekochter Reis (vom Vortag ideal)","Gemüse nach Wahl (Erbsen, Karotten, Paprika, Lauchzwiebeln)","4 Eier","Sojasoße","Öl","Optional: Sesam, Chili"],steps:["Gemüse klein schneiden und in einer großen Pfanne/Wok anbraten.","Eier in der Pfanne stocken lassen und rühren.","Reis dazugeben und kräftig anbraten, bis er heiß ist.","Mit Sojasoße abschmecken, optional Sesam/Chili darüber."]},
-      {id:"r27",title:"Brokkoli-Nudelauflauf",tags:["Vegetarisch"],ingredients:["1 Packung Nudeln (kurz, z.B. Penne)","1 Brokkoli","1 Becher Sahne oder Kochsahne","1 Handvoll geriebener Käse","Salz, Pfeffer, Muskat","Optional: Knoblauch"],steps:["Backofen auf 200 °C vorheizen.","Nudeln fast gar kochen, Brokkoli in Röschen 2–3 Minuten mitkochen.","Alles in eine Auflaufform geben.","Sahne würzen (Salz, Pfeffer, Muskat) und darüber gießen.","Mit Käse bestreuen und 15–20 Minuten überbacken."]},
-      {id:"r28",title:"Mediterrane Linsensalat-Bowl",tags:["Vegetarisch","Mediterran","Bowl"],ingredients:["1 Packung/Beutel Linsen (vorgekocht) oder getrocknete Linsen","Gurke, Tomaten, Paprika","1 rote Zwiebel","Olivenöl","Zitronensaft oder Essig","Salz, Pfeffer","Optional: Feta, Petersilie"],steps:["Linsen garen oder vorgekochte Linsen abspülen.","Gemüse klein schneiden, Zwiebel fein würfeln.","Dressing aus Olivenöl, Zitrone/Essig, Salz und Pfeffer rühren.","Alles mischen, optional Feta/Petersilie dazugeben und servieren."]},
-      {id:"r29",title:"Tomatensuppe mit Basilikum",tags:["Vegetarisch","Mediterran","Suppe"],ingredients:["1 Zwiebel","1 Knoblauchzehe (optional)","1–2 Packungen passierte Tomaten","Gemüsebrühe","Salz, Pfeffer, Basilikum","Optional: Sahne/Crème fraîche"],steps:["Zwiebel (und optional Knoblauch) anschwitzen.","Passierte Tomaten zugeben, mit etwas Brühe verdünnen.","10–15 Minuten köcheln lassen, würzen.","Optional cremig rühren und mit Basilikum servieren."]},
-      {id:"r30",title:"Pfannkuchen herzhaft mit Pilzrahm",tags:["Vegetarisch","Klassiker"],ingredients:["Pfannkuchenteig: Mehl, Milch, Eier, Salz","Pilze (z.B. Champignons)","1 Zwiebel","Sahne oder Frischkäse","Salz, Pfeffer","Optional: Petersilie"],steps:["Pfannkuchenteig rühren und dünne Pfannkuchen ausbacken.","Pilze und Zwiebel anbraten, salzen und pfeffern.","Sahne/Frischkäse zugeben und kurz einkochen lassen.","Pfannkuchen füllen oder dazu servieren, optional Petersilie darüber."]},
-      {id:"r31",title:"Ofen-Falafel mit Joghurt-Dip (orientalisch)",tags:["Vegetarisch","Mediterran"],ingredients:["Falafel-Mix oder selbstgemachte Falafel","Joghurt","Zitrone","Salz, Pfeffer","Gurke/Tomate als Beilage","Optional: Knoblauch, Kreuzkümmel"],steps:["Falafel nach Packung (oder Rezept) formen.","Im Ofen bei 200 °C ca. 15–20 Minuten backen, einmal wenden.","Dip: Joghurt mit Zitronensaft, Salz/Pfeffer (optional Knoblauch) verrühren.","Mit frischem Gemüse und Dip servieren."]},
-      {id:"r32",title:"Krautnudeln (süddeutsch/österreichisch)",tags:["Vegetarisch","Herzhaft"],ingredients:["1 kleiner Weißkohl oder Spitzkohl","1 Packung Nudeln (z.B. Bandnudeln)","2 Zwiebeln","Öl oder Butter","Salz, Pfeffer","Optional: Kümmel"],steps:["Kohl in feine Streifen schneiden, Zwiebeln würfeln.","Zwiebeln anbraten, Kohl zugeben und weich schmoren (10–15 Minuten), würzen.","Nudeln kochen.","Nudeln mit dem Kohl mischen und abschmecken."]},
-      {id:"r33",title:"Gebratene Gnocchi mit Tomaten & Mozzarella",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["2 Packungen Gnocchi (Kühlregal)","Cherrytomaten","1–2 Knoblauchzehen (optional)","Mozzarella","Olivenöl","Salz, Pfeffer","Basilikum"],steps:["Gnocchi in Olivenöl goldbraun anbraten.","Tomaten (und optional Knoblauch) zugeben und kurz schmoren.","Mozzarella zupfen, unterheben und anschmelzen lassen.","Mit Basilikum, Salz und Pfeffer servieren."]},
-      {id:"r34",title:"Rührei mit Schnittlauch & Bratbrot",tags:["Vegetarisch","Deutsch","Schnell"],ingredients:["8 Eier","Milch (Schuss, optional)","Salz, Pfeffer","Schnittlauch","Brot","Butter"],steps:["Eier mit Salz, Pfeffer und optional Milch verquirlen.","In Butter cremig rühren, nicht zu trocken werden lassen.","Brot in der Pfanne oder im Toaster rösten.","Mit Schnittlauch servieren."]},
-      {id:"r35",title:"Bunter Bauernsalat mit Feta",tags:["Vegetarisch","Mediterran","Salat"],ingredients:["Tomaten","Gurke","Paprika","rote Zwiebel","Feta","Oliven (optional)","Olivenöl","Essig oder Zitronensaft","Salz, Pfeffer, Oregano"],steps:["Gemüse würfeln, Zwiebel fein schneiden.","Dressing aus Öl, Essig/Zitrone, Salz, Pfeffer und Oregano rühren.","Alles mischen, Feta darüber und servieren."]},
-      {id:"r36",title:"Asiatische Kokos-Nudel-Suppe (optional Garnelen)",tags:["Vegetarisch","Asiatisch"],ingredients:["Reisnudeln","1 Dose Kokosmilch","Gemüsebrühe","Gemüse nach Wahl (z.B. Pak Choi, Karotte, Pilze)","Sojasoße","Limettensaft","Optional: Garnelen"],steps:["Gemüse schneiden, in einem Topf kurz anbraten oder direkt in Brühe garen.","Kokosmilch und Brühe zugeben, 8–10 Minuten köcheln.","Reisnudeln nach Packung garen (entweder separat oder in der Suppe).","Mit Sojasoße und Limette abschmecken, optional Garnelen kurz gar ziehen lassen."]},
-      {id:"r37",title:"Blumenkohl-Käse-Pfanne",tags:["Vegetarisch","Schnell"],ingredients:["1 Blumenkohl","1 Becher Sahne oder Milch","Käse (gerieben)","Salz, Pfeffer, Muskat","Optional: Paprikapulver"],steps:["Blumenkohl in Röschen teilen und 6–8 Minuten vorkochen oder dämpfen.","In einer Pfanne/Topf Sahne/Milch erhitzen und würzen.","Blumenkohl zugeben, Käse einrühren und kurz schmelzen lassen.","Abschmecken und servieren."]},
-      {id:"r38",title:"Pesto-Kartoffeln vom Blech",tags:["Vegetarisch"],ingredients:["Kartoffeln","grünes oder rotes Pesto","Olivenöl (optional)","Salz, Pfeffer","Optional: Cherry-Tomaten"],steps:["Backofen auf 220 °C vorheizen.","Kartoffeln halbieren/vierteln und auf ein Blech geben.","Mit Pesto (und optional etwas Öl) mischen, würzen.","25–35 Minuten backen, optional Tomaten 10 Minuten vor Ende dazugeben."]},
-      {id:"r39",title:"Quarkauflauf mit Beeren (süßes Abendessen)",tags:["Vegetarisch"],ingredients:["Quark","Eier","Zucker oder Honig","Vanille (optional)","Beeren (TK geht)","Optional: Grieß oder Stärke"],steps:["Backofen auf 180–190 °C vorheizen.","Quark mit Eiern, Süße und optional Grieß/Stärke verrühren.","Beeren unterheben, in eine Form geben.","Ca. 30–40 Minuten backen und kurz abkühlen lassen."]},
-      {id:"r40",title:"Fischstäbchen (oder Ofenfisch) mit Kartoffelpüree",tags:["Fisch","Deutsch"],ingredients:["Fischstäbchen oder Fischfilets (Ofen)","Kartoffeln","Milch","Butter","Salz, Pfeffer, Muskat","Optional: Erbsen oder Gurkensalat"],steps:["Fisch nach Packung im Ofen oder in der Pfanne zubereiten.","Kartoffeln kochen, abgießen und stampfen.","Mit Milch/Butter cremig rühren, würzen.","Mit Erbsen oder Salat servieren."]},
-      {id:"r41",title:"Pasta mit Pilzen in Rahm",tags:["Vegetarisch","Schnell"],ingredients:["Pasta","Pilze","1 Zwiebel","Sahne oder Frischkäse","Salz, Pfeffer","Optional: Petersilie, Knoblauch"],steps:["Pasta kochen.","Zwiebel und Pilze anbraten, würzen.","Sahne/Frischkäse zugeben, kurz einkochen.","Mit Pasta mischen, optional Petersilie darüber."]},
-      {id:"r42",title:"Rote-Bete-Salat mit Ziegenkäse",tags:["Vegetarisch","Salat"],ingredients:["vorgegarte Rote Bete","Ziegenkäse (oder Feta)","Rucola oder Feldsalat","Walnüsse (optional)","Balsamico","Olivenöl","Salz, Pfeffer"],steps:["Rote Bete in Würfel schneiden.","Salat waschen, Käse zerbröseln.","Dressing aus Balsamico, Öl, Salz und Pfeffer rühren.","Alles anrichten und optional mit Walnüssen toppen."]},
-      {id:"r43",title:"Shakshuka mit weißen Bohnen (sättigend)",tags:["Vegetarisch","Mediterran"],ingredients:["1 Zwiebel","1–2 Paprika","1 Dose Tomaten","1 Dose weiße Bohnen","4–6 Eier","Salz, Pfeffer, Kreuzkümmel, Paprika","Olivenöl"],steps:["Zwiebel und Paprika in Öl anbraten.","Tomaten und Gewürze zugeben, 10 Minuten köcheln.","Bohnen unterrühren.","Eier in Mulden schlagen, Deckel drauf und stocken lassen.","Servieren (Brot passt gut)."]},
-      {id:"r44",title:"Vegetarische Moussaka (vereinfachte Version)",tags:["Vegetarisch","Mediterran"],ingredients:["2 Auberginen","Kartoffeln (optional)","1 Dose Tomaten","1 Zwiebel","Béchamel (fertig oder selbst)","Käse zum Überbacken","Salz, Pfeffer, Oregano"],steps:["Backofen auf 200 °C vorheizen.","Auberginen in Scheiben schneiden, salzen, abtupfen und kurz anbraten oder im Ofen vorgaren.","Tomatensauce aus Zwiebel + Tomaten + Gewürzen kochen.","Schichten: Aubergine (und optional Kartoffeln), Tomatensauce, Béchamel.","Mit Käse toppen und 30–40 Minuten backen."]},
-      {id:"r45",title:"Schneller Mediterraner Reis mit Gemüse",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["Reis","Zucchini oder Paprika","1 Zwiebel","Tomaten (frisch oder Dose)","Olivenöl","Salz, Pfeffer, Kräuter"],steps:["Reis kochen.","Gemüse und Zwiebel anbraten, würzen.","Tomaten zugeben und kurz einkochen.","Reis unterheben, abschmecken und servieren."]},
-      {id:"r46",title:"Gemüsefrikadellen mit Dip",tags:["Vegetarisch"],ingredients:["1–2 Karotten","1 Zucchini","1 Zwiebel","Haferflocken oder Semmelbrösel","2 Eier","Salz, Pfeffer","Optional: Käse gerieben","Dip: Joghurt + Kräuter"],steps:["Gemüse grob raspeln, leicht salzen und kurz Wasser ausdrücken.","Mit Eiern, Haferflocken/Semmelbröseln und Gewürzen mischen, 10 Minuten quellen lassen.","Patties formen und in Öl goldbraun braten.","Mit Joghurt-Kräuter-Dip servieren."]},
-      {id:"r47",title:"Kohlrabi-Möhren-Gemüse in heller Soße",tags:["Vegetarisch","Deutsch","Klassiker"],ingredients:["2–3 Kohlrabi","4–6 Möhren","Butter","Mehl (oder Stärke)","Milch","Salz, Pfeffer, Muskat","Optional: Petersilie"],steps:["Kohlrabi und Möhren in Stifte schneiden und weich kochen.","Butter schmelzen, Mehl kurz anschwitzen, mit Milch aufgießen (helle Soße).","Würzen, Gemüse unterheben und kurz ziehen lassen.","Optional Petersilie darüber; dazu passen Kartoffeln."]},
-      {id:"r48",title:"Mediterranes Ofengemüse mit Kichererbsen",tags:["Vegetarisch","Mediterran"],ingredients:["Zucchini, Paprika, Zwiebel (nach Wahl)","1 Dose Kichererbsen","Olivenöl","Salz, Pfeffer","Paprika, Kreuzkümmel oder italienische Kräuter","Optional: Feta"],steps:["Backofen auf 220 °C vorheizen.","Gemüse schneiden, Kichererbsen abspülen.","Alles mit Öl und Gewürzen mischen und auf ein Blech geben.","25–30 Minuten rösten, optional Feta am Ende dazugeben."]},
-      {id:"r49",title:"Asiatische Gemüsepfanne mit Udon",tags:["Vegetarisch","Asiatisch","Schnell"],ingredients:["Udon-Nudeln (oder Mie-Nudeln)","Gemüse nach Wahl (z.B. Pak Choi, Paprika, Karotte)","Sojasoße","Öl","Optional: Ingwer, Sesam"],steps:["Nudeln nach Packung garen.","Gemüse heiß anbraten.","Nudeln zugeben und mit Sojasoße abschmecken.","Optional Ingwer/Sesam dazu und servieren."]},
-      {id:"r50",title:"Käsiger Lauch-Kartoffel-Auflauf",tags:["Vegetarisch"],ingredients:["Kartoffeln","2 Stangen Lauch","Sahne oder Milch","Käse (gerieben)","Salz, Pfeffer, Muskat"],steps:["Backofen auf 200 °C vorheizen.","Kartoffeln in Scheiben schneiden, Lauch in Ringe.","Alles in eine Form geben, würzen.","Sahne/Milch darüber, Käse oben drauf.","35–45 Minuten backen, bis alles weich ist."]},
-      {id:"r51",title:"Bulgur mit Ofen-Tomaten & Kräutern",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["Bulgur","Gemüsebrühe oder heißes Wasser","Cherrytomaten","Olivenöl","Salz, Pfeffer","Petersilie/Minze"],steps:["Backofen auf 220 °C vorheizen, Tomaten mit Öl/Salz 12–15 Minuten rösten.","Bulgur mit heißer Brühe übergießen und quellen lassen.","Bulgur auflockern, Tomaten und Kräuter unterheben.","Abschmecken und servieren."]},
-      {id:"r52",title:"Gemüse-Quiche (einfach)",tags:["Vegetarisch"],ingredients:["1 Rolle Blätterteig oder Mürbeteig","Gemüse nach Wahl (z.B. Lauch, Spinat, Paprika)","4–5 Eier","1 Becher Sahne oder Milch","Salz, Pfeffer, Muskat","Käse (optional)"],steps:["Backofen auf 190–200 °C vorheizen.","Teig in eine Form legen und einstechen.","Gemüse kurz anbraten (oder Spinat auftauen/ausdrücken) und auf dem Teig verteilen.","Eier mit Sahne/Milch verquirlen, würzen, darüber gießen.","25–35 Minuten backen, bis die Quiche gestockt ist."]},
-      {id:"r53",title:"Schneller Kartoffel-Gemüse-Topf",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Suppengemüse (Möhre, Sellerie, Lauch) oder Gemüsemix","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran, Petersilie"],steps:["Zwiebel anschwitzen, Gemüse in Stücke schneiden und kurz mitdünsten.","Mit Brühe aufgießen und 20 Minuten köcheln lassen.","Abschmecken und mit Kräutern servieren."]},
-      {id:"r54",title:"Mediterrane Ofen-Tomaten mit Burrata",tags:["Vegetarisch","Mediterran"],ingredients:["Cherrytomaten","Olivenöl","Salz, Pfeffer","Basilikum","Burrata oder Mozzarella","Brot zum Dippen"],steps:["Backofen auf 220 °C vorheizen.","Tomaten mit Öl, Salz und Pfeffer in eine Form geben und 12–15 Minuten rösten.","Burrata daraufsetzen, Basilikum darüber.","Mit Brot servieren."]},
-      {id:"r55",title:"Spinat-Feta-Strudel",tags:["Vegetarisch"],ingredients:["1 Packung Blätterteig","Spinat (TK oder frisch)","Feta","1 Zwiebel (optional)","Salz, Pfeffer, Muskat","1 Ei zum Bestreichen (optional)"],steps:["Backofen auf 200 °C vorheizen.","Spinat auftauen/ausdrücken oder frisch zusammenfallen lassen, würzen.","Feta zerbröseln und untermischen, optional Zwiebel anschwitzen und dazu.","Füllung auf Blätterteig geben, einrollen, optional mit Ei bestreichen.","Ca. 20–25 Minuten backen."]},
-      {id:"r56",title:"Nudelpfanne mit Zucchini & Kräutern",tags:["Vegetarisch","Schnell"],ingredients:["Pasta","2 Zucchini","1 Zwiebel","Olivenöl","Salz, Pfeffer","Kräuter (Petersilie/italienische Kräuter)","Optional: Parmesan"],steps:["Pasta kochen.","Zucchini und Zwiebel in Öl anbraten, würzen.","Pasta untermischen, Kräuter dazugeben.","Optional Parmesan darüber."]},
-      {id:"r57",title:"Cremiges Pilzrisotto",tags:["Vegetarisch","Mediterran"],ingredients:["Risottoreis","Pilze","1 Zwiebel","Gemüsebrühe","Butter oder Olivenöl","Salz, Pfeffer","Optional: Parmesan"],steps:["Zwiebel anschwitzen, Reis kurz glasig rühren.","Pilze zugeben und 2–3 Minuten braten.","Nach und nach Brühe zugießen und rühren, bis der Reis cremig ist (ca. 18–22 Minuten).","Abschmecken, optional Parmesan unterrühren."]},
-      {id:"r58",title:"Bunter Salat mit Honig-Senf-Dressing",tags:["Vegetarisch","Salat"],ingredients:["Blattsalat-Mix","Gurke, Tomaten","Optional: Paprika, Radieschen","Dressing: Senf, Honig, Essig, Öl, Salz, Pfeffer"],steps:["Gemüse schneiden, Salat waschen.","Dressing verrühren (Senf + Honig + Essig + Öl + Salz/Pfeffer).","Alles mischen und servieren."]},
-      {id:"r59",title:"Asiatische Glasnudel-Bowl (optional Lachs)",tags:["Vegetarisch","Asiatisch","Optional Fisch"],ingredients:["Glasnudeln","Gurke, Karotte, Paprika","Sojasoße","Reisessig oder Limette","Sesam","Optional: Lachs (kurz gebraten) oder Räucherlachs"],steps:["Glasnudeln nach Packung zubereiten und abkühlen lassen.","Gemüse in feine Streifen schneiden.","Dressing aus Sojasoße + Essig/Limette rühren, Nudeln und Gemüse mischen.","Optional Lachs dazu, mit Sesam toppen."]},
-      {id:"r60",title:"Gebackener Blumenkohl mit Joghurt-Kräuter-Soße",tags:["Vegetarisch"],ingredients:["1 Blumenkohl","Öl","Salz, Pfeffer","Paprika/Kreuzkümmel (optional)","Joghurt","Kräuter"],steps:["Backofen auf 220 °C vorheizen.","Blumenkohl in Röschen, mit Öl und Gewürzen mischen.","20–25 Minuten rösten.","Joghurt mit Kräutern, Salz und Pfeffer verrühren.","Mit Dip servieren."]},
-      {id:"r61",title:"Kartoffelrösti mit Kräuterquark",tags:["Vegetarisch"],ingredients:["Kartoffeln","1 Zwiebel (optional)","Salz, Pfeffer","Öl","Quark + Kräuter für den Dip"],steps:["Kartoffeln grob reiben, salzen und Flüssigkeit ausdrücken.","Optional Zwiebel reiben und untermischen.","In Öl kleine Rösti ausbacken (je Seite 3–5 Minuten).","Mit Kräuterquark servieren."]},
-      {id:"r62",title:"Dorsch (oder Kabeljau) mit Senf-Kräuter-Kruste (Ofen)",tags:["Fisch"],ingredients:["4 Fischfilets (z.B. Dorsch/Kabeljau)","Senf","Semmelbrösel","Kräuter (Petersilie/Dill)","Salz, Pfeffer","Zitrone","Optional: Butter"],steps:["Backofen auf 200 °C vorheizen.","Fisch salzen/pfeffern und in eine Form legen.","Senf dünn aufstreichen, Semmelbrösel und Kräuter darauf verteilen.","Optional ein paar Butterflöckchen oben drauf.","12–18 Minuten backen, mit Zitrone servieren."]},
-      {id:"r63",title:"Gemüse-Curry mild (kokosig)",tags:["Vegetarisch","Curry"],ingredients:["Gemüse nach Wahl (Brokkoli, Paprika, Karotte, Erbsen)","1 Dose Kokosmilch","Currypaste oder Currypulver","Salz, Pfeffer","Optional: Limette","Beilage: Reis"],steps:["Reis kochen.","Gemüse anbraten, Currypaste/-pulver kurz mitrösten.","Kokosmilch zugeben und 10–15 Minuten köcheln.","Abschmecken (optional Limette) und mit Reis servieren."]},
-      {id:"r64",title:"Tomate-Mozzarella-Baguette (Ofen)",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["Baguette","Tomaten","Mozzarella","Olivenöl","Salz, Pfeffer","Basilikum"],steps:["Backofen auf 200 °C vorheizen.","Baguette längs aufschneiden, mit Öl beträufeln.","Tomaten und Mozzarella darauf, würzen.","8–12 Minuten backen, Basilikum darüber."]},
-      {id:"r65",title:"Zucchini-Puffer mit Dip",tags:["Vegetarisch"],ingredients:["3–4 Zucchini","2 Eier","Mehl oder Haferflocken","Salz, Pfeffer","Öl","Dip: Joghurt/Quark + Kräuter"],steps:["Zucchini raspeln, salzen, 10 Minuten ziehen lassen, ausdrücken.","Mit Eiern, Mehl/Haferflocken und Gewürzen mischen.","In Öl kleine Puffer ausbacken.","Mit Dip servieren."]},
-      {id:"r66",title:"Pasta mit Tomaten-Sahne-Soße",tags:["Vegetarisch","Schnell"],ingredients:["Pasta","1 Packung passierte Tomaten","Sahne oder Frischkäse","1 Zwiebel (optional)","Salz, Pfeffer, Kräuter"],steps:["Pasta kochen.","Optional Zwiebel anschwitzen, Tomaten zugeben und würzen.","Sahne/Frischkäse einrühren, kurz köcheln.","Mit Pasta mischen und servieren."]},
-      {id:"r67",title:"Bohnen-Gemüse-Pfanne mit Paprika",tags:["Vegetarisch","Schnell"],ingredients:["1 Dose Kidneybohnen oder weiße Bohnen","2 Paprika","1 Zwiebel","Tomaten (Dose oder frisch)","Salz, Pfeffer","Paprika edelsüß","Optional: Feta"],steps:["Zwiebel und Paprika anbraten.","Bohnen und Tomaten zugeben, würzen.","10 Minuten köcheln lassen, optional Feta darüber."]},
-      {id:"r68",title:"Gnocchi-Spinat-Pfanne",tags:["Vegetarisch","Schnell"],ingredients:["Gnocchi (Kühlregal)","Spinat (TK oder frisch)","1 Zwiebel (optional)","Sahne oder Frischkäse","Salz, Pfeffer, Muskat"],steps:["Gnocchi in der Pfanne anbraten.","Spinat zugeben und zusammenfallen lassen (TK vorher auftauen/ausdrücken).","Sahne/Frischkäse einrühren, würzen.","Kurz cremig ziehen lassen und servieren."]},
-      {id:"r69",title:"Mediterraner Kartoffelauflauf mit Tomaten",tags:["Vegetarisch","Mediterran"],ingredients:["Kartoffeln","Tomaten","1 Zwiebel","Olivenöl","Salz, Pfeffer","Oregano/Thymian","Optional: Käse"],steps:["Backofen auf 200 °C vorheizen.","Kartoffeln in Scheiben, Tomaten in Scheiben schneiden.","In eine Form schichten, würzen und mit Öl beträufeln.","Optional Käse darüber.","35–45 Minuten backen."]},
-      {id:"r70",title:"Asiatische Pfanne: Tofu mit Teriyaki-Style",tags:["Vegetarisch","Asiatisch"],ingredients:["1 Block Tofu","Gemüse nach Wahl (z.B. Brokkoli, Paprika)","Sojasoße","Honig/Zucker (optional)","Öl","Optional: Sesam, Ingwer","Beilage: Reis"],steps:["Reis kochen.","Tofu würfeln und in Öl knusprig anbraten.","Gemüse dazugeben und bissfest braten.","Soße: Sojasoße + optional Honig/Zucker + etwas Wasser, zugeben und kurz einkochen.","Optional Sesam/Ingwer dazu und servieren."]},
-      {id:"r71",title:"Thunfisch-Pasta (schnell; alternativ vegetarisch mit Bohnen)",tags:["Fisch","Mediterran","Schnell","Optional vegetarisch"],ingredients:["Pasta","1–2 Dosen Thunfisch","1 Dose Tomaten oder passierte Tomaten","1 Zwiebel","Salz, Pfeffer, Oregano","Optional vegetarisch: weiße Bohnen statt Thunfisch"],steps:["Pasta kochen.","Zwiebel anschwitzen, Tomaten zugeben und würzen.","Thunfisch (oder Bohnen) unterrühren und 5 Minuten köcheln.","Mit Pasta mischen und servieren."]},
-      {id:"r72",title:"Mediterraner Couscous mit Feta & Oliven",tags:["Vegetarisch","Mediterran","Schnell"],ingredients:["Couscous","Gemüsebrühe/heißes Wasser","Feta","Oliven","Tomaten, Gurke","Zitrone","Olivenöl","Salz, Pfeffer"],steps:["Couscous mit heißer Brühe übergießen und quellen lassen.","Gemüse klein schneiden, Feta würfeln/zerbröseln.","Alles mit Zitrone, Öl, Salz und Pfeffer mischen.","Kurz ziehen lassen und servieren."]},
-      {id:"r73",title:"Gemüse-Shakshuka ohne Ei (als Eintopf)",tags:["Vegetarisch","Mediterran"],ingredients:["1 Zwiebel","1–2 Paprika","1 Dose Tomaten","1 Dose Kichererbsen","Salz, Pfeffer, Kreuzkümmel, Paprika","Olivenöl"],steps:["Zwiebel und Paprika in Öl anbraten.","Tomaten und Gewürze zugeben und 10–15 Minuten köcheln.","Kichererbsen unterheben, abschmecken.","Mit Brot oder Reis servieren."]},
-      {id:"r74",title:"Vegetarischer Nudel-Hack-Style (Linsen)",tags:["Vegetarisch","Sattmacher"],ingredients:["Pasta","rote Linsen","1 Zwiebel","1 Dose Tomaten","Tomatenmark (optional)","Salz, Pfeffer, Kräuter"],steps:["Pasta kochen.","Zwiebel anschwitzen, optional Tomatenmark kurz mitrösten.","Tomaten und rote Linsen zugeben, 12–15 Minuten köcheln.","Würzen und mit Pasta servieren."]},
-      {id:"r75",title:"Spinat-Käse-Knödel (vereinfachte Version)",tags:["Vegetarisch","Herzhaft"],ingredients:["Semmelknödel-Teig (fertig) oder altbackene Brötchen + Milch + Eier","Spinat (TK oder frisch)","Käse (gerieben)","Salz, Pfeffer, Muskat","Butter (optional)"],steps:["Spinat vorbereiten und würzen.","Knödelteig anrühren, Spinat und Käse unterheben.","Knödel formen und in leicht siedendem Wasser gar ziehen lassen (10–15 Minuten).","Optional in Butter schwenken und servieren."]},
-      {id:"r76",title:"Fisch im Pergament mit Gemüse (Ofen)",tags:["Fisch","Mediterran"],ingredients:["4 Fischfilets (z.B. Lachs, Dorsch)","Gemüse (z.B. Zucchini, Tomaten, Fenchel)","Zitrone","Olivenöl","Salz, Pfeffer","Kräuter"],steps:["Backofen auf 200 °C vorheizen.","Gemüse in dünne Scheiben schneiden.","Fisch und Gemüse auf Backpapier legen, würzen, mit Zitrone und Öl beträufeln.","Zu Päckchen falten und 15–20 Minuten backen.","Päckchen öffnen und servieren."]},
-      {id:"r77",title:"Mediterrane Gemüsepfanne mit Eierküchlein",tags:["Vegetarisch","Mediterran"],ingredients:["Gemüse (z.B. Zucchini, Paprika, Zwiebel)","Eier","Salz, Pfeffer","Kräuter","Olivenöl"],steps:["Gemüse anbraten und würzen.","Eier verquirlen, würzen und kleine Eierküchlein in einer zweiten Pfanne ausbacken (oder direkt daneben).","Alles zusammen mit Kräutern servieren."]},
-      {id:"r78",title:"Klassischer Gemüseeintopf mit Erbsen",tags:["Vegetarisch","Deutsch","Eintopf"],ingredients:["Kartoffeln","Möhren","Erbsen (TK)","1 Zwiebel","Gemüsebrühe","Salz, Pfeffer","Optional: Majoran"],steps:["Zwiebel anschwitzen, Kartoffeln/Möhren würfeln und dazugeben.","Mit Brühe aufgießen und 15–20 Minuten kochen.","Erbsen die letzten 5 Minuten zugeben.","Abschmecken und servieren."]},
-      {id:"r79",title:"Chili sin Carne",tags:["Vegetarisch","Eintopf","Herzhaft"],ingredients:["1 Dose Kidneybohnen","1 Dose Mais","1 Dose stückige Tomaten","1 Zwiebel","1 Knoblauchzehe","1 rote Paprika","150g Sojagranulat oder rote Linsen","Gemüsebrühe","Chilipulver, Kreuzkümmel, Paprika edelsüß","Öl","Optional: Schmand oder Tortilla-Chips dazu"],steps:["Zwiebel und Knoblauch hacken, Paprika würfeln.","Alles in einem großen Topf mit etwas Öl andünsten.","Sojagranulat (oder Linsen) kurz mitrösten und mit den Tomaten sowie einem kräftigen Schuss Brühe ablöschen.","Bohnen und Mais (abgetropft) dazugeben.","Mit Chili, Kreuzkümmel, Paprikapulver, Salz und Pfeffer kräftig würzen.","Ca. 20 Minuten sanft köcheln lassen. Mit Schmand oder Chips servieren."]},
-      {id:"r80",title:"Penne all'Arrabbiata",tags:["Vegetarisch","Mediterran","Schnell","Pasta"],ingredients:["500g Penne","1 Dose stückige Tomaten","2-3 Knoblauchzehen","1-2 frische rote Chilis (oder Chiliflocken)","Olivenöl","Salz, Pfeffer","1 Prise Zucker","Frische Petersilie","Optional: Parmesan oder Pecorino"],steps:["Penne in reichlich Salzwasser al dente kochen.","Knoblauch in feine Scheiben und Chili in Ringe schneiden.","Beides in einer großen Pfanne in reichlich Olivenöl sanft anbraten (nicht braun werden lassen!).","Tomaten dazugeben, mit Salz, Pfeffer und einer Prise Zucker abschmecken.","Soße ca. 10 Minuten einköcheln lassen.","Nudeln abgießen, in der Soße schwenken und mit gehackter Petersilie servieren."]},
-      {id:"r81",title:"Schneller Flammkuchen (Klassisch oder Vegetarisch)",tags:["Schnell","Optional Fleisch"],ingredients:["1 Rolle Flammkuchenteig (Kühlregal)","1 Becher Crème fraîche oder Schmand","1 rote Zwiebel","100g Speckwürfel (oder Räuchertofu/Feta für vegetarisch)","Salz, Pfeffer, Muskat","Optional: Lauchzwiebeln"],steps:["Backofen auf 220 °C (Ober-/Unterhitze) vorheizen.","Teig auf einem Backblech ausrollen.","Crème fraîche mit etwas Salz, Pfeffer und Muskat glattrühren und den Teig damit bestreichen.","Zwiebel in sehr feine Ringe schneiden und zusammen mit Speck (oder Tofu/Feta) auf dem Teig verteilen.","Im heißen Ofen 10–12 Minuten knusprig backen.","Optional mit frischen Lauchzwiebelringen bestreuen und sofort servieren."]},
-      {id:"r82",title:"Wärmende Möhren-Ingwer-Suppe",tags:["Vegetarisch","Suppe","Leicht","Gesund"],ingredients:["500g Möhren","1 walnussgroßes Stück frischer Ingwer","1 Zwiebel","1 Orange (nur der Saft)","750ml Gemüsebrühe","1 Schuss Sahne oder Kokosmilch","Öl oder Butter","Salz, Pfeffer","Optional: Kürbiskerne"],steps:["Möhren, Zwiebel und Ingwer schälen und grob würfeln.","Alles in einem Topf mit etwas Öl oder Butter andünsten.","Mit der Gemüsebrühe ablöschen und ca. 20 Minuten weich kochen.","Die Suppe fein pürieren.","Orangensaft und Sahne/Kokosmilch unterrühren, mit Salz und Pfeffer abschmecken.","Optional mit gerösteten Kürbiskernen garnieren."]},
-      {id:"r83",title:"Bunte Wraps mit Hähnchen & Avocado",tags:["Optional Fleisch","Schnell"],ingredients:["4 große Weizen-Tortillas (Wraps)","400g Hähnchenbrustfilet (vegetarisch: Falafel oder Tofu)","1 Avocado","1 Paprika","1 halber Eisbergsalat","1 Becher Joghurt","1 Schuss Zitronensaft","Paprikapulver, Salz, Pfeffer","Öl zum Braten"],steps:["Hähnchen in Streifen schneiden, mit Paprikapulver, Salz und Pfeffer würzen und in der Pfanne goldbraun braten.","Salat in Streifen schneiden, Paprika und Avocado würfeln.","Joghurt mit Zitronensaft, Salz und Pfeffer zu einem schnellen Dressing verrühren.","Wraps kurz in der Pfanne oder Mikrowelle erwärmen.","Wraps mit Joghurt bestreichen, mit Salat, Gemüse und Hähnchen belegen, aufrollen und genießen."]},
-      {id:"r84",title:"Linseneintopf wie bei Oma",tags:["Deutsch","Eintopf","Klassiker","Herzhaft","Optional Fleisch"],ingredients:["250g Tellerlinsen oder braune Linsen","1 Bund Suppengemüse (Möhren, Sellerie, Lauch)","1 Zwiebel","1 Liter Gemüse- oder Rinderbrühe","2 EL Essig","1 Prise Zucker","Salz, Pfeffer","Optional: 2-4 Wiener Würstchen"],steps:["Zwiebel und Suppengemüse putzen und würfeln.","Gemüse in einem großen Topf kurz andünsten.","Linsen und Brühe dazugeben und ca. 45 Minuten sanft köcheln lassen (Packungsanweisung der Linsen beachten).","Mit Essig, einer Prise Zucker, Salz und Pfeffer süß-säuerlich abschmecken.","Optional die Würstchen in Scheiben schneiden, in der Suppe heiß werden lassen und servieren."]},
-      {id:"r85",title:"Gebackener Feta mit Kirschtomaten (Low Carb)",tags:["Vegetarisch","Mediterran","Leicht"],ingredients:["2 Stück Feta-Käse","400g Kirschtomaten","2 Knoblauchzehen","Olivenöl","Italienische Kräuter (Thymian, Oregano, Rosmarin)","Salz, Pfeffer","Optional: Frisches Baguette oder Pasta dazu"],steps:["Backofen auf 200 °C vorheizen.","Tomaten waschen, Knoblauch in Scheiben schneiden.","Den Feta in die Mitte einer Auflaufform legen, die Tomaten und den Knoblauch darum verteilen.","Alles großzügig mit Olivenöl beträufeln und mit Kräutern, Salz und Pfeffer würzen.","Ca. 20-25 Minuten backen, bis die Tomaten aufplatzen und der Feta weich ist.","Alles in der Form grob zerdrücken und vermischen. Perfekt als Dip zu Brot oder als Nudelsoße."]},
-      {id:"r86",title:"Pad Thai (Gebratene Reisnudeln)",tags:["Asiatisch","Schnell","Vegetarisch"],ingredients:["200g Reisnudeln","2 Eier","1 Block Tofu","1 Handvoll Mungobohnensprossen","2 Lauchzwiebeln","50g geröstete Erdnüsse","3 EL Sojasoße","1 EL Limettensaft","1 TL Zucker","Öl zum Braten"],steps:["Reisnudeln nach Packungsanweisung einweichen oder garen.","Tofu würfeln und in einer großen Pfanne oder Wok knusprig braten. An den Rand schieben.","Eier in die Pfanne schlagen, kurz stocken lassen und grob verrühren.","Nudeln, Sojasoße, Limettensaft und Zucker dazugeben. Alles kräftig durchschwenken.","Sprossen und in Ringe geschnittene Lauchzwiebeln kurz unterheben.","Auf Tellern anrichten und mit gehackten Erdnüssen bestreut servieren."]},
-      {id:"r87",title:"Pilz-Rahm-Geschnetzeltes (vegetarisch oder mit Hähnchen)",tags:["Klassiker","Optional Fleisch"],ingredients:["400g Champignons (oder 400g Hähnchengeschnetzeltes)","1 Zwiebel","200ml Sahne oder Kochsahne","100ml Gemüsebrühe","1 Schuss Weißwein (optional)","1 EL frische Petersilie","Öl oder Butter","Salz, Pfeffer","Beilage: Reis, Spätzle oder Rösti"],steps:["Beilage (z.B. Reis oder Spätzle) nach Packungsanweisung zubereiten.","Zwiebel fein würfeln, Pilze in Scheiben schneiden (bzw. Fleisch bereitlegen).","Fleisch oder Pilze in einer heißen Pfanne kräftig anbraten. Zwiebeln dazugeben und glasig dünsten.","Optional mit Weißwein ablöschen.","Brühe und Sahne angießen, aufkochen und ca. 5 Minuten leicht andicken lassen.","Mit Salz, Pfeffer und Petersilie abschmecken und zur Beilage servieren."]},
-      {id:"r88",title:"Klassisches Kartoffelgratin",tags:["Vegetarisch","Klassiker"],ingredients:["800g festkochende Kartoffeln","200ml Sahne","100ml Milch","1-2 Knoblauchzehen","100g geriebener Käse (Gruyère oder Emmentaler)","Butter für die Form","Salz, Pfeffer, frisch geriebene Muskatnuss"],steps:["Backofen auf 180 °C vorheizen. Auflaufform mit Butter ausstreichen.","Kartoffeln schälen und in sehr feine Scheiben hobeln (nicht mehr waschen, die Stärke bindet die Soße!).","Kartoffelscheiben dachziegelartig in der Form schichten.","Sahne, Milch und zerdrückten Knoblauch mischen. Kräftig mit Salz, Pfeffer und Muskat würzen.","Die Sahnemischung über die Kartoffeln gießen.","Mit Käse bestreuen und ca. 45-50 Minuten goldbraun backen."]},
-      {id:"r89",title:"Lachsfilet mit Zitronen-Spargel",tags:["Fisch","Leicht","Saisonal"],ingredients:["2-4 Lachsfilets","500g grüner Spargel","1 Bio-Zitrone","2 EL Olivenöl","1 EL Butter","Salz, Pfeffer","Optional: Junge Kartoffeln als Beilage"],steps:["Die holzigen Enden des grünen Spargels abbrechen.","Lachsfilets salzen, pfeffern und mit etwas Zitronensaft beträufeln.","Öl in einer Pfanne erhitzen. Lachs auf der Hautseite ca. 4 Minuten knusprig braten, dann wenden und kurz garziehen lassen. Herausnehmen und warmhalten.","In derselben Pfanne den Spargel ca. 5-7 Minuten braten.","Butter und etwas Zitronenabrieb zum Spargel geben, durchschwenken und würzen.","Spargel zusammen mit dem Lachs servieren."]},
-      {id:"r90",title:"Gnocchi-Pfanne mit Spinat & Gorgonzola",tags:["Vegetarisch","Schnell","Herzhaft"],ingredients:["1 Packung Gnocchi (Kühlregal)","150g frischer Babyspinat","100g Gorgonzola (oder anderer Blauschimmelkäse)","100ml Sahne","1 Zwiebel","1 Knoblauchzehe","Öl oder Butter","Salz, Pfeffer, Muskat","Optional: Walnüsse"],steps:["Zwiebel und Knoblauch fein hacken und in einer großen Pfanne in etwas Öl andünsten.","Gnocchi dazugeben und 3-4 Minuten leicht anbraten.","Spinat hinzufügen und zusammenfallen lassen.","Sahne angießen und den Gorgonzola in Stücken unterrühren, bis er geschmolzen ist.","Mit Pfeffer und Muskat abschmecken (Vorsicht mit Salz, der Käse ist schon würzig).","Optional mit grob gehackten Walnüssen garniert servieren."]}
-    ];
+    // Hilfsfunktionen
+    function loadJSON(key, fallback) {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
 
+    function saveJSON(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
 
-    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
-    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
-    const STORAGE_FAVORITES = "timm-favorites-v1";
+    // Aktuelle Kalenderwoche berechnen
+    function getIsoWeek() {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+      const yearStart = new Date(d.getFullYear(), 0, 1);
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getFullYear()}-W${weekNo}`;
+    }
 
+    // Favoriten laden und speichern
     function getFavorites() {
       return loadJSON(STORAGE_FAVORITES, []);
     }
 
-    window.toggleFavorite = function(recipeId, btnElement) {
+    window.toggleFavorite = function(id, btn) {
       let favs = getFavorites();
-      if (favs.includes(recipeId)) {
-        favs = favs.filter(id => id !== recipeId);
-        btnElement.classList.remove('active');
+      if (favs.includes(id)) {
+        favs = favs.filter(f => f !== id);
+        btn.classList.remove('active');
       } else {
-        favs.push(recipeId);
-        btnElement.classList.add('active');
+        favs.push(id);
+        btn.classList.add('active');
       }
       saveJSON(STORAGE_FAVORITES, favs);
     };
-    // Unerwünschte Tags ausblenden
-    const IGNORE_TAGS = ["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Optional Fisch/Meeresfrüchte", "Mitteleuropäisch", "Asiatisch inspiriert"];
 
-    // ====== FUNKTION ZUM KOPIEREN ======
-    window.copyRecipe = function(recipeId, btnElement) {
-      const r = recipes.find(x => x.id === recipeId);
-      if (!r) return;
-
-      const textToCopy = `${r.title}\n\n🛒 Zutaten:\n${r.ingredients.map(i => '- ' + i).join('\n')}\n\n👨‍🍳 Zubereitung:\n${r.steps.map((s, idx) => (idx+1) + '. ' + s).join('\n')}`;
-
-      const textArea = document.createElement("textarea");
-      textArea.value = textToCopy;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-9999px";
-      document.body.appendChild(textArea);
-      
-      textArea.select();
-      
-      try {
-        document.execCommand('copy');
-        const originalHTML = btnElement.innerHTML;
-        btnElement.innerHTML = "✅ Kopiert!";
-        setTimeout(() => {
-          btnElement.innerHTML = originalHTML;
-        }, 2000);
-      } catch (err) {
-        console.error('Kopieren fehlgeschlagen', err);
-      }
-      
-      document.body.removeChild(textArea);
-    };
-function getEmojiForTag(tagText) {
-      const t = tagText.toLowerCase();
-      
-      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) return "🌱";
-      if (t.includes("schnell") || t.includes("einfach")) return "⏱️";
-      if (t.includes("pasta") || t.includes("nudel")) return "🍝";
-      if (t.includes("suppe") || t.includes("eintopf")) return "🍲";
-      if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) return "🥩";
-      if (t.includes("fisch") || t.includes("lachs")) return "🐟";
-      if (t.includes("asiatisch")) return "🍜";
-      if (t.includes("deutsch")) return "🇩🇪";
-      if (t.includes("leicht")) return "🪽";
-      if (t.includes("mediterran")) return "💃";
-      if (t.includes("salat")) return "🥬";
-      if (t.includes("sattmacher")) return "🫃";
-      if (t.includes("klassiker")) return "👵"; 
-      if (t.includes("curry")) return "🔥";
-      if (t.includes("bowl")) return "🥣";
-      if (t.includes("herzhaft")) return "🧂";
-      if (t.includes("resteverwertung")) return "♻️";
-      
-      return "🍴";
+    function renderTag(tag) {
+      return `<span class="tag">${tag}</span>`;
     }
 
-    // ===== DIESE FUNKTION MUSS EIGENSTÄNDIG STEHEN =====
-    function renderTag(tagText) {
-      return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
-    }
-
-    function getColorClassForTag(tagText) {
-      const t = tagText.toLowerCase();
-      
-      // GRÜN (Gesund, Gemüse, Nachhaltig)
-      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat") || t.includes("resteverwertung")) return "tag-green";
-      
-      // GELB (Nudeln, Sattmacher, Tradition)
-      if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher") || t.includes("klassiker")) return "tag-yellow";
-      
-      // ROT (Würzig, Deftig, Heiß)
-      if (t.includes("fleisch") || t.includes("mediterran") || t.includes("curry") || t.includes("herzhaft")) return "tag-red";
-      
-      // BLAU (Leichtes, Flüssiges, Maritimes)
-      if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht") || t.includes("bowl")) return "tag-blue";
-      
-      // VIOLETT (Standard)
-      return "tag-purple";
-    }
-
-    function getWeekNumber(d) {
-      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-      return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-    }
-
-    function getCurrentWeekKey() {
-      const now = new Date();
-      return `${now.getFullYear()}-${getWeekNumber(now)}`;
-    }
-
-    function loadJSON(key, fallback) {
-      const raw = localStorage.getItem(key);
-      if (!raw) return fallback;
-      try { return JSON.parse(raw); } catch { return fallback; }
-    }
-    function saveJSON(key, value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    function pickRandomThreeRecipes() {
-      const shuffled = [...recipes].sort(() => 0.5 - Math.random());
-      return [shuffled[0].id, shuffled[1].id, shuffled[2].id];
-    }
-
+    // Rezepte der Woche laden oder neu würfeln
     function loadWeekSelection(weekKey) {
-      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
-      return archive[weekKey] || null;
+      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
+      if (stored && stored.weekKey === weekKey && stored.selection && stored.selection.length === 3) {
+        return stored.selection;
+      }
+      let shuffled = [...recipes].sort(() => 0.5 - Math.random());
+      let selection = shuffled.slice(0, 3).map(r => r.id);
+      saveJSON(STORAGE_SELECTED_WEEK, { weekKey, selection });
+      return selection;
     }
 
-    function saveWeekSelection(weekKey, recipeIds) {
-      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
-      archive[weekKey] = recipeIds;
-      saveJSON(STORAGE_WEEK_RECIPES, archive);
+    function saveWeekSelection(weekKey, selection) {
+      saveJSON(STORAGE_SELECTED_WEEK, { weekKey, selection });
     }
 
-    function renderRecipeCards(recipeIds, containerElement) {
-      containerElement.innerHTML = "";
-      
-      recipeIds.forEach((id, index) => {
-        const r = recipes.find(x => x.id === id);
-        if (!r) return;
-
-        // Favoriten laden und prüfen
-        const favs = getFavorites();
-        const isFav = favs.includes(r.id);
-        
-        // Herz Icon (20x20, genau wie der Speichern-Button)
-        const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-        const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
-        
-        const card = document.createElement("div");
-        card.className = "recipe-card";
-        card.style.animationDelay = `${index * 0.1}s`; 
-
-        const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
-
-        card.innerHTML = `
-          <div class="recipe-body">
-            <div class="title-row">
-              <h2 class="recipe-title">${r.title}</h2>
-              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
-                ${heartSvg}
-              </button>
-            </div>
-
-            <div class="tag-row">
-              ${visibleTags.map(t => renderTag(t)).join("")}
-            </div>
-            <div class="divider"></div>
-            
-            <div class="recipe-content">
-              <div class="ingredients-col">
-                <div class="section-header">
-                  <h3 class="section-title">🛒 Zutaten</h3>
-                  <button class="copy-btn" onclick="copyRecipe('${r.id}', this)" title="Zutaten und Rezept kopieren">
-                    ${floppyIcon}
-                  </button>
-                </div>
-                <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
-              </div>
-              <div class="steps-col">
-                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
-                <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
-              </div>
-            </div>
-          </div>
-          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
-        `;
-        containerElement.appendChild(card);
-      });
-    }
+    // Einzelnes Rezept mit Skeleton-Loader austauschen
     window.swapSingleRecipe = function(indexToReplace) {
       const container = document.getElementById("currentRecipes");
       const oldCard = container.children[indexToReplace];
       
-      // 1. Platzhalter (Skeleton) anzeigen
+      // Platzhalter (Skeleton) generieren
       const skeletonCard = document.createElement("div");
       skeletonCard.className = "recipe-card";
       skeletonCard.style.animationDelay = "0s";
@@ -534,12 +234,12 @@ function getEmojiForTag(tagText) {
           <div class="skeleton" style="height: 100px; width: 100%;"></div>
           <div class="skeleton" style="margin-top: 20px; height: 150px; width: 100%;"></div>
         </div>
-        <div class="skeleton" style="height: 50px; width: 100%;"></div>
+        <div class="skeleton" style="margin-top: 16px; height: 45px; width: 100%;"></div>
       `;
       
       container.replaceChild(skeletonCard, oldCard);
 
-      // 2. Kurz warten (300ms) und dann das neue Rezept laden
+      // Timeout für geschmeidigen Übergang
       setTimeout(() => {
         const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
         if (!stored) return;
@@ -561,9 +261,7 @@ function getEmojiForTag(tagText) {
         const isFav = favs.includes(r.id);
         const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
 
-        // Icons
-        const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-        const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
+        const heartSvg = `<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
 
         const finalCard = document.createElement("div");
         finalCard.className = "recipe-card";
@@ -583,16 +281,11 @@ function getEmojiForTag(tagText) {
             <div class="divider"></div>
             <div class="recipe-content">
               <div class="ingredients-col">
-                <div class="section-header">
-                  <h3 class="section-title">🛒 Zutaten</h3>
-                  <button class="copy-btn" onclick="copyRecipe('${r.id}', this)" title="Zutaten und Rezept kopieren">
-                    ${floppyIcon}
-                  </button>
-                </div>
+                <h3 class="section-title">🛒 Zutaten</h3>
                 <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
               </div>
               <div class="steps-col">
-                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+                <h3 class="section-title">👨‍🍳 Zubereitung</h3>
                 <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
               </div>
             </div>
@@ -603,33 +296,63 @@ function getEmojiForTag(tagText) {
         container.replaceChild(finalCard, skeletonCard);
       }, 300);
     };
-    function showWeek(weekKey) {
-      const [yearStr, weekStr] = weekKey.split("-");
 
-      let selected = loadWeekSelection(weekKey);
-      if (!selected) {
-        selected = pickRandomThreeRecipes();
-        saveWeekSelection(weekKey, selected);
+    // Initiale Wochen-Anzeige generieren
+    function showWeek() {
+      // WICHTIG: Falls recipes nicht existiert (falscher Pfad), direkt abbrechen, um Crash zu vermeiden
+      if (typeof recipes === 'undefined') {
+        document.getElementById("currentRecipes").innerHTML = `<p style="text-align:center; color:red;">Fehler: rezepte.js konnte nicht geladen werden. Bitte Pfad prüfen!</p>`;
+        return;
       }
 
-      renderRecipeCards(selected, document.getElementById("currentRecipes"));
-      saveJSON(STORAGE_SELECTED_WEEK, { weekKey });
-    }
+      const weekKey = getIsoWeek();
+      const selection = loadWeekSelection(weekKey);
+      const container = document.getElementById("currentRecipes");
+      container.innerHTML = "";
 
-    function initApp() {
-      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
-      const weekKey = stored?.weekKey || getCurrentWeekKey();
-      showWeek(weekKey);
-    }
+      const favs = getFavorites();
 
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(() => {});
+      selection.forEach((id, index) => {
+        const r = recipes.find(x => x.id === id);
+        if (!r) return;
+
+        const isFav = favs.includes(r.id);
+        const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
+        const heartSvg = `<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
+        const card = document.createElement("div");
+        card.className = "recipe-card";
+        card.innerHTML = `
+          <div class="recipe-body">
+            <div class="title-row">
+              <h2 class="recipe-title">${r.title}</h2>
+              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
+                ${heartSvg}
+              </button>
+            </div>
+            <div class="tag-row">
+              ${visibleTags.map(t => renderTag(t)).join("")}
+            </div>
+            <div class="divider"></div>
+            <div class="recipe-content">
+              <div class="ingredients-col">
+                <h3 class="section-title">🛒 Zutaten</h3>
+                <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+              </div>
+              <div class="steps-col">
+                <h3 class="section-title">👨‍🍳 Zubereitung</h3>
+                <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+              </div>
+            </div>
+          </div>
+          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
+        `;
+        container.appendChild(card);
       });
     }
 
-    document.addEventListener("DOMContentLoaded", initApp);
+    // App direkt starten
+    showWeek();
   </script>
 </body>
 </html>
-
