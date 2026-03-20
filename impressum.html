@@ -26,7 +26,7 @@
       padding: 8px 16px;
       border-radius: 999px;
       border: 1px solid #e6e6e6;
-      background: #fff;
+      background: #e6ccff; /* Hier ist die Änderung: Gleicher Farbton wie der Body-Hintergrund */
       cursor: pointer;
       font-weight: 700;
       font-size: 0.95rem;
@@ -116,29 +116,4 @@
         if (a.y > height) { a.y = height; a.vy *= -1; }
       }
 
-      for (let i = 0; i < NUM_ANTS; i++) {
-        for (let j = i + 1; j < NUM_ANTS; j++) {
-          let a = ants[i]; let b = ants[j];
-          let dx = a.x - b.x; let dy = a.y - b.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance < LOGO_SIZE) {
-            let tempVx = a.vx; let tempVy = a.vy;
-            a.vx = b.vx; a.vy = b.vy;
-            b.vx = tempVx; b.vy = tempVy;
-            let overlap = LOGO_SIZE - distance;
-            a.x += (dx / distance) * (overlap / 2); a.y += (dy / distance) * (overlap / 2);
-            b.x -= (dx / distance) * (overlap / 2); b.y -= (dy / distance) * (overlap / 2);
-          }
-        }
-      }
-
-      for (let i = 0; i < NUM_ANTS; i++) {
-        let a = ants[i];
-        let angle = Math.atan2(a.vy, a.vx) * 180 / Math.PI; 
-        a.element.style.transform = `translate(${a.x - 20}px, ${a.y - 20}px) rotate(${angle + 90}deg)`;
-      }
-      requestAnimationFrame(animate);
-    }
-  </script>
-</body>
-</html>
+      for (let i =
