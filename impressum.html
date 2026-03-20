@@ -26,7 +26,7 @@
       padding: 8px 16px;
       border-radius: 999px;
       border: 1px solid #e6e6e6;
-      background: #e6ccff; /* Hier ist die Änderung: Gleicher Farbton wie der Body-Hintergrund */
+      background-color: #e6ccff; /* Verschmilzt jetzt mit dem Hintergrund */
       cursor: pointer;
       font-weight: 700;
       font-size: 0.95rem;
@@ -52,7 +52,7 @@
       z-index: 10;
       pointer-events: none;
       will-change: transform; 
-      display: none; /* Wird per JS eingeblendet */
+      display: none; /* Wird erst eingeblendet, wenn das Bild wirklich da ist */
     }
   </style>
 </head>
@@ -65,18 +65,18 @@
   <script>
     const NUM_ANTS = 80; 
     const LOGO_SIZE = 40; 
-    const IMG_SRC = 'mask-icon-192.png'; // Jetzt korrekt auf .png geändert
+    const IMG_SRC = 'mask-icon-192.png'; 
 
     const ants = [];
     const testImg = new Image();
-    testImg.src = IMG_SRC;
 
+    // 1. Dem Browser sagen, was er tun soll, WENN das Bild geladen ist
     testImg.onload = function() {
       for (let i = 0; i < NUM_ANTS; i++) {
         const img = document.createElement('img');
         img.src = IMG_SRC;
         img.className = 'ant-logo';
-        img.style.display = 'block';
+        img.style.display = 'block'; // Jetzt machen wir die Logos sichtbar
         document.body.appendChild(img);
 
         ants.push({
@@ -90,10 +90,15 @@
       requestAnimationFrame(animate);
     };
 
+    // 2. Fehler abfangen
     testImg.onerror = function() {
       console.error("Logo konnte nicht gefunden werden. Prüfe, ob 'mask-icon-192.png' im Hauptverzeichnis liegt.");
     };
 
+    // 3. JETZT ERST den Ladevorgang starten!
+    testImg.src = IMG_SRC;
+
+    // 4. Die Animationsschleife
     function animate() {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -116,4 +121,31 @@
         if (a.y > height) { a.y = height; a.vy *= -1; }
       }
 
-      for (let i =
+      for (let i = 0; i < NUM_ANTS; i++) {
+        for (let j = i + 1; j < NUM_ANTS; j++) {
+          let a = ants[i]; let b = ants[j];
+          let dx = a.x - b.x; let dy = a.y - b.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          
+          // Wenn sie sich berühren: abprallen
+          if (distance < LOGO_SIZE) {
+            let tempVx = a.vx; let tempVy = a.vy;
+            a.vx = b.vx; a.vy = b.vy;
+            b.vx = tempVx; b.vy = tempVy;
+            let overlap = LOGO_SIZE - distance;
+            a.x += (dx / distance) * (overlap / 2); a.y += (dy / distance) * (overlap / 2);
+            b.x -= (dx / distance) * (overlap / 2); b.y -= (dy / distance) * (overlap / 2);
+          }
+        }
+      }
+
+      for (let i = 0; i < NUM_ANTS; i++) {
+        let a = ants[i];
+        let angle = Math.atan2(a.vy, a.vx) * 180 / Math.PI; 
+        a.element.style.transform = `translate(${a.x - 20}px, ${a.y - 20}px) rotate(${angle + 90}deg)`;
+      }
+      requestAnimationFrame(animate);
+    }
+  </script>
+</body>
+</html>
