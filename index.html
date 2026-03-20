@@ -6,81 +6,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#6b3fa0">
 
+  <!-- PWA & Logos (mit Cache-Buster v=2 für Updates) -->
+  <link rel="manifest" href="manifest.json?v=2">
+  <link rel="apple-touch-icon" href="icon-192.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
+
   <style>
     /* LOKALE SCHRIFTARTEN */
     @font-face {
-      font-family: 'Nunito'; font-style: normal; font-weight: 400; font-display: swap;
-      src: url('./fonts/nunito-regular.woff2') format('woff2');
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('fonts/nunito-regular.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Nunito'; font-style: normal; font-weight: 600; font-display: swap;
-      src: url('./fonts/nunito-600.woff2') format('woff2');
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('fonts/nunito-600.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Nunito'; font-style: normal; font-weight: 700; font-display: swap;
-      src: url('./fonts/nunito-700.woff2') format('woff2');
+      font-family: 'Nunito';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('fonts/nunito-700.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap;
-      src: url('./fonts/playfair-700.woff2') format('woff2');
+      font-family: 'Playfair Display';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('fonts/playfair-700.woff2') format('woff2');
     }
-
-    :root {
-      --primary: #6b3fa0;
-      --primary-dark: #4e2a7a;
-      --card-bg: #fff;
-      --text: #222;
-      --muted: #666;
-      --radius: 16px;
-      --border: #e6e6e6;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Nunito', system-ui, sans-serif;
-      background: radial-gradient(circle at top, #f3ecfb, #f6f6f6);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 16px;
-      line-height: 1.6;
-    }
-
-    /* --- FARBIGE SCROLLBAR --- */
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
-    * { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
-
-    .app { max-width: 800px; margin: 0 auto; }
+    :root{--primary:#6b3fa0;--primary-dark:#4e2a7a;--card-bg:#fff;--text:#222;--muted:#666;--radius:16px;--border:#e6e6e6;}
+    *{box-sizing:border-box;margin:0;padding:0;}
     
-    header { text-align: center; margin-bottom: 24px; }
-    h1 { font-family: 'Playfair Display', serif; color: var(--primary-dark); font-size: 2.2rem; margin-bottom: 8px;}
+    body{font-family:'Nunito',system-ui,sans-serif;background:radial-gradient(circle at top,#f3ecfb,#f6f6f6);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
     
-    .nav-links { display: flex; justify-content: center; gap: 15px; }
-    .nav-links a { color: var(--primary); text-decoration: none; font-weight: 700; }
-    .nav-links a:hover { text-decoration: underline; }
+    .app{width:100%;max-width:1400px;}
+    header{text-align:center;margin-bottom:24px;}
+    header h1, .recipe-title, .section-title {font-family:'Playfair Display',serif;}
+    header h1{font-size:2.2rem;margin-bottom:6px;color:var(--primary-dark);}
+    header p{color:var(--muted);font-size:1rem;}
+    header a{color:var(--primary-dark);text-decoration:none;font-weight:700;}
+    header a:hover{text-decoration:underline;}
 
-    .recipe-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 1px solid var(--border);
-      animation: fadeIn 0.4s ease-out;
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,0.06);padding:24px;}
+    .topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;}
+    .meta-row{display:flex;flex-wrap:wrap;gap:8px;font-size:1rem;color:var(--muted);}
+    .meta-pill{background:#efe6fb;border-radius:999px;padding:6px 14px;display:inline-flex;align-items:center;gap:6px;}
+    .meta-pill span{font-weight:700;color:var(--primary-dark);}
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    @keyframes fadeIn { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
+    
+    .recipe-card{
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.4s ease-out backwards;
+      display: flex; 
+      flex-direction: column;
     }
-
-    .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
-    .recipe-title { font-family: 'Playfair Display', serif; color: var(--primary-dark); font-size: 1.5rem; margin: 0; line-height: 1.3; }
-
-    /* --- DAS LEUCHTENDE HERZ --- */
+    .recipe-body{padding:24px; flex-grow: 1;}
+    .recipe-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
+    
+    .recipe-title{font-size:1.6rem;margin-bottom:12px;color:var(--primary-dark); line-height:1.2;}
+    
+    /* Layout für Titel und Favoriten-Herz */
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .recipe-title {
+      font-size: 1.6rem;
+      color: var(--primary-dark);
+      line-height: 1.2;
+      margin: 0; 
+    }
     .fav-btn {
       background: transparent;
       border: none;
@@ -90,136 +104,331 @@
       align-items: center;
       transition: transform 0.2s;
     }
-    .fav-btn:hover { transform: scale(1.15); }
-    .fav-btn svg { fill: #ccc; transition: fill 0.3s, filter 0.3s; }
-    .fav-btn:hover svg { fill: var(--primary); filter: drop-shadow(0 0 6px #e4ccff); }
-    .fav-btn.active svg { fill: var(--primary-dark); filter: none; }
+    
+    .fav-btn:hover { 
+      transform: scale(1.15); 
+      /* Hier gibt es jetzt KEINE Hintergrundfarbe (keinen Kreis) mehr! */
+    }
+    
+    .fav-btn svg { 
+      fill: #ccc; 
+      transition: fill 0.3s, filter 0.3s; 
+    }
+    
+    /* Hier passiert die Magie: Das Herz wird lila und bekommt einen hellvioletten Leuchtschein */
+    .fav-btn:hover svg { 
+      fill: var(--primary); 
+      filter: drop-shadow(0 0 6px #e4ccff); 
+    }
+    
+    .fav-btn.active svg { 
+      fill: var(--primary-dark); 
+      filter: none; /* Wenn es aktiv ist, leuchtet es nicht mehr, sondern bleibt dunkel-lila */
+    }
 
-    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .tag { background: #f3ecfb; color: var(--primary-dark); padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
-
-    .divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-    .recipe-content { display: grid; gap: 20px; }
-    @media (min-width: 600px) { .recipe-content { grid-template-columns: 1fr 1fr; } }
-
-    .section-title { font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 10px; font-weight: 700; }
-    ul, ol { padding-left: 20px; }
-    li { margin-bottom: 6px; }
-
-    .btn-swap {
-      width: 100%;
-      background: #fff;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: var(--radius);
-      font-weight: 700;
-      font-family: inherit;
+    /* Layout für Überschrift mit Kopier-Button */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .section-title { font-size: 1.2rem; margin: 0; color: #333; }
+    
+    .copy-btn {
+      background: #f3ecfb;
+      border: 1px solid #e2d3f0;
+      border-radius: 8px;
+      padding: 6px 12px;
       cursor: pointer;
-      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
       transition: all 0.2s;
     }
-    .btn-swap:hover { border-color: var(--primary); color: var(--primary-dark); background: #fcfcfc; }
+    .copy-btn:hover { background: var(--primary); color: #fff; }
+    .copy-btn:hover svg { fill: #fff; }
+    .copy-btn svg { transition: fill 0.2s; }
+    
+    /* Listen Styling */
+    ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; list-style: none; }
+    ul li { margin-bottom: 8px; position: relative; }
+    ul li::before { content: '—  '; color: var(--primary); font-weight: 700; position: absolute; left: -20px; }
 
-    /* --- SKELETON LOADER ANIMATION --- */
-    @keyframes skeleton-loading { 0% { background-color: #efefef; } 100% { background-color: #fcfcfc; } }
-    .skeleton { animation: skeleton-loading 0.8s linear infinite alternate; border-radius: 8px; }
+    ol.steps { list-style: none; padding-left: 0; counter-reset: step-counter; line-height: 1.6; margin-top: 12px; }
+    ol.steps li { counter-increment: step-counter; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; }
+    ol.steps li::before { content: counter(step-counter); background: var(--primary); color: #fff; font-size: 0.85rem; font-weight: 700; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
+    .tag{border:1px solid; border-radius:999px; padding:4px 12px; font-size:0.9rem; font-weight:600; display:inline-flex; align-items:center; gap:6px;}
 
+    .tag-purple { background: #f3ecfb; color: var(--primary-dark); border-color: #e2d3f0; }
+    .tag-green { background: #e6f4ea; color: #137333; border-color: #ceead6; }
+    .tag-red { background: #fce8e6; color: #c5221f; border-color: #fad2cf; }
+    .tag-yellow { background: #fef7e0; color: #b06000; border-color: #fbe9a2; }
+    .tag-blue { background: #e8f0fe; color: #1967d2; border-color: #d2e3fc; }
+    .tag-default { background: #f8f9fa; color: #5f6368; border-color: #dadce0; }
+
+    .btn-swap {width:100%;background:#fafafa;border:none;border-top:1px solid var(--border);color:var(--primary);padding:16px;font-size:1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background 0.2s;}
+    .btn-swap:hover {background:#f1ecf8;}
+
+    .muted{color:var(--muted);font-size:1rem; line-height:1.5;}
+    .divider{height:1px;background:var(--border);margin:20px 0;}
+
+    #currentRecipes {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    @media (min-width: 900px) {
+      #currentRecipes {
+        grid-template-columns: repeat(3, 1fr); 
+        align-items: stretch;
+      }
+    }
+  /* --- NEUE UPGRADES --- */
+    
+    /* Farbige Scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+    * { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
+
+    /* Skeleton-Animation */
+    @keyframes skeleton-loading {
+      0% { background-color: #efefef; }
+      100% { background-color: #fcfcfc; }
+    }
+    .skeleton {
+      animation: skeleton-loading 0.8s linear infinite alternate;
+      border-radius: 8px;
+    }  
   </style>
 </head>
 <body>
   <div class="app">
     <header>
       <h1>Timm's Tipps des Tages</h1>
-      <div class="nav-links">
-        <a href="archive.html">Zur Rezeptdatenbank</a>
-      </div>
+      <p><a href="archive.html">📚 Zur Rezeptdatenbank</a></p>
     </header>
 
-    <main id="currentRecipes">
-      </main>
-
-    <footer style="text-align: center; margin-top: 40px; font-size: 0.9rem;">
-      <a href="impressum.html" style="color: var(--muted); text-decoration: none;">Impressum</a> | 
-      <a href="datenschutz.html" style="color: var(--muted); text-decoration: none;">Datenschutz</a>
+<main class="card">
+      <div id="currentRecipes"></div>
+    </main>
+    <footer style="text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.9rem;">
+      <a href="impressum.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Impressum</a>
+      <a href="datenschutz.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Datenschutz</a>
     </footer>
   </div>
 
   <script src="rezepte.js"></script>
 
   <script>
-    const STORAGE_SELECTED_WEEK = "tipps_selected_week";
-    const STORAGE_FAVORITES = "tipps_favorites";
-    const IGNORE_TAGS = ["Optional Fleisch", "Optional vegetarisch"];
+    
+    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
+    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+    const STORAGE_FAVORITES = "timm-favorites-v1";
+    
+    // ... hier geht dein restlicher Code normal weiter ...
 
-    // Hilfsfunktionen
-    function loadJSON(key, fallback) {
-      try {
-        const val = localStorage.getItem(key);
-        return val ? JSON.parse(val) : fallback;
-      } catch (e) {
-        return fallback;
-      }
-    }
-
-    function saveJSON(key, data) {
-      localStorage.setItem(key, JSON.stringify(data));
-    }
-
-    // Aktuelle Kalenderwoche berechnen
-    function getIsoWeek() {
-      const d = new Date();
-      d.setHours(0,0,0,0);
-      d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-      const yearStart = new Date(d.getFullYear(), 0, 1);
-      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `${d.getFullYear()}-W${weekNo}`;
-    }
-
-    // Favoriten laden und speichern
     function getFavorites() {
       return loadJSON(STORAGE_FAVORITES, []);
     }
 
-    window.toggleFavorite = function(id, btn) {
+    window.toggleFavorite = function(recipeId, btnElement) {
       let favs = getFavorites();
-      if (favs.includes(id)) {
-        favs = favs.filter(f => f !== id);
-        btn.classList.remove('active');
+      if (favs.includes(recipeId)) {
+        favs = favs.filter(id => id !== recipeId);
+        btnElement.classList.remove('active');
       } else {
-        favs.push(id);
-        btn.classList.add('active');
+        favs.push(recipeId);
+        btnElement.classList.add('active');
       }
       saveJSON(STORAGE_FAVORITES, favs);
     };
+    // Unerwünschte Tags ausblenden
+    const IGNORE_TAGS = ["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Optional Fisch/Meeresfrüchte", "Mitteleuropäisch", "Asiatisch inspiriert"];
 
-    function renderTag(tag) {
-      return `<span class="tag">${tag}</span>`;
-    }
+    // ====== FUNKTION ZUM KOPIEREN ======
+    window.copyRecipe = function(recipeId, btnElement) {
+      const r = recipes.find(x => x.id === recipeId);
+      if (!r) return;
 
-    // Rezepte der Woche laden oder neu würfeln
-    function loadWeekSelection(weekKey) {
-      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
-      if (stored && stored.weekKey === weekKey && stored.selection && stored.selection.length === 3) {
-        return stored.selection;
+      const textToCopy = `${r.title}\n\n🛒 Zutaten:\n${r.ingredients.map(i => '- ' + i).join('\n')}\n\n👨‍🍳 Zubereitung:\n${r.steps.map((s, idx) => (idx+1) + '. ' + s).join('\n')}`;
+
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        const originalHTML = btnElement.innerHTML;
+        btnElement.innerHTML = "✅ Kopiert!";
+        setTimeout(() => {
+          btnElement.innerHTML = originalHTML;
+        }, 2000);
+      } catch (err) {
+        console.error('Kopieren fehlgeschlagen', err);
       }
-      let shuffled = [...recipes].sort(() => 0.5 - Math.random());
-      let selection = shuffled.slice(0, 3).map(r => r.id);
-      saveJSON(STORAGE_SELECTED_WEEK, { weekKey, selection });
-      return selection;
+      
+      document.body.removeChild(textArea);
+    };
+function getEmojiForTag(tagText) {
+      const t = tagText.toLowerCase();
+      
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) return "🌱";
+      if (t.includes("schnell") || t.includes("einfach")) return "⏱️";
+      if (t.includes("pasta") || t.includes("nudel")) return "🍝";
+      if (t.includes("suppe") || t.includes("eintopf")) return "🍲";
+      if (t.includes("fleisch") || t.includes("hähnchen") || t.includes("rind")) return "🥩";
+      if (t.includes("fisch") || t.includes("lachs")) return "🐟";
+      if (t.includes("asiatisch")) return "🍜";
+      if (t.includes("deutsch")) return "🇩🇪";
+      if (t.includes("leicht")) return "🪽";
+      if (t.includes("mediterran")) return "💃";
+      if (t.includes("salat")) return "🥬";
+      if (t.includes("sattmacher")) return "🫃";
+      if (t.includes("klassiker")) return "👵"; 
+      if (t.includes("curry")) return "🔥";
+      if (t.includes("bowl")) return "🥣";
+      if (t.includes("herzhaft")) return "🧂";
+      if (t.includes("resteverwertung")) return "♻️";
+      
+      return "🍴";
     }
 
-    function saveWeekSelection(weekKey, selection) {
-      saveJSON(STORAGE_SELECTED_WEEK, { weekKey, selection });
+    // ===== DIESE FUNKTION MUSS EIGENSTÄNDIG STEHEN =====
+    function renderTag(tagText) {
+      return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
     }
 
-    // Einzelnes Rezept mit Skeleton-Loader austauschen
+    function getColorClassForTag(tagText) {
+      const t = tagText.toLowerCase();
+      
+      // GRÜN (Gesund, Gemüse, Nachhaltig)
+      if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat") || t.includes("resteverwertung")) return "tag-green";
+      
+      // GELB (Nudeln, Sattmacher, Tradition)
+      if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher") || t.includes("klassiker")) return "tag-yellow";
+      
+      // ROT (Würzig, Deftig, Heiß)
+      if (t.includes("fleisch") || t.includes("mediterran") || t.includes("curry") || t.includes("herzhaft")) return "tag-red";
+      
+      // BLAU (Leichtes, Flüssiges, Maritimes)
+      if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht") || t.includes("bowl")) return "tag-blue";
+      
+      // VIOLETT (Standard)
+      return "tag-purple";
+    }
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    }
+
+    function getCurrentWeekKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${getWeekNumber(now)}`;
+    }
+
+    function loadJSON(key, fallback) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      try { return JSON.parse(raw); } catch { return fallback; }
+    }
+    function saveJSON(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function pickRandomThreeRecipes() {
+      const shuffled = [...recipes].sort(() => 0.5 - Math.random());
+      return [shuffled[0].id, shuffled[1].id, shuffled[2].id];
+    }
+
+    function loadWeekSelection(weekKey) {
+      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
+      return archive[weekKey] || null;
+    }
+
+    function saveWeekSelection(weekKey, recipeIds) {
+      const archive = loadJSON(STORAGE_WEEK_RECIPES, {});
+      archive[weekKey] = recipeIds;
+      saveJSON(STORAGE_WEEK_RECIPES, archive);
+    }
+
+    function renderRecipeCards(recipeIds, containerElement) {
+      containerElement.innerHTML = "";
+      
+      recipeIds.forEach((id, index) => {
+        const r = recipes.find(x => x.id === id);
+        if (!r) return;
+
+        // Favoriten laden und prüfen
+        const favs = getFavorites();
+        const isFav = favs.includes(r.id);
+        
+        // Herz Icon (20x20, genau wie der Speichern-Button)
+        const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+        const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
+        
+        const card = document.createElement("div");
+        card.className = "recipe-card";
+        card.style.animationDelay = `${index * 0.1}s`; 
+
+        const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
+
+        card.innerHTML = `
+          <div class="recipe-body">
+            <div class="title-row">
+              <h2 class="recipe-title">${r.title}</h2>
+              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
+                ${heartSvg}
+              </button>
+            </div>
+
+            <div class="tag-row">
+              ${visibleTags.map(t => renderTag(t)).join("")}
+            </div>
+            <div class="divider"></div>
+            
+            <div class="recipe-content">
+              <div class="ingredients-col">
+                <div class="section-header">
+                  <h3 class="section-title">🛒 Zutaten</h3>
+                  <button class="copy-btn" onclick="copyRecipe('${r.id}', this)" title="Zutaten und Rezept kopieren">
+                    ${floppyIcon}
+                  </button>
+                </div>
+                <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+              </div>
+              <div class="steps-col">
+                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+                <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+              </div>
+            </div>
+          </div>
+          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
+        `;
+        containerElement.appendChild(card);
+      });
+    }
     window.swapSingleRecipe = function(indexToReplace) {
       const container = document.getElementById("currentRecipes");
       const oldCard = container.children[indexToReplace];
       
-      // Platzhalter (Skeleton) generieren
+      // 1. Platzhalter (Skeleton) anzeigen
       const skeletonCard = document.createElement("div");
       skeletonCard.className = "recipe-card";
       skeletonCard.style.animationDelay = "0s";
@@ -234,12 +443,12 @@
           <div class="skeleton" style="height: 100px; width: 100%;"></div>
           <div class="skeleton" style="margin-top: 20px; height: 150px; width: 100%;"></div>
         </div>
-        <div class="skeleton" style="margin-top: 16px; height: 45px; width: 100%;"></div>
+        <div class="skeleton" style="height: 50px; width: 100%;"></div>
       `;
       
       container.replaceChild(skeletonCard, oldCard);
 
-      // Timeout für geschmeidigen Übergang
+      // 2. Kurz warten (300ms) und dann das neue Rezept laden
       setTimeout(() => {
         const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
         if (!stored) return;
@@ -261,7 +470,9 @@
         const isFav = favs.includes(r.id);
         const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
 
-        const heartSvg = `<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+        // Icons
+        const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+        const floppyIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--primary)"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>`;
 
         const finalCard = document.createElement("div");
         finalCard.className = "recipe-card";
@@ -281,11 +492,16 @@
             <div class="divider"></div>
             <div class="recipe-content">
               <div class="ingredients-col">
-                <h3 class="section-title">🛒 Zutaten</h3>
+                <div class="section-header">
+                  <h3 class="section-title">🛒 Zutaten</h3>
+                  <button class="copy-btn" onclick="copyRecipe('${r.id}', this)" title="Zutaten und Rezept kopieren">
+                    ${floppyIcon}
+                  </button>
+                </div>
                 <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
               </div>
               <div class="steps-col">
-                <h3 class="section-title">👨‍🍳 Zubereitung</h3>
+                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
                 <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
               </div>
             </div>
@@ -296,63 +512,33 @@
         container.replaceChild(finalCard, skeletonCard);
       }, 300);
     };
+    function showWeek(weekKey) {
+      const [yearStr, weekStr] = weekKey.split("-");
 
-    // Initiale Wochen-Anzeige generieren
-    function showWeek() {
-      // WICHTIG: Falls recipes nicht existiert (falscher Pfad), direkt abbrechen, um Crash zu vermeiden
-      if (typeof recipes === 'undefined') {
-        document.getElementById("currentRecipes").innerHTML = `<p style="text-align:center; color:red;">Fehler: rezepte.js konnte nicht geladen werden. Bitte Pfad prüfen!</p>`;
-        return;
+      let selected = loadWeekSelection(weekKey);
+      if (!selected) {
+        selected = pickRandomThreeRecipes();
+        saveWeekSelection(weekKey, selected);
       }
 
-      const weekKey = getIsoWeek();
-      const selection = loadWeekSelection(weekKey);
-      const container = document.getElementById("currentRecipes");
-      container.innerHTML = "";
+      renderRecipeCards(selected, document.getElementById("currentRecipes"));
+      saveJSON(STORAGE_SELECTED_WEEK, { weekKey });
+    }
 
-      const favs = getFavorites();
+    function initApp() {
+      const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
+      const weekKey = stored?.weekKey || getCurrentWeekKey();
+      showWeek(weekKey);
+    }
 
-      selection.forEach((id, index) => {
-        const r = recipes.find(x => x.id === id);
-        if (!r) return;
-
-        const isFav = favs.includes(r.id);
-        const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
-        const heartSvg = `<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-
-        const card = document.createElement("div");
-        card.className = "recipe-card";
-        card.innerHTML = `
-          <div class="recipe-body">
-            <div class="title-row">
-              <h2 class="recipe-title">${r.title}</h2>
-              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${r.id}', this)" title="Als Favorit markieren">
-                ${heartSvg}
-              </button>
-            </div>
-            <div class="tag-row">
-              ${visibleTags.map(t => renderTag(t)).join("")}
-            </div>
-            <div class="divider"></div>
-            <div class="recipe-content">
-              <div class="ingredients-col">
-                <h3 class="section-title">🛒 Zutaten</h3>
-                <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
-              </div>
-              <div class="steps-col">
-                <h3 class="section-title">👨‍🍳 Zubereitung</h3>
-                <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
-              </div>
-            </div>
-          </div>
-          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
-        `;
-        container.appendChild(card);
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
       });
     }
 
-    // App direkt starten
-    showWeek();
+    document.addEventListener("DOMContentLoaded", initApp);
   </script>
 </body>
 </html>
+
