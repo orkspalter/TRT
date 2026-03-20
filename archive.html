@@ -83,9 +83,36 @@
     .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
     .recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; }
     .fav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
-    .fav-btn:hover { transform: scale(1.15); }
-    .fav-btn svg { fill: #ccc; transition: fill 0.3s; }
-    .fav-btn.active svg { fill: var(--primary-dark); }
+    .fav-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    
+    .fav-btn:hover { 
+      transform: scale(1.15); 
+      /* Hier gibt es jetzt KEINE Hintergrundfarbe (keinen Kreis) mehr! */
+    }
+    
+    .fav-btn svg { 
+      fill: #ccc; 
+      transition: fill 0.3s, filter 0.3s; 
+    }
+    
+    /* Hier passiert die Magie: Das Herz wird lila und bekommt einen hellvioletten Leuchtschein */
+    .fav-btn:hover svg { 
+      fill: var(--primary); 
+      filter: drop-shadow(0 0 6px #e4ccff); 
+    }
+    
+    .fav-btn.active svg { 
+      fill: var(--primary-dark); 
+      filter: none; /* Wenn es aktiv ist, leuchtet es nicht mehr, sondern bleibt dunkel-lila */
+    }
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .section-title { font-size: 1.2rem; margin: 0; color: #333; }
     
@@ -116,7 +143,25 @@
     .page-num { background: #fff; border: 1.5px solid var(--primary-dark); color: var(--primary-dark); min-width: 36px; height: 36px; padding: 0 10px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; }
     .page-num:hover { background: #f3ecfb; }
     .page-num.active { background: var(--primary-dark); color: #fff; cursor: default; }
-  </style>
+ /* --- NEUE UPGRADES --- */
+    
+    /* Farbige Scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+    * { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
+
+    /* Skeleton-Animation */
+    @keyframes skeleton-loading {
+      0% { background-color: #efefef; }
+      100% { background-color: #fcfcfc; }
+    }
+    .skeleton {
+      animation: skeleton-loading 0.8s linear infinite alternate;
+      border-radius: 8px;
+    }
+ </style>
 </head>
 <body>
   <div class="app">
