@@ -1,4 +1,29 @@
 /* =========================================
+   0. PASSWORTSCHUTZ (Einfach)
+   ========================================= */
+const SECRET_PASSWORD = "EINSTEIN"; // <-- HIER dein Wunschpasswort eintragen!
+
+// Prüfen, ob das Passwort in diesem Tab schon eingegeben wurde
+if (sessionStorage.getItem("timm_auth") !== "true") {
+  let userInput = prompt("Bitte Passwort eingeben, um Timms Rezepte zu sehen:");
+  
+  if (userInput === SECRET_PASSWORD) {
+    // Richtiges Passwort: Für diese Sitzung merken
+    sessionStorage.setItem("timm_auth", "true");
+  } else {
+    // Falsches Passwort: Seite komplett leeren und Warnung anzeigen
+    document.body.innerHTML = `
+      <div style="text-align:center; padding: 50px; font-family: 'Nunito', sans-serif;">
+        <h1 style="color: #c5221f;">🛑 Zugriff verweigert</h1>
+        <p style="margin: 20px 0; color: #666;">Das Passwort war leider falsch oder die Eingabe wurde abgebrochen.</p>
+        <button onclick="location.reload()" style="padding: 10px 20px; font-size: 1rem; border-radius: 8px; border: none; background: #6b3fa0; color: white; cursor: pointer; font-weight: bold;">Nochmal versuchen</button>
+      </div>
+    `;
+    throw new Error("Falsches Passwort - Skriptausführung gestoppt."); // Stoppt den Rest der App
+  }
+}
+
+/* =========================================
    1. GLOBALE KONSTANTEN
    ========================================= */
 const STORAGE_FAVORITES = "timm-favorites-v1";
