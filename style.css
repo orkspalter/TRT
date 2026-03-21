@@ -1,0 +1,182 @@
+/* =========================================
+   1. SCHRIFTARTEN (FONTS)
+   ========================================= */
+@font-face { font-family: 'Nunito'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/nunito-regular.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/nunito-600.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/nunito-700.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/playfair-700.woff2') format('woff2'); }
+
+/* =========================================
+   2. VARIABLEN & RESET
+   ========================================= */
+:root {
+  --primary: #6b3fa0;
+  --primary-dark: #4e2a7a;
+  --card-bg: #fff;
+  --text: #222;
+  --muted: #666;
+  --radius: 16px;
+  --border: #e6e6e6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* =========================================
+   3. BASIS-LAYOUT (BODY, HEADER, FOOTER)
+   ========================================= */
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: radial-gradient(circle at top, #f3ecfb, #f6f6f6);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+.app { width: 100%; max-width: 1400px; }
+
+header { text-align: center; margin-bottom: 24px; }
+header h1, .recipe-title, .section-title { font-family: 'Playfair Display', serif; }
+header h1 { font-size: 2.2rem; margin-bottom: 6px; color: var(--primary-dark); }
+header p, .muted { color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.muted { margin-bottom: 12px; }
+header a { color: var(--primary-dark); text-decoration: none; font-weight: 700; }
+header a:hover { text-decoration: underline; }
+
+.card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 24px; }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* =========================================
+   4. REZEPTKARTEN (RECIPE CARDS)
+   ========================================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.recipe-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.4s ease-out backwards;
+  display: flex;
+  flex-direction: column;
+}
+.recipe-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.12); }
+.recipe-body { padding: 24px; flex-grow: 1; }
+
+.title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; }
+
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.section-title { font-size: 1.2rem; margin: 0; color: #333; }
+
+/* Listen (Zutaten & Schritte) */
+ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; list-style: none; }
+ul li { margin-bottom: 8px; position: relative; }
+ul li::before { content: '—  '; color: var(--primary); font-weight: 700; position: absolute; left: -20px; }
+
+ol.steps { list-style: none; padding-left: 0; counter-reset: step-counter; line-height: 1.6; margin-top: 12px; }
+ol.steps li { counter-increment: step-counter; margin-bottom: 14px; display: flex; align-items: flex-start; gap: 12px; }
+ol.steps li::before { content: counter(step-counter); background: var(--primary); color: #fff; font-size: 0.85rem; font-weight: 700; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+/* =========================================
+   5. TAGS (KATEGORIEN)
+   ========================================= */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px; }
+.tag { border: 1px solid; border-radius: 999px; padding: 4px 12px; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+
+.tag-purple { background: #f3ecfb; color: var(--primary-dark); border-color: #e2d3f0; }
+.tag-green { background: #e6f4ea; color: #137333; border-color: #ceead6; }
+.tag-red { background: #fce8e6; color: #c5221f; border-color: #fad2cf; }
+.tag-yellow { background: #fef7e0; color: #b06000; border-color: #fbe9a2; }
+.tag-blue { background: #e8f0fe; color: #1967d2; border-color: #d2e3fc; }
+.tag-default { background: #f8f9fa; color: #5f6368; border-color: #dadce0; }
+
+/* =========================================
+   6. BUTTONS & INTERAKTIONEN
+   ========================================= */
+.fav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
+.fav-btn:hover { transform: scale(1.15); }
+.fav-btn svg { fill: #ccc; transition: fill 0.3s, filter 0.3s; }
+.fav-btn:hover svg { fill: var(--primary); filter: drop-shadow(0 0 6px #e4ccff); }
+.fav-btn.active svg { fill: var(--primary-dark); filter: none; }
+
+.copy-btn { background: #f3ecfb; border: 1px solid #e2d3f0; border-radius: 8px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 700; font-family: 'Nunito', sans-serif; font-size: 0.9rem; transition: all 0.2s; }
+.copy-btn:hover { background: var(--primary); color: #fff; }
+.copy-btn:hover svg { fill: #fff; }
+.copy-btn svg { transition: fill 0.2s; }
+
+.btn-swap { width: 100%; background: #fafafa; border: none; border-top: 1px solid var(--border); color: var(--primary); padding: 16px; font-size: 1rem; font-weight: 700; font-family: 'Nunito', sans-serif; cursor: pointer; transition: background 0.2s; }
+.btn-swap:hover { background: #f1ecf8; }
+
+/* =========================================
+   7. ARCHIV SPEZIFISCH (SUCHE & FILTER)
+   ========================================= */
+.search-input {
+  width: 100%;
+  padding: 16px;
+  /* margin-bottom wurde hier entfernt */
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  font-size: 1.1rem;
+  font-family: 'Nunito', sans-serif;
+  background: #fafafa;
+  transition: border-color 0.2s;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.search-input:focus { outline: none; border-color: var(--primary); background: #fff; }
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 20px; /* NEU: Der Abstand sitzt jetzt sicher hier! */
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 57px; /* NEU: Die exakte Höhe des Suchfelds, damit es perfekt andockt */
+  z-index: 9;
+  background: var(--card-bg);
+}
+.filter-btn { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--primary-dark); background: #fff; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--primary-dark); transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.filter-btn:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); background: #f3ecfb; }
+.filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 4px 10px rgba(107, 63, 160, 0.3); }
+
+.more-btn { background: #fff; border: 1px solid var(--primary-dark); color: var(--primary-dark); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; }
+.more-btn:hover { background: #f3ecfb; }
+
+.empty { padding: 24px; border-radius: 12px; border: 2px dashed var(--border); color: var(--muted); background: #fafafa; text-align: center; font-size: 1.1rem; grid-column: 1 / -1; }
+
+.pagination-container { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border); }
+.page-num { background: #fff; border: 1.5px solid var(--primary-dark); color: var(--primary-dark); min-width: 36px; height: 36px; padding: 0 10px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; }
+.page-num:hover { background: #f3ecfb; }
+.page-num.active { background: var(--primary-dark); color: #fff; cursor: default; }
+
+/* =========================================
+   8. GRIDS (Startseite & Archiv zusammengeführt)
+   ========================================= */
+#currentRecipes, .recipes-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+@media (min-width: 768px) {
+  #currentRecipes, .recipes-grid { grid-template-columns: repeat(2, 1fr); align-items: stretch; }
+}
+@media (min-width: 1100px) {
+  #currentRecipes, .recipes-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* =========================================
+   9. EXTRAS (SCROLLBAR & SKELETON)
+   ========================================= */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; border: 2px solid #f1f1f1; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+* { scrollbar-width: thin; scrollbar-color: var(--primary) #f1f1f1; }
+
+@keyframes skeleton-loading { 0% { background-color: #efefef; } 100% { background-color: #fcfcfc; } }
+.skeleton { animation: skeleton-loading 0.8s linear infinite alternate; border-radius: 8px; }
