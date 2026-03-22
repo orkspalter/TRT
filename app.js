@@ -1,25 +1,22 @@
 /* =========================================
-   0. PASSWORTSCHUTZ (Einfach)
+   0. PASSWORTSCHUTZ
    ========================================= */
-const SECRET_PASSWORD = "EINSTEIN"; // <-- HIER dein Wunschpasswort eintragen!
+const SECRET_PASSWORD = "timm"; // <-- HIER dein Wunschpasswort eintragen!
 
-// Prüfen, ob das Passwort in diesem Tab schon eingegeben wurde
 if (sessionStorage.getItem("timm_auth") !== "true") {
   let userInput = prompt("Bitte Passwort eingeben, um Timms Rezepte zu sehen:");
   
   if (userInput === SECRET_PASSWORD) {
-    // Richtiges Passwort: Für diese Sitzung merken
     sessionStorage.setItem("timm_auth", "true");
   } else {
-    // Falsches Passwort: Seite komplett leeren und Warnung anzeigen
     document.body.innerHTML = `
-      <div style="text-align:center; padding: 50px; font-family: 'Nunito', sans-serif;">
+      <div style="text-align:center; padding: 50px; font-family: 'Nunito', sans-serif; background: #fff; min-height: 100vh;">
         <h1 style="color: #c5221f;">🛑 Zugriff verweigert</h1>
         <p style="margin: 20px 0; color: #666;">Das Passwort war leider falsch oder die Eingabe wurde abgebrochen.</p>
         <button onclick="location.reload()" style="padding: 10px 20px; font-size: 1rem; border-radius: 8px; border: none; background: #6b3fa0; color: white; cursor: pointer; font-weight: bold;">Nochmal versuchen</button>
       </div>
     `;
-    throw new Error("Falsches Passwort - Skriptausführung gestoppt."); // Stoppt den Rest der App
+    throw new Error("Skriptausführung gestoppt - Falsches Passwort.");
   }
 }
 
@@ -27,13 +24,7 @@ if (sessionStorage.getItem("timm_auth") !== "true") {
    1. GLOBALE KONSTANTEN
    ========================================= */
 const STORAGE_FAVORITES = "timm-favorites-v1";
-
-// Tags, die auf den Karten nicht angezeigt oder mitgefiltert werden sollen
-const IGNORE_TAGS = [
-  "Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", 
-  "Beilage", "Optional Fisch/Meeresfrüchte", 
-  "Mitteleuropäisch", "Asiatisch inspiriert"
-];
+const IGNORE_TAGS = ["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Optional Fisch/Meeresfrüchte", "Mitteleuropäisch", "Asiatisch inspiriert"];
 
 
 /* =========================================
@@ -47,51 +38,62 @@ function getFavorites() {
 
 window.toggleFavorite = function(recipeId, btnElement) {
   let favs = getFavorites();
-  
   if (favs.includes(recipeId)) {
-    // Wenn schon Favorit: Entfernen
     favs = favs.filter(id => id !== recipeId);
     btnElement.classList.remove('active');
   } else {
-    // Wenn noch kein Favorit: Hinzufügen
     favs.push(recipeId);
     btnElement.classList.add('active');
   }
-  
-  // Im Browser speichern
   localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(favs));
 };
 
 
 /* =========================================
-   3. REZEPT KOPIEREN
+   3. NATIVES TEILEN / KOPIEREN (VORSCHLAG 1)
    ========================================= */
-window.copyRecipe = function(recipeId, btnElement) {
+window.shareRecipe = async function(recipeId, btnElement) {
   const r = recipes.find(x => x.id === recipeId);
   if (!r) return;
 
-  const textToCopy = `${r.title}\n\n🛒 Zutaten:\n${r.ingredients.map(i => '- ' + i).join('\n')}\n\n👨‍🍳 Zubereitung:\n${r.steps.map((s, idx) => (idx+1) + '. ' + s).join('\n')}`;
+  const shareText = `🛒 Zutaten:\n${r.ingredients.map(i => '- ' + i).join('\n')}\n\n👨‍🍳 Zubereitung:\n${r.steps.map((s, idx) => (idx+1) + '. ' + s).join('\n')}`;
 
-  const textArea = document.createElement("textarea");
-  textArea.value = textToCopy;
-  textArea.style.position = "fixed";
-  textArea.style.left = "-9999px";
-  document.body.appendChild(textArea);
-  
-  textArea.select();
-  
-  try {
-    document.execCommand('copy');
-    const originalHTML = btnElement.innerHTML;
-    btnElement.innerHTML = "✅ Kopiert!";
-    setTimeout(() => {
-      btnElement.innerHTML = originalHTML;
-    }, 2000);
-  } catch (err) {
-    console.error('Kopieren fehlgeschlagen', err);
+  // Prüfen, ob das native Teilen-Menü verfügbar ist (meistens Mobile)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: r.title,
+        text: shareText,
+        url: window.location.href // Option 1: Teilen-Text + URL
+        // url: window.location.origin + '/archive.html?id=' + r.id // Option 2 (besser): Wenn du Deep-Links hättest
+      });
+      console.log('Erfolgreich geteilt');
+    } catch (err) {
+      console.log('Fehler beim Teilen:', err);
+    }
+  } else {
+    // FALLBACK: Wenn natives Teilen nicht geht, wie gehabt kopieren (meistens Desktop)
+    const textArea = document.createElement("textarea");
+    textArea.value = `${r.title}\n\n${shareText}`;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      const originalHTML = btnElement.innerHTML;
+      btnElement.innerHTML = "✅ Kopiert!";
+      setTimeout(() => {
+        btnElement.innerHTML = originalHTML;
+      }, 2000);
+    } catch (err) {
+      console.error('Kopieren fehlgeschlagen', err);
+    }
+    
+    document.body.removeChild(textArea);
   }
-  
-  document.body.removeChild(textArea);
 };
 
 
@@ -100,7 +102,6 @@ window.copyRecipe = function(recipeId, btnElement) {
    ========================================= */
 function getEmojiForTag(tagText) {
   const t = tagText.toLowerCase();
-  
   if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse")) return "🌱";
   if (t.includes("schnell") || t.includes("einfach")) return "⏱️";
   if (t.includes("pasta") || t.includes("nudel")) return "🍝";
@@ -118,23 +119,15 @@ function getEmojiForTag(tagText) {
   if (t.includes("bowl")) return "🥣";
   if (t.includes("herzhaft")) return "🧂";
   if (t.includes("resteverwertung")) return "♻️";
-  
-  return "🍴"; // Standard-Emoji
+  return "🍴";
 }
 
 function getColorClassForTag(tagText) {
   const t = tagText.toLowerCase();
-  
-  // GRÜN (Gesund, Gemüse, Nachhaltig)
   if (t.includes("vegetarisch") || t.includes("vegan") || t.includes("gemüse") || t.includes("salat") || t.includes("resteverwertung")) return "tag-green";
-  // GELB (Nudeln, Sattmacher, Tradition)
   if (t.includes("schnell") || t.includes("pasta") || t.includes("asiatisch") || t.includes("sattmacher") || t.includes("klassiker")) return "tag-yellow";
-  // ROT (Würzig, Deftig, Heiß)
   if (t.includes("fleisch") || t.includes("mediterran") || t.includes("curry") || t.includes("herzhaft")) return "tag-red";
-  // BLAU (Leichtes, Flüssiges, Maritimes)
   if (t.includes("suppe") || t.includes("fisch") || t.includes("leicht") || t.includes("bowl")) return "tag-blue";
-  
-  // VIOLETT (Standard)
   return "tag-purple";
 }
 
@@ -146,7 +139,6 @@ function renderTag(tagText) {
 /* =========================================
    5. SERVICE WORKER REGISTRIERUNG
    ========================================= */
-// Sorgt dafür, dass die App offline funktioniert
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("sw.js").catch(err => console.log("SW Fehler:", err));
