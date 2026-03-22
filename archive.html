@@ -13,7 +13,7 @@
 </head>
 <body>
   <div class="app">
-     <button class="theme-toggle" onclick="toggleTheme()" title="Nachtmodus umschalten">🌓</button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Nachtmodus umschalten">🌓</button>
 
     <header>
       <h1>Rezeptdatenbank</h1>
@@ -29,6 +29,7 @@
       <div id="databaseContainer" class="recipes-grid"></div>
       <div id="paginationContainer" class="pagination-container"></div>
     </main>
+
     <footer style="text-align: center; margin-top: 40px; padding-bottom: 20px; font-size: 0.9rem;">
       <a href="impressum.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Impressum</a>
       <a href="datenschutz.html" style="color: var(--muted); text-decoration: none; margin: 0 10px;">Datenschutz</a>
@@ -44,7 +45,6 @@
     let currentPage = 1;
     const RECIPES_PER_PAGE = 10;
   
-    // Sortierung nach Häufigkeit
     function getUniqueTags() {
       const tagCounts = {};
       recipes.forEach(r => {
@@ -67,11 +67,9 @@
       const showMoreButton = uniqueTags.length > limit;
       const tagsToRender = isExpanded ? uniqueTags : uniqueTags.slice(0, limit);
 
-      // 1. NEU: Der Favoriten-Button kommt immer als erstes!!
       const isFavActive = selectedTags.includes("Favoriten");
       let html = `<button class="filter-btn ${isFavActive ? 'active' : ''}" onclick="toggleFilter('Favoriten')">💜 Favoriten</button>`;
 
-      // 2. Danach werden die normalen Tags gerendert
       html += tagsToRender.map(tag => {
         const isActive = selectedTags.includes(tag);
         const activeClass = isActive ? "active" : "";
@@ -108,29 +106,21 @@
       if (searchQuery) {
         const favs = getFavorites();
         filteredRecipes = filteredRecipes.filter(r => {
-          // Prüfen, ob nach Favoriten gesucht wird
           if (searchQuery === "❤️" || searchQuery.includes("favorit")) {
             return favs.includes(r.id);
           }
-          // Ansonsten normale Textsuche
           const textToSearch = (r.title + " " + r.tags.join(" ") + " " + r.ingredients.join(" ")).toLowerCase();
           return textToSearch.includes(searchQuery);
         });
       }
 
       if (selectedTags.length > 0) {
-        // Favoriten laden und prüfen, ob der Favoriten-Filter angeklickt wurde
         const favs = getFavorites();
         const requireFav = selectedTags.includes("Favoriten");
-        
-        // Alle anderen ausgewählten Tags (ohne "Favoriten")
         const normalTags = selectedTags.filter(t => t !== "Favoriten");
 
         filteredRecipes = filteredRecipes.filter(r => {
-          // 1. Check: Wenn der Favoriten-Filter aktiv ist, MUSS das Rezept ein Herz haben
           if (requireFav && !favs.includes(r.id)) return false;
-          
-          // 2. Check: Das Rezept muss außerdem alle anderen ausgewählten Tags besitzen
           return normalTags.every(selectedTag => r.tags.includes(selectedTag));
         });
       }
@@ -149,12 +139,9 @@
 
       container.innerHTML = recipesToShow.map((r, index) => {
         const visibleTags = r.tags.filter(t => !IGNORE_TAGS.includes(t));
-        
-        // Favoriten-Status abrufen & Herz-Icon
         const favs = getFavorites();
         const isFav = favs.includes(r.id);
         
-        // Icons
         const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
         const shareIcon = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="var(--primary)" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>`;
         
@@ -167,7 +154,7 @@
                   ${heartSvg}
                 </button>
               </div>
-              <div class="tag-row">${visibleTags.map(t => `<span class="tag ${getColorClassForTag(t)}">${getEmojiForTag(t)} ${t}</span>`).join("")}</div>
+              <div class="tag-row">${visibleTags.map(t => renderTag(t)).join("")}</div>
               <div class="divider"></div>
               <div class="section-header">
                 <h3 class="section-title">🛒 Zutaten</h3>
