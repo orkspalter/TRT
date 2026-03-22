@@ -26,7 +26,6 @@ if (sessionStorage.getItem("timm_auth") !== "true") {
 const STORAGE_FAVORITES = "timm-favorites-v1";
 const IGNORE_TAGS = ["Pfanne", "Pfanne/Ofen", "Ofen", "Familienküche", "Beilage", "Optional Fisch/Meeresfrüchte", "Mitteleuropäisch", "Asiatisch inspiriert"];
 
-
 /* =========================================
    2. FAVORITEN-SYSTEM (HERZ)
    ========================================= */
@@ -48,9 +47,8 @@ window.toggleFavorite = function(recipeId, btnElement) {
   localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(favs));
 };
 
-
 /* =========================================
-   3. NATIVES TEILEN / KOPIEREN (VORSCHLAG 1)
+   3. NATIVES TEILEN / KOPIEREN
    ========================================= */
 window.shareRecipe = async function(recipeId, btnElement) {
   const r = recipes.find(x => x.id === recipeId);
@@ -58,21 +56,17 @@ window.shareRecipe = async function(recipeId, btnElement) {
 
   const shareText = `🛒 Zutaten:\n${r.ingredients.map(i => '- ' + i).join('\n')}\n\n👨‍🍳 Zubereitung:\n${r.steps.map((s, idx) => (idx+1) + '. ' + s).join('\n')}`;
 
-  // Prüfen, ob das native Teilen-Menü verfügbar ist (meistens Mobile)
   if (navigator.share) {
     try {
       await navigator.share({
         title: r.title,
         text: shareText,
-        url: window.location.href // Option 1: Teilen-Text + URL
-        // url: window.location.origin + '/archive.html?id=' + r.id // Option 2 (besser): Wenn du Deep-Links hättest
+        url: window.location.href
       });
-      console.log('Erfolgreich geteilt');
     } catch (err) {
       console.log('Fehler beim Teilen:', err);
     }
   } else {
-    // FALLBACK: Wenn natives Teilen nicht geht, wie gehabt kopieren (meistens Desktop)
     const textArea = document.createElement("textarea");
     textArea.value = `${r.title}\n\n${shareText}`;
     textArea.style.position = "fixed";
@@ -95,7 +89,6 @@ window.shareRecipe = async function(recipeId, btnElement) {
     document.body.removeChild(textArea);
   }
 };
-
 
 /* =========================================
    4. TAGS, EMOJIS & FARBEN
@@ -135,7 +128,6 @@ function renderTag(tagText) {
   return `<span class="tag ${getColorClassForTag(tagText)}">${getEmojiForTag(tagText)} ${tagText}</span>`;
 }
 
-
 /* =========================================
    5. SERVICE WORKER REGISTRIERUNG
    ========================================= */
@@ -144,3 +136,20 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(err => console.log("SW Fehler:", err));
   });
 }
+
+/* =========================================
+   6. DARK MODE TOGGLE (MANUELL)
+   ========================================= */
+if (localStorage.getItem("timm_theme") === "dark") {
+  document.body.classList.add("dark-mode");
+}
+
+window.toggleTheme = function() {
+  document.body.classList.toggle("dark-mode");
+  
+  if (document.body.classList.contains("dark-mode")) {
+    localStorage.setItem("timm_theme", "dark");
+  } else {
+    localStorage.setItem("timm_theme", "light");
+  }
+};
