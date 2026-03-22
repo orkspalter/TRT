@@ -1,18 +1,18 @@
-const CACHE_NAME = "timm-recipes-cache-v17"; // Direkt eins hochgezählt für das Update!
+const CACHE_NAME = "timm-recipes-cache-v18"; // <- bei Updates hochzählen
 const OFFLINE_URLS = [
   "./",
   "./index.html",
   "./archive.html",
   "./impressum.html",
   "./datenschutz.html",
-  "./rezepte.js",       // GANZ WICHTIG für die Daten!
+  "./rezepte.js",       
+  "./app.js",            
+  "./style.css",         
   "./manifest.json",
-  "./style.css",
   "./icon-192.png",
   "./icon-512.png",
   "./mask-icon-192.png", 
   "./mask-icon-512.png",
-  // Auch die Schriften cachen, sonst sieht es offline komisch aus:
   "./fonts/nunito-regular.woff2",
   "./fonts/nunito-600.woff2",
   "./fonts/nunito-700.woff2",
