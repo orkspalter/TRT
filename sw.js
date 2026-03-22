@@ -1,4 +1,4 @@
-const CACHE_NAME = "timm-recipes-cache-v16"; // Direkt eins hochgezählt für das Update!
+const CACHE_NAME = "timm-recipes-cache-v17"; // Direkt eins hochgezählt für das Update!
 const OFFLINE_URLS = [
   "./",
   "./index.html",
