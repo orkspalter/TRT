@@ -120,6 +120,16 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 .search-input:focus { outline: none; border-color: var(--primary); background: #fff; }
 
 .filter-container { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 20px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border); position: sticky; top: 57px; z-index: 9; background: var(--card-bg); }
+
+/* NEU: Filter auf dem Handy NICHT kleben lassen */
+@media (max-width: 768px) {
+  .filter-container {
+    position: relative; 
+    top: auto;          
+    z-index: 1;         
+  }
+}
+
 .filter-btn { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--primary-dark); background: #fff; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--primary-dark); transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 .filter-btn:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); background: #f3ecfb; }
 .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 4px 10px rgba(107, 63, 160, 0.3); }
@@ -158,7 +168,7 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 .skeleton { animation: skeleton-loading 0.8s linear infinite alternate; border-radius: 8px; }
 
 /* =========================================
-   10. DRUCK-ANSICHT (VORSCHLAG 2)
+   10. DRUCK-ANSICHT
    ========================================= */
 @media print {
   /* Verstecke alles außer dem Rezept-Inhalt */
@@ -207,7 +217,7 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 }
 
 /* =========================================
-   11. DARK MODE (VORSCHLAG 3)
+   11. DARK MODE
    ========================================= */
 @media (prefers-color-scheme: dark) {
   :root {
