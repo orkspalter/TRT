@@ -7,7 +7,7 @@
 @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/playfair-700.woff2') format('woff2'); }
 
 /* =========================================
-   2. VARIABLEN & RESET
+   2. VARIABLEN & RESET (LIGHT MODE STANDARD)
    ========================================= */
 :root {
   --primary: #6b3fa0;
@@ -17,6 +17,7 @@
   --muted: #666;
   --radius: 16px;
   --border: #e6e6e6;
+  --shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -42,7 +43,7 @@ header p, .muted { color: var(--muted); font-size: 1rem; line-height: 1.5; }
 header a { color: var(--primary-dark); text-decoration: none; font-weight: 700; }
 header a:hover { text-decoration: underline; }
 
-.card { background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,0.06); padding: 24px; }
+.card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
 .divider { height: 1px; background: var(--border); margin: 20px 0; }
 
 /* =========================================
@@ -57,7 +58,7 @@ header a:hover { text-decoration: underline; }
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
+  background: var(--card-bg);
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: fadeIn 0.4s ease-out backwards;
@@ -71,7 +72,7 @@ header a:hover { text-decoration: underline; }
 .recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; }
 
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.section-title { font-size: 1.2rem; margin: 0; color: #333; }
+.section-title { font-size: 1.2rem; margin: 0; color: var(--text); }
 
 /* Listen (Zutaten & Schritte) */
 ul { padding-left: 20px; margin-bottom: 16px; line-height: 1.6; list-style: none; }
@@ -104,10 +105,10 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 .fav-btn:hover svg { fill: var(--primary); filter: drop-shadow(0 0 6px #e4ccff); }
 .fav-btn.active svg { fill: var(--primary-dark); filter: none; }
 
-.copy-btn { background: #f3ecfb; border: 1px solid #e2d3f0; border-radius: 8px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 700; font-family: 'Nunito', sans-serif; font-size: 0.9rem; transition: all 0.2s; }
-.copy-btn:hover { background: var(--primary); color: #fff; }
-.copy-btn:hover svg { fill: #fff; }
-.copy-btn svg { transition: fill 0.2s; }
+.share-btn { background: #f3ecfb; border: 1px solid #e2d3f0; border-radius: 8px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 700; font-family: 'Nunito', sans-serif; font-size: 0.9rem; transition: all 0.2s; }
+.share-btn:hover { background: var(--primary); color: #fff; }
+.share-btn:hover svg path { fill: #fff; }
+.share-btn svg { transition: fill 0.2s; }
 
 .btn-swap { width: 100%; background: #fafafa; border: none; border-top: 1px solid var(--border); color: var(--primary); padding: 16px; font-size: 1rem; font-weight: 700; font-family: 'Nunito', sans-serif; cursor: pointer; transition: background 0.2s; }
 .btn-swap:hover { background: #f1ecf8; }
@@ -115,35 +116,10 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 /* =========================================
    7. ARCHIV SPEZIFISCH (SUCHE & FILTER)
    ========================================= */
-.search-input {
-  width: 100%;
-  padding: 16px;
-  /* margin-bottom wurde hier entfernt */
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  font-size: 1.1rem;
-  font-family: 'Nunito', sans-serif;
-  background: #fafafa;
-  transition: border-color 0.2s;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+.search-input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid var(--border); font-size: 1.1rem; font-family: 'Nunito', sans-serif; background: #fafafa; transition: border-color 0.2s; position: sticky; top: 0; z-index: 10; }
 .search-input:focus { outline: none; border-color: var(--primary); background: #fff; }
 
-.filter-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding-top: 20px; /* NEU: Der Abstand sitzt jetzt sicher hier! */
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 2px solid var(--border);
-  position: sticky;
-  top: 57px; /* NEU: Die exakte Höhe des Suchfelds, damit es perfekt andockt */
-  z-index: 9;
-  background: var(--card-bg);
-}
+.filter-container { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 20px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--border); position: sticky; top: 57px; z-index: 9; background: var(--card-bg); }
 .filter-btn { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--primary-dark); background: #fff; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--primary-dark); transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 .filter-btn:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); background: #f3ecfb; }
 .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 4px 10px rgba(107, 63, 160, 0.3); }
@@ -159,7 +135,7 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 .page-num.active { background: var(--primary-dark); color: #fff; cursor: default; }
 
 /* =========================================
-   8. GRIDS (Startseite & Archiv zusammengeführt)
+   8. GRIDS
    ========================================= */
 #currentRecipes, .recipes-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
 @media (min-width: 768px) {
@@ -180,3 +156,142 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 
 @keyframes skeleton-loading { 0% { background-color: #efefef; } 100% { background-color: #fcfcfc; } }
 .skeleton { animation: skeleton-loading 0.8s linear infinite alternate; border-radius: 8px; }
+
+/* =========================================
+   10. DRUCK-ANSICHT (VORSCHLAG 2)
+   ========================================= */
+@media print {
+  /* Verstecke alles außer dem Rezept-Inhalt */
+  header, footer, .search-input, .filter-container, .pagination-container,
+  .btn-swap, .fav-btn, .share-btn, .divider {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  .app { max-width: 100%; width: 100%; }
+  .card { box-shadow: none !important; padding: 0 !important; }
+
+  .recipe-card {
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid; /* Verhindert Seitenumbruch mitten im Rezept */
+    margin-bottom: 2cm;
+  }
+
+  .recipe-title {
+    color: black !important;
+    font-size: 2rem;
+    margin-top: 1cm;
+  }
+
+  .section-title { color: black !important; }
+
+  /* Tags schwarz-weiß machen */
+  .tag {
+    background: white !important;
+    color: black !important;
+    border-color: #ccc !important;
+  }
+
+  ol.steps li::before {
+    background: #ccc !important; /* Grauer Kreis für Druckerfreundlichkeit */
+    color: black !important;
+    border: 1px solid black;
+  }
+}
+
+/* =========================================
+   11. DARK MODE (VORSCHLAG 3)
+   ========================================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #a375d8;      /* Helleres Lila für Kontrast */
+    --primary-dark: #e4ccff; /* Sehr helles Lila für Text */
+    --card-bg: #1e1e1e;       /* Dunkles Grau für Karten */
+    --text: #e0e0e0;          /* Hellgrau für Text */
+    --muted: #a0a0a0;         /* Mittelgrau für muted Text */
+    --border: #333333;        /* Dunklerer Rand */
+  }
+
+  /* Hintergrund anpassen */
+  body {
+    background: radial-gradient(circle at top, #2d1b4a, #121212);
+  }
+
+  /* Schatten für dunkle Elemente anpassen */
+  .card, .recipe-card {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .recipe-card:hover {
+    box-shadow: 0 16px 32px rgba(0,0,0,0.7);
+  }
+
+  /* Suche und Eingabefelder */
+  .search-input {
+    background: #2a2a2a;
+    border-color: #444;
+  }
+  .search-input:focus {
+    background: #333;
+  }
+
+  /* Tags im Darkmode lesbar machen */
+  .tag { border-color: rgba(255,255,255,0.1); }
+  .tag-green { background: rgba(22, 101, 52, 0.2); color: #86efac; }
+  .tag-yellow { background: rgba(113, 63, 18, 0.2); color: #fde047; }
+  .tag-red { background: rgba(127, 29, 29, 0.2); color: #fca5a5; }
+  .tag-blue { background: rgba(30, 58, 138, 0.2); color: #93c5fd; }
+  .tag-purple { background: rgba(88, 28, 135, 0.2); color: #d8b4fe; }
+
+  /* Filter-Buttons */
+  .filter-btn {
+    background: #2a2a2a;
+    border-color: #444;
+    color: var(--text);
+  }
+  .filter-btn:hover {
+    background: #333;
+    border-color: var(--primary);
+  }
+  .filter-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary-dark);
+  }
+
+  /* Share-Button */
+  .share-btn {
+    background: #333;
+    border-color: #444;
+    color: var(--primary-dark);
+  }
+  .share-btn:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  /* Swap-Button */
+  .btn-swap {
+    background: #252525;
+    border-color: #333;
+    color: var(--primary);
+  }
+  .btn-swap:hover {
+    background: #2a2a2a;
+  }
+
+  /* Herz-Icon */
+  .fav-btn svg { fill: #555; }
+
+  /* Skeleton Animation für Dark Mode */
+  @keyframes skeleton-loading {
+    0% { background-color: #2a2a2a; }
+    100% { background-color: #333; }
+  }
+}
