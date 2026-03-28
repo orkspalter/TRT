@@ -14,6 +14,8 @@
 <body>
   <div class="app">
 
+<button id="modeBtn" class="mode-toggle" onclick="toggleMode()"></button>
+
 <button class="theme-toggle" onclick="toggleTheme()" title="Nachtmodus umschalten">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
@@ -27,7 +29,7 @@
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
       </button>
-      
+
     <header>
       <h1>Rezeptdatenbank</h1>
       <p><a href="index.html">🏠 Zurück zur Startseite</a></p>
@@ -60,10 +62,31 @@
     let isExpanded = false;
     let currentPage = 1;
     const RECIPES_PER_PAGE = 10;
-  
+    
+    // --- NEU: Modus aus dem Speicher lesen ---
+    let currentMode = localStorage.getItem("timm_mode") || "main";
+
+    // --- NEU: Funktion zum Wechseln des Modus (gleiche Logik wie Startseite) ---
+    window.toggleMode = function() {
+      currentMode = currentMode === "main" ? "salad" : "main";
+      localStorage.setItem("timm_mode", currentMode);
+      location.reload(); 
+    };
+
+    // --- NEU: Den richtigen Rezept-Pool filtern ---
+    function getRecipePool() {
+      if (currentMode === "salad") {
+        return recipes.filter(r => r.tags.includes("Salat"));
+      } else {
+        return recipes.filter(r => !r.tags.includes("Salat"));
+      }
+    }
+
     function getUniqueTags() {
       const tagCounts = {};
-      recipes.forEach(r => {
+      const pool = getRecipePool(); // WICHTIG: Tags nur aus dem aktuellen Pool berechnen
+      
+      pool.forEach(r => {
         r.tags.forEach(t => {
           if (!IGNORE_TAGS.includes(t)) {
             tagCounts[t] = (tagCounts[t] || 0) + 1;
@@ -117,7 +140,9 @@
     function renderDatabase() {
       const container = document.getElementById("databaseContainer");
       const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-      let filteredRecipes = recipes;
+      
+      // WICHTIG: Hier holen wir uns den aktuellen Rezept-Pool (Salat oder Hauptgericht)
+      let filteredRecipes = getRecipePool();
 
       if (searchQuery) {
         const favs = getFavorites();
@@ -209,10 +234,27 @@
       renderDatabase();
     });
     
+    // --- NEU: Start-Logik mit Titel- und SVG-Wechsel (gleiche Logik wie Startseite) ---
     document.addEventListener("DOMContentLoaded", () => {
+      const headerTitle = document.querySelector("header h1");
+      const modeBtn = document.getElementById("modeBtn");
+      
+      const svgLeaf = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>`;
+      const svgFork = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>`;
+
+      if (currentMode === "salad") {
+        headerTitle.innerText = "Rezeptdatenbank: Salate"; // Leicht angepasster Titel fürs Archiv
+        modeBtn.innerHTML = svgFork; 
+        modeBtn.title = "Zu Hauptgerichten wechseln";
+      } else {
+        headerTitle.innerText = "Rezeptdatenbank: Hauptgerichte";
+        modeBtn.innerHTML = svgLeaf; 
+        modeBtn.title = "Zu Salaten wechseln";
+      }
+
       renderFilters();
       renderDatabase();
     });
   </script>
-</body>
+  </body>
 </html>

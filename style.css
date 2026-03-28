@@ -269,3 +269,44 @@ body.dark-mode .fav-btn.active svg {
   fill: #e4ccff; 
   filter: drop-shadow(0 0 6px rgba(228, 204, 255, 0.3)); 
 }
+
+/* =========================================
+   12. MODUS-WECHSEL (BUTTON LINKS)
+   ========================================= */
+.mode-toggle { 
+  position: absolute; 
+  top: 16px; 
+  left: 16px; /* Wichtig: links! */
+  width: 40px; 
+  height: 40px; 
+  background: #f3ecfb; /* Ton-in-Ton zum hellen Hintergrund */
+  color: #4e2a7a;      /* Dunkelviolettes Icon */
+  border: none; 
+  border-radius: 12px; 
+  cursor: pointer; 
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease; 
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+}
+.mode-toggle:hover { 
+  background: #d4bdf0; 
+  transform: scale(1.05); 
+}
+
+/* --- Im Nachtmodus --- */
+body.dark-mode .mode-toggle {
+  background: #2d1b4a; /* Ton-in-Ton zum dunklen Hintergrund */
+  color: #e4ccff;      /* Hellviolettes Icon */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+body.dark-mode .mode-toggle:hover {
+  background: #462d70;
+}
+
+/* Fix für Handys: Überschrift etwas tiefer, damit sie nicht in die Buttons ragt */
+@media (max-width: 600px) {
+  header { padding-top: 48px !important; }
+}

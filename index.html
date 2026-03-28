@@ -14,6 +14,8 @@
 <body>
   <div class="app">
     
+<button id="modeBtn" class="mode-toggle" onclick="toggleMode()"></button>
+    
     <button class="theme-toggle" onclick="toggleTheme()" title="Nachtmodus umschalten">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"></circle>
@@ -50,9 +52,35 @@
   <script src="app.js"></script>
 
   <script>
-    const STORAGE_SELECTED_WEEK = "timm-selected-week-v1";
-    const STORAGE_WEEK_RECIPES = "timm-week-recipes-v1";
+   /* =========================================
+       NEU: MODUS-WECHSEL LOGIK (SALAT/HAUPT)
+       ========================================= */
+    // 1. Modus aus dem Speicher lesen (Standard: main)
+    let currentMode = localStorage.getItem("timm_mode") || "main";
+
+    // 2. Speicher-Schlüssel anpassen, damit Salat- und Hauptgericht-Wochen sich nicht überschreiben!
+    const STORAGE_SELECTED_WEEK = currentMode === "salad" ? "timm-selected-week-salad-v1" : "timm-selected-week-main-v1";
+    const STORAGE_WEEK_RECIPES = currentMode === "salad" ? "timm-week-recipes-salad-v1" : "timm-week-recipes-main-v1";
   
+    // 3. Funktion zum Wechseln des Modus
+    window.toggleMode = function() {
+      currentMode = currentMode === "main" ? "salad" : "main";
+      localStorage.setItem("timm_mode", currentMode);
+      // Die Seite lädt sich neu und startet direkt im neuen Modus
+      location.reload(); 
+    };
+
+    // 4. Den richtigen Rezept-Pool filtern (Ich gehe vom Tag "Salat" aus)
+    function getRecipePool() {
+      if (currentMode === "salad") {
+        // Nur Rezepte mit dem Tag 'Salat'
+        return recipes.filter(r => r.tags.includes("Salat"));
+      } else {
+        // Alle Rezepte OHNE den Tag 'Salat'
+        return recipes.filter(r => !r.tags.includes("Salat"));
+      }
+    }
+    
     function getWeekNumber(d) {
       d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
       d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
@@ -76,8 +104,17 @@
     }
 
     function pickRandomThreeRecipes() {
-      const shuffled = [...recipes].sort(() => 0.5 - Math.random());
-      return [shuffled[0].id, shuffled[1].id, shuffled[2].id];
+      // Wir holen uns nur den gefilterten Pool (Haupt oder Salat)
+      const pool = getRecipePool();
+      
+      const shuffled = [...pool].sort(() => 0.5 - Math.random());
+      
+      // Sicherheits-Fix: Falls es weniger als 3 Rezepte im Pool gibt
+      return [
+        shuffled[0] ? shuffled[0].id : null, 
+        shuffled[1] ? shuffled[1].id : null, 
+        shuffled[2] ? shuffled[2].id : null
+      ].filter(id => id !== null);
     }
 
     function loadWeekSelection(weekKey) {
@@ -168,17 +205,20 @@
       `;
       container.replaceChild(skeletonCard, oldCard);
 
-      setTimeout(() => {
+     setTimeout(() => {
         const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
         if (!stored) return;
         
         let currentSelection = loadWeekSelection(stored.weekKey);
         if (!currentSelection) return;
         
+        // HIER IST DIE ÄNDERUNG:
+        const pool = getRecipePool(); // Wir holen uns den aktuellen Modus-Pool
+        
         let newRecipe;
         do {
-          const randomIdx = Math.floor(Math.random() * recipes.length);
-          newRecipe = recipes[randomIdx];
+          const randomIdx = Math.floor(Math.random() * pool.length); // Suchen im Pool
+          newRecipe = pool[randomIdx]; // Ziehen aus dem Pool
         } while (currentSelection.includes(newRecipe.id));
 
         currentSelection[indexToReplace] = newRecipe.id;
@@ -250,7 +290,34 @@
       showWeek(weekKey);
     }
 
-    document.addEventListener("DOMContentLoaded", initApp);
+/* =========================================
+       NEU: START-LOGIK MIT TITEL- UND SVG-WECHSEL
+       ========================================= */
+    document.addEventListener("DOMContentLoaded", () => {
+      const headerTitle = document.querySelector("header h1");
+      const modeBtn = document.getElementById("modeBtn");
+      
+      // Das stilisierte Salatblatt (SVG)
+      const svgLeaf = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>`;
+      
+      // Ein stilisiertes Besteck (Gabel & Messer) für Hauptgerichte (SVG)
+      const svgFork = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>`;
+
+      if (currentMode === "salad") {
+        headerTitle.innerText = "Timm's Tipps des Tages";
+        // Zeigt Besteck an, um zurück zu Hauptgerichten zu kommen
+        modeBtn.innerHTML = svgFork; 
+        modeBtn.title = "Zu Hauptgerichten wechseln";
+      } else {
+        headerTitle.innerText = "Timm's Tipps des Tages";
+        // Zeigt ein Salatblatt an
+        modeBtn.innerHTML = svgLeaf; 
+        modeBtn.title = "Zu Salaten wechseln";
+      }
+      
+      // Jetzt erst die Wochen-Auswahl starten
+      initApp();
+    });
   </script>
 </body>
 </html>
