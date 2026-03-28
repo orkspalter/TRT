@@ -32,12 +32,19 @@
 
     <header>
       <h1>Rezeptdatenbank</h1>
-      <p><a href="index.html">🏠 Zurück zur Startseite</a></p>
-    </header>
+      <p>
+        <a href="index.html" class="archive-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l9-8 9 8"></path>
+            <path d="M5 13v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path>
+          </svg>
+          Zurück zur Startseite
+        </a>
+      </p>
+          </header>
 
     <main class="card">
-      <p class="muted">Suche nach Zutaten oder nutze die Schlagwörter, um zu filtern.</p>
-
+      
       <input type="text" id="searchInput" class="search-input" placeholder="🔍">
       
       <div id="filterContainer" class="filter-container"></div>

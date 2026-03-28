@@ -310,3 +310,26 @@ body.dark-mode .mode-toggle:hover {
 @media (max-width: 600px) {
   header { padding-top: 48px !important; }
 }
+
+/* =========================================
+   13. ARCHIV-LINK (HEADER)
+   ========================================= */
+.archive-link {
+  display: inline-flex; /* Sorgt dafür, dass Icon und Text eine Einheit bilden */
+  align-items: center;  /* DAS FEHLTE: Richtet Icon und Text exakt mittig aneinander aus */
+  gap: 4px; /* Abstand um 50% verringert (von 8px auf 4px) */
+  text-decoration: none;
+  font-weight: 700;
+  /* Tagmodus: Gleiches Dunkelviolett wie die Button-Icons */
+  color: #4e2a7a; 
+  transition: color 0.3s ease, transform 0.2s;
+}
+
+.archive-link:hover {
+  transform: translateY(-1px);
+}
+
+/* Nachtmodus: Gleiches Hellviolett wie die Button-Icons */
+body.dark-mode .archive-link {
+  color: #e4ccff; 
+}
