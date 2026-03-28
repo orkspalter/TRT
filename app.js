@@ -1,12 +1,14 @@
 /* =========================================
-   0. PASSWORTSCHUTZ
+   0. PASSWORTSCHUTZ (Verschleiert)
    ========================================= */
-const SECRET_PASSWORD = "timm"; // <-- HIER dein Wunschpasswort eintragen!
+const SECRET_ENCODED = "dGltbQ==";
 
 if (sessionStorage.getItem("timm_auth") !== "true") {
   let userInput = prompt("Bitte Passwort eingeben, um Timms Rezepte zu sehen:");
   
-  if (userInput === SECRET_PASSWORD) {
+  // Die Funktion btoa() übersetzt die Eingabe des Nutzers ebenfalls in die Geheimschrift
+  // und vergleicht sie dann mit unserem geheimen Code.
+  if (userInput !== null && btoa(userInput) === SECRET_ENCODED) {
     sessionStorage.setItem("timm_auth", "true");
   } else {
     document.body.innerHTML = `
