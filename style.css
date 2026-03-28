@@ -70,7 +70,7 @@ header a:hover { text-decoration: underline; }
 .recipe-body { padding: 24px; flex-grow: 1; }
 
 .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-.recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; }
+.recipe-title { font-size: 1.6rem; color: var(--primary-dark); line-height: 1.2; margin: 0; flex: 1; word-wrap: break-word; hyphens: auto; }
 
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .section-title { font-size: 1.2rem; margin: 0; color: var(--text); }
@@ -100,7 +100,7 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 /* =========================================
    6. BUTTONS & INTERAKTIONEN
    ========================================= */
-.fav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; }
+.fav-btn { background: transparent; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; transition: transform 0.2s; flex-shrink: 0; margin-top: -2px; }
 .fav-btn:hover { transform: scale(1.15); }
 .fav-btn svg { fill: #ccc; transition: fill 0.3s, filter 0.3s; }
 .fav-btn:hover svg { fill: var(--primary); filter: drop-shadow(0 0 6px #e4ccff); }
@@ -136,12 +136,13 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 
 .empty { padding: 24px; border-radius: 12px; border: 2px dashed var(--border); color: var(--muted); background: #fafafa; text-align: center; font-size: 1.1rem; grid-column: 1 / -1; }
 
+/* HIER FEHLTE DER CONTAINER! Er hält die Buttons nebeneinander */
 .pagination-container { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border); }
-.page-num { background: #fff; border: 1.5px solid var(--primary-dark); color: var(--primary-dark); min-width: 36px; height: 36px; padding: 0 10px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; }
-.page-num:hover { background: #f3ecfb; }
-.page-num.active { background: var(--primary-dark); color: #fff; cursor: default; }
 
-/* =========================================
+/* Bei page-num steht jetzt display: inline-flex */
+.page-num { background: #fff; border: 1px solid var(--primary-dark); color: var(--primary-dark); min-width: 36px; height: 36px; padding: 0 10px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.page-num:hover { border-color: var(--primary); background: #f3ecfb; transform: translateY(-1px); }
+.page-num.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 4px 10px rgba(107, 63, 160, 0.3); cursor: default; }/* =========================================
    8. GRIDS
    ========================================= */
 #currentRecipes, .recipes-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
@@ -178,36 +179,53 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 /* =========================================
    11. DARK MODE (MANUELL PER BUTTON)
    ========================================= */
+
+/* --- 1. Der Theme-Button im Tagmodus --- */
 .theme-toggle { 
   position: absolute; 
   top: 16px; 
   right: 16px; 
   width: 40px; 
   height: 40px; 
-  background: #e4ccff; /* Tagmodus: Hellviolett */
-  color: #2d1b4a;      /* Tagmodus: Dunkelviolett (Icon) */
+  background: #f3ecfb; /* Ton-in-Ton zum hellen Hintergrund */
+  color: #4e2a7a;      /* Dunkelviolette Sonne */
   border: none; 
   border-radius: 12px; 
   cursor: pointer; 
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s; 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease; 
   z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
 }
-
 .theme-toggle:hover { 
-  transform: scale(1.1); 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: #d4bdf0; 
+  transform: scale(1.05); 
 }
 
-/* NEU: Farbumkehr im Nachtmodus */
+/* --- 2. DIE HAUPTFARBEN IM NACHTMODUS (Das hat gefehlt!) --- */
+body.dark-mode {
+  --primary: #a375d8;
+  --primary-dark: #e4ccff;
+  --card-bg: #1e1e1e;
+  --text: #e0e0e0;
+  --muted: #a0a0a0;
+  --border: #333333;
+  background: radial-gradient(circle at top, #2d1b4a, #121212);
+}
+
+/* --- 3. Der Theme-Button im Nachtmodus --- */
 body.dark-mode .theme-toggle {
-  background: #2d1b4a; /* Nachtmodus: Dunkelviolett */
-  color: #e4ccff;      /* Nachtmodus: Hellviolett (Icon) */
+  background: #2d1b4a; /* Ton-in-Ton zum dunklen Hintergrund */
+  color: #e4ccff;      /* Hellviolette Sonne */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+body.dark-mode .theme-toggle:hover {
+  background: #462d70;
 }
 
+/* --- 4. Alle anderen Elemente im Nachtmodus --- */
 body.dark-mode .card, body.dark-mode .recipe-card { box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
 body.dark-mode .recipe-card:hover { box-shadow: 0 16px 32px rgba(0,0,0,0.7); }
 body.dark-mode .search-input { background: #2a2a2a; border-color: #444; color: var(--text); }
@@ -218,30 +236,36 @@ body.dark-mode .tag-yellow { background: rgba(113, 63, 18, 0.2); color: #fde047;
 body.dark-mode .tag-red { background: rgba(127, 29, 29, 0.2); color: #fca5a5; }
 body.dark-mode .tag-blue { background: rgba(30, 58, 138, 0.2); color: #93c5fd; }
 body.dark-mode .tag-purple { background: rgba(88, 28, 135, 0.2); color: #d8b4fe; }
-body.dark-mode .filter-btn { background: #2a2a2a; border-color: #444; color: var(--text); }
-body.dark-mode .filter-btn:hover { background: #333; border-color: var(--primary); }
-body.dark-mode .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary-dark); }
-body.dark-mode .share-btn { background: #333; border-color: #444; color: var(--primary-dark); }
-body.dark-mode .share-btn:hover { background: var(--primary); color: #fff; }
-body.dark-mode .btn-swap { background: #252525; border-color: #333; color: var(--primary); }
-body.dark-mode .btn-swap:hover { background: #2a2a2a; }
-/* Herz-Icon im Nachtmodus (Grau wenn inaktiv, Hellviolett wenn aktiv) */
-body.dark-mode .fav-btn svg { 
-  fill: #555; 
-}
-body.dark-mode .fav-btn:hover svg,
-body.dark-mode .fav-btn.active svg { 
-  fill: #e4ccff; /* Dein gewünschtes Hellviolett */
-  filter: drop-shadow(0 0 6px rgba(228, 204, 255, 0.3)); /* Leichter Leuchteffekt */
-}
-
-/* "...mehr" Button im Nachtmodus an die anderen Filter anpassen */
-body.dark-mode .more-btn { 
+body.dark-mode .filter-btn, 
+body.dark-mode .more-btn, 
+body.dark-mode .page-num { 
   background: #2a2a2a; 
   border-color: #444; 
   color: var(--text); 
 }
-body.dark-mode .more-btn:hover { 
+
+body.dark-mode .filter-btn:hover, 
+body.dark-mode .more-btn:hover, 
+body.dark-mode .page-num:hover { 
   background: #333; 
   border-color: var(--primary); 
+}
+
+body.dark-mode .filter-btn.active, 
+body.dark-mode .page-num.active { 
+  background: var(--primary); 
+  color: #fff; 
+  border-color: var(--primary-dark); 
+}
+body.dark-mode .share-btn { background: #333; border-color: #444; color: var(--primary-dark); }
+body.dark-mode .share-btn:hover { background: var(--primary); color: #fff; }
+body.dark-mode .btn-swap { background: #252525; border-color: #333; color: var(--primary); }
+body.dark-mode .btn-swap:hover { background: #2a2a2a; }
+
+/* --- 5. Fixes für Herzen und "...mehr" Button --- */
+body.dark-mode .fav-btn svg { fill: #555; }
+body.dark-mode .fav-btn:hover svg,
+body.dark-mode .fav-btn.active svg { 
+  fill: #e4ccff; 
+  filter: drop-shadow(0 0 6px rgba(228, 204, 255, 0.3)); 
 }
