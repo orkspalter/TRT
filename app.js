@@ -39,13 +39,25 @@ function getFavorites() {
 
 window.toggleFavorite = function(recipeId, btnElement) {
   let favs = getFavorites();
-  if (favs.includes(recipeId)) {
-    favs = favs.filter(id => id !== recipeId);
+  
+  // Wir wandeln beide Seiten für den reinen Vergleich in Text um (String), 
+  // um den Typ-Fehler (Zahl vs. Text) für immer auszuschließen.
+  const exists = favs.find(id => String(id) === String(recipeId));
+
+  if (exists !== undefined) {
+    // Wenn das Rezept schon drin ist: Rauswerfen!
+    favs = favs.filter(id => String(id) !== String(recipeId));
     btnElement.classList.remove('active');
   } else {
-    favs.push(recipeId);
+    // Wenn nicht: Hinzufügen! 
+    // Wir holen die exakte Original-ID aus der Datenbank, um den Typ sauber zu halten.
+    const recipe = recipes.find(r => String(r.id) === String(recipeId));
+    if (recipe) {
+      favs.push(recipe.id);
+    }
     btnElement.classList.add('active');
   }
+  
   localStorage.setItem(STORAGE_FAVORITES, JSON.stringify(favs));
 };
 
