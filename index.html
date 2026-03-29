@@ -14,7 +14,7 @@
 <body>
   <div class="app">
     
-<button id="modeBtn" class="mode-toggle" onclick="toggleMode()"></button>
+    <button id="modeBtn" class="mode-toggle" onclick="toggleMode()"></button>
     
     <button class="theme-toggle" onclick="toggleTheme()" title="Nachtmodus umschalten">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -60,31 +60,21 @@
   <script src="app.js"></script>
 
   <script>
-   /* =========================================
-       NEU: MODUS-WECHSEL LOGIK (SALAT/HAUPT)
-       ========================================= */
-    // 1. Modus aus dem Speicher lesen (Standard: main)
     let currentMode = localStorage.getItem("timm_mode") || "main";
 
-    // 2. Speicher-Schlüssel anpassen, damit Salat- und Hauptgericht-Wochen sich nicht überschreiben!
     const STORAGE_SELECTED_WEEK = currentMode === "salad" ? "timm-selected-week-salad-v1" : "timm-selected-week-main-v1";
     const STORAGE_WEEK_RECIPES = currentMode === "salad" ? "timm-week-recipes-salad-v1" : "timm-week-recipes-main-v1";
   
-    // 3. Funktion zum Wechseln des Modus
     window.toggleMode = function() {
       currentMode = currentMode === "main" ? "salad" : "main";
       localStorage.setItem("timm_mode", currentMode);
-      // Die Seite lädt sich neu und startet direkt im neuen Modus
       location.reload(); 
     };
 
-    // 4. Den richtigen Rezept-Pool filtern (Ich gehe vom Tag "Salat" aus)
     function getRecipePool() {
       if (currentMode === "salad") {
-        // Nur Rezepte mit dem Tag 'Salat'
         return recipes.filter(r => r.tags.includes("Salat"));
       } else {
-        // Alle Rezepte OHNE den Tag 'Salat'
         return recipes.filter(r => !r.tags.includes("Salat"));
       }
     }
@@ -112,12 +102,8 @@
     }
 
     function pickRandomThreeRecipes() {
-      // Wir holen uns nur den gefilterten Pool (Haupt oder Salat)
       const pool = getRecipePool();
-      
       const shuffled = [...pool].sort(() => 0.5 - Math.random());
-      
-      // Sicherheits-Fix: Falls es weniger als 3 Rezepte im Pool gibt
       return [
         shuffled[0] ? shuffled[0].id : null, 
         shuffled[1] ? shuffled[1].id : null, 
@@ -148,7 +134,13 @@
         
         const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
         const shareIcon = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="var(--primary)" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>`;
+        const svgCart = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`;
         
+        // HIER: Der Topf mit Löffel
+        const svgStir = `<svg style="transform: translateY(-2px);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"></path><line x1="2" y1="13" x2="4" y2="13"></line><line x1="20" y1="13" x2="22" y2="13"></line><line x1="20" y1="3" x2="14" y2="13"></line><circle cx="13" cy="15" r="2.5"></circle><path d="M9 14a3 3 0 0 1 3 0"></path></svg>`;
+        
+        const svgSwap = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>`;       
+       
         const card = document.createElement("div");
         card.className = "recipe-card";
         card.style.animationDelay = `${index * 0.1}s`; 
@@ -172,7 +164,7 @@
             <div class="recipe-content">
               <div class="ingredients-col">
                 <div class="section-header">
-                  <h3 class="section-title">🛒 Zutaten</h3>
+                  <h3 class="section-title">${svgCart} Zutaten</h3>
                   <button class="share-btn" onclick="shareRecipe('${r.id}', this)" title="Rezept teilen">
                     ${shareIcon}
                   </button>
@@ -180,12 +172,12 @@
                 <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
               </div>
               <div class="steps-col">
-                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+                <h3 class="section-title" style="margin-top: 20px;">${svgStir} Zubereitung</h3>
                 <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
               </div>
             </div>
           </div>
-          <button class="btn-swap" onclick="swapSingleRecipe(${index})">🔄 Nur dieses Rezept austauschen</button>
+          <button class="btn-swap" onclick="swapSingleRecipe(${index})">${svgSwap} Nur dieses Rezept austauschen</button>
         `;
         containerElement.appendChild(card);
       });
@@ -213,20 +205,19 @@
       `;
       container.replaceChild(skeletonCard, oldCard);
 
-     setTimeout(() => {
+      setTimeout(() => {
         const stored = loadJSON(STORAGE_SELECTED_WEEK, null);
         if (!stored) return;
         
         let currentSelection = loadWeekSelection(stored.weekKey);
         if (!currentSelection) return;
         
-        // HIER IST DIE ÄNDERUNG:
-        const pool = getRecipePool(); // Wir holen uns den aktuellen Modus-Pool
+        const pool = getRecipePool(); 
         
         let newRecipe;
         do {
-          const randomIdx = Math.floor(Math.random() * pool.length); // Suchen im Pool
-          newRecipe = pool[randomIdx]; // Ziehen aus dem Pool
+          const randomIdx = Math.floor(Math.random() * pool.length); 
+          newRecipe = pool[randomIdx]; 
         } while (currentSelection.includes(newRecipe.id));
 
         currentSelection[indexToReplace] = newRecipe.id;
@@ -239,6 +230,12 @@
 
         const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
         const shareIcon = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="var(--primary)" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>`;
+        const svgCart = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`;
+        
+        // HIER AUCH FÜRS TAUSCHEN: Der Topf mit Löffel
+        const svgStir = `<svg style="transform: translateY(-2px);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"></path><line x1="2" y1="13" x2="4" y2="13"></line><line x1="20" y1="13" x2="22" y2="13"></line><line x1="20" y1="3" x2="14" y2="13"></line><circle cx="13" cy="15" r="2.5"></circle><path d="M9 14a3 3 0 0 1 3 0"></path></svg>`;
+        
+        const svgSwap = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>`;       
 
         const finalCard = document.createElement("div");
         finalCard.className = "recipe-card";
@@ -259,7 +256,7 @@
             <div class="recipe-content">
               <div class="ingredients-col">
                 <div class="section-header">
-                  <h3 class="section-title">🛒 Zutaten</h3>
+                  <h3 class="section-title">${svgCart} Zutaten</h3>
                   <button class="share-btn" onclick="shareRecipe('${r.id}', this)" title="Rezept teilen">
                     ${shareIcon}
                   </button>
@@ -267,12 +264,12 @@
                 <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
               </div>
               <div class="steps-col">
-                <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+                <h3 class="section-title" style="margin-top: 20px;">${svgStir} Zubereitung</h3>
                 <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
               </div>
             </div>
           </div>
-          <button class="btn-swap" onclick="swapSingleRecipe(${indexToReplace})">🔄 Nur dieses Rezept austauschen</button>
+          <button class="btn-swap" onclick="swapSingleRecipe(${indexToReplace})">${svgSwap} Nur dieses Rezept austauschen</button>
         `;
         
         container.replaceChild(finalCard, skeletonCard);
@@ -298,32 +295,23 @@
       showWeek(weekKey);
     }
 
-/* =========================================
-       NEU: START-LOGIK MIT TITEL- UND SVG-WECHSEL
-       ========================================= */
     document.addEventListener("DOMContentLoaded", () => {
       const headerTitle = document.querySelector("header h1");
       const modeBtn = document.getElementById("modeBtn");
       
-      // Das stilisierte Salatblatt (SVG)
       const svgLeaf = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>`;
-      
-      // Ein stilisiertes Besteck (Gabel & Messer) für Hauptgerichte (SVG)
       const svgFork = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>`;
 
       if (currentMode === "salad") {
         headerTitle.innerText = "Timm's Tipps des Tages";
-        // Zeigt Besteck an, um zurück zu Hauptgerichten zu kommen
         modeBtn.innerHTML = svgFork; 
         modeBtn.title = "Zu Hauptgerichten wechseln";
       } else {
         headerTitle.innerText = "Timm's Tipps des Tages";
-        // Zeigt ein Salatblatt an
         modeBtn.innerHTML = svgLeaf; 
         modeBtn.title = "Zu Salaten wechseln";
       }
       
-      // Jetzt erst die Wochen-Auswahl starten
       initApp();
     });
   </script>

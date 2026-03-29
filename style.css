@@ -333,3 +333,28 @@ body.dark-mode .mode-toggle:hover {
 body.dark-mode .archive-link {
   color: #e4ccff; 
 }
+/* =========================================
+   14. ICONS FÜR REZEPTKARTEN (Zutaten & Tauschen)
+   ========================================= */
+.section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* Kleiner Abstand zwischen Icon und Text */
+  color: #4e2a7a; /* Tagmodus: Dunkelviolett */
+}
+
+body.dark-mode .section-title {
+  color: #e4ccff; /* Nachtmodus: Hellviolett */
+}
+
+/* Das Tauschen-Icon im bestehenden Button violett färben und ausrichten */
+.btn-swap svg {
+  color: #4e2a7a; /* Tagmodus: Dunkelviolett */
+  vertical-align: middle; /* Setzt das Icon auf die Texthöhe */
+  margin-right: 6px; /* Kleiner Abstand zum Text */
+  margin-top: -2px; /* Minimale optische Korrektur nach oben */
+}
+
+body.dark-mode .btn-swap svg {
+  color: #e4ccff; /* Nachtmodus: Hellviolett */
+}

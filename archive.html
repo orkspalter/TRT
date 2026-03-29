@@ -70,17 +70,14 @@
     let currentPage = 1;
     const RECIPES_PER_PAGE = 10;
     
-    // --- NEU: Modus aus dem Speicher lesen ---
     let currentMode = localStorage.getItem("timm_mode") || "main";
 
-    // --- NEU: Funktion zum Wechseln des Modus (gleiche Logik wie Startseite) ---
     window.toggleMode = function() {
       currentMode = currentMode === "main" ? "salad" : "main";
       localStorage.setItem("timm_mode", currentMode);
       location.reload(); 
     };
 
-    // --- NEU: Den richtigen Rezept-Pool filtern ---
     function getRecipePool() {
       if (currentMode === "salad") {
         return recipes.filter(r => r.tags.includes("Salat"));
@@ -91,7 +88,7 @@
 
     function getUniqueTags() {
       const tagCounts = {};
-      const pool = getRecipePool(); // WICHTIG: Tags nur aus dem aktuellen Pool berechnen
+      const pool = getRecipePool();
       
       pool.forEach(r => {
         r.tags.forEach(t => {
@@ -148,7 +145,6 @@
       const container = document.getElementById("databaseContainer");
       const searchQuery = document.getElementById("searchInput").value.toLowerCase();
       
-      // WICHTIG: Hier holen wir uns den aktuellen Rezept-Pool (Salat oder Hauptgericht)
       let filteredRecipes = getRecipePool();
 
       if (searchQuery) {
@@ -192,6 +188,10 @@
         
         const heartSvg = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
         const shareIcon = `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="var(--primary)" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>`;
+        const svgCart = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`;
+        
+        // HIER FÜRS ARCHIV: Der Topf mit Löffel
+        const svgStir = `<svg style="transform: translateY(-2px);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6z"></path><line x1="2" y1="13" x2="4" y2="13"></line><line x1="20" y1="13" x2="22" y2="13"></line><line x1="20" y1="3" x2="14" y2="13"></line><circle cx="13" cy="15" r="2.5"></circle><path d="M9 14a3 3 0 0 1 3 0"></path></svg>`;
         
         return `
           <div class="recipe-card" style="animation-delay: ${index * 0.05}s">
@@ -205,13 +205,13 @@
               <div class="tag-row">${visibleTags.map(t => renderTag(t)).join("")}</div>
               <div class="divider"></div>
               <div class="section-header">
-                <h3 class="section-title">🛒 Zutaten</h3>
+                <h3 class="section-title">${svgCart} Zutaten</h3>
                 <button class="share-btn" onclick="shareRecipe('${r.id}', this)" title="Rezept teilen">
                   ${shareIcon}
                 </button>
               </div>
               <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
-              <h3 class="section-title" style="margin-top: 20px;">👨‍🍳 Zubereitung</h3>
+              <h3 class="section-title" style="margin-top: 20px;">${svgStir} Zubereitung</h3>
               <ol class="steps">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>
             </div>
           </div>`;
@@ -241,7 +241,6 @@
       renderDatabase();
     });
     
-    // --- NEU: Start-Logik mit Titel- und SVG-Wechsel (gleiche Logik wie Startseite) ---
     document.addEventListener("DOMContentLoaded", () => {
       const headerTitle = document.querySelector("header h1");
       const modeBtn = document.getElementById("modeBtn");
@@ -250,7 +249,7 @@
       const svgFork = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>`;
 
       if (currentMode === "salad") {
-        headerTitle.innerText = "Rezeptdatenbank: Salate"; // Leicht angepasster Titel fürs Archiv
+        headerTitle.innerText = "Rezeptdatenbank: Salate";
         modeBtn.innerHTML = svgFork; 
         modeBtn.title = "Zu Hauptgerichten wechseln";
       } else {
