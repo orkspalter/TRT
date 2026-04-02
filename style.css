@@ -114,27 +114,6 @@ ol.steps li::before { content: counter(step-counter); background: var(--primary)
 .btn-swap { width: 100%; background: #fafafa; border: none; border-top: 1px solid var(--border); color: var(--primary); padding: 16px; font-size: 1rem; font-weight: 700; font-family: 'Nunito', sans-serif; cursor: pointer; transition: background 0.2s; }
 .btn-swap:hover { background: #f1ecf8; }
 
-.magic-toggle {
-  position: absolute;
-  top: 20px;
-  left: 64px; /* Rückt ihn neben den Salat-Button */
-  background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.magic-toggle:hover {
-  color: var(--primary); 
-  transform: scale(1.1);
-}
-
 /* =========================================
    7. ARCHIV SPEZIFISCH (SUCHE & FILTER)
    ========================================= */
@@ -292,12 +271,11 @@ body.dark-mode .fav-btn.active svg {
 }
 
 /* =========================================
-   12. MODUS-WECHSEL (BUTTON LINKS)
+   12. KOPF-BUTTONS LINKS (SALAT & ZAUBERER)
    ========================================= */
-.mode-toggle { 
+.mode-toggle, .magic-toggle { 
   position: absolute; 
   top: 16px; 
-  left: 16px; /* Wichtig: links! */
   width: 40px; 
   height: 40px; 
   background: #f3ecfb; /* Ton-in-Ton zum hellen Hintergrund */
@@ -312,18 +290,23 @@ body.dark-mode .fav-btn.active svg {
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
 }
-.mode-toggle:hover { 
+
+/* Die exakten Positionen */
+.mode-toggle { left: 16px; }
+.magic-toggle { left: 64px; }
+
+.mode-toggle:hover, .magic-toggle:hover { 
   background: #d4bdf0; 
   transform: scale(1.05); 
 }
 
 /* --- Im Nachtmodus --- */
-body.dark-mode .mode-toggle {
+body.dark-mode .mode-toggle, body.dark-mode .magic-toggle {
   background: #2d1b4a; /* Ton-in-Ton zum dunklen Hintergrund */
   color: #e4ccff;      /* Hellviolettes Icon */
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-body.dark-mode .mode-toggle:hover {
+body.dark-mode .mode-toggle:hover, body.dark-mode .magic-toggle:hover {
   background: #462d70;
 }
 

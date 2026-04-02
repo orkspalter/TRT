@@ -27,18 +27,19 @@
 
     .generator-input {
       width: 100%;
-      min-height: 120px;
+      height: 160px; 
       padding: 16px;
       border: 2px solid #e6e6e6;
       border-radius: 16px;
       font-family: inherit;
       font-size: 1rem;
       margin-bottom: 16px;
-      resize: vertical;
+      resize: none; 
       box-sizing: border-box;
       background-color: #fafafa;
       color: #333;
       transition: all 0.3s ease;
+      overflow-y: auto; 
     }
 
     body.dark-mode .generator-input {
@@ -77,11 +78,91 @@
       box-shadow: 0 6px 12px rgba(107, 63, 160, 0.3);
     }
 
+    /* === Loading Animation CSS (unverändert) === */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .cutting-board {
+      width: 150px;
+      height: 100px;
+      background: #e6e6e6; /* Hellgrau für Holzoptik */
+      border-radius: 8px;
+      position: relative;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    body.dark-mode .cutting-board {
+      background: #333;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .leek {
+      width: 120px;
+      height: 20px;
+      background: linear-gradient(90deg, #d4fcd0 0%, #a2d9a0 50%, #89c787 100%);
+      border-radius: 10px;
+      position: absolute;
+      top: 40px;
+      left: 15px;
+    }
+
+    body.dark-mode .leek {
+      background: linear-gradient(90deg, #b0dfac 0%, #8ac188 50%, #72a96f 100%);
+    }
+
+    .knife {
+      width: 80px;
+      height: 20px;
+      background: #ccc; /* Metall-Klinge */
+      border-radius: 4px;
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      transform: rotate(45deg);
+      animation: slice 1s ease-in-out infinite alternate;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .knife::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #4e2a7a; /* Lila Messergriff */
+      border-radius: 4px;
+      top: 0px;
+      right: -10px;
+    }
+    
+    body.dark-mode .knife {
+      background: #999;
+      border-color: rgba(255,255,255,0.1);
+    }
+    body.dark-mode .knife::after {
+      background: #e4ccff;
+    }
+
+    @keyframes slice {
+      0% {
+        transform: rotate(45deg) translate(0, 0);
+      }
+      100% {
+        transform: rotate(45deg) translate(20px, 20px) scaleY(1.02);
+      }
+    }
+
     .loading-text {
       text-align: center;
       color: #666;
       font-weight: 600;
-      margin-bottom: 15px;
       animation: pulse 1.5s infinite;
     }
 
@@ -113,8 +194,9 @@
       <h1>Rezept-Zauberer</h1>
       <p>
         <a href="index.html" class="archive-link">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 10l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <svg style="transform: translateY(-2px);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l9-8 9 8"></path>
+            <path d="M5 13v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path>
           </svg>
           Zurück zur Startseite
         </a>
@@ -128,9 +210,7 @@
         
         <button class="btn-magic" onclick="simulateGeneration()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
           </svg>
           Rezept zaubern
         </button>
@@ -159,23 +239,16 @@
       const resultDiv = document.getElementById("generatorResult");
       
       resultDiv.innerHTML = `
-        <div class="loading-text">Timm's KI-Koch rührt die Zutaten zusammen...</div>
-        <div class="recipe-card" style="animation: none;">
-          <div class="recipe-body">
-            <div class="skeleton" style="height: 30px; width: 80%; margin-bottom: 20px;"></div>
-            <div class="tag-row">
-              <div class="skeleton" style="height: 20px; width: 60px; border-radius: 999px;"></div>
-              <div class="skeleton" style="height: 20px; width: 80px; border-radius: 999px;"></div>
-            </div>
-            <div class="divider"></div>
-            <div class="skeleton" style="height: 100px; width: 100%;"></div>
-            <div class="skeleton" style="margin-top: 20px; height: 150px; width: 100%;"></div>
+        <div class="loading-container">
+          <div class="cutting-board">
+            <div class="leek"></div>
+            <div class="knife"></div>
           </div>
+          <div class="loading-text">Timm's KI-Koch rührt die Zutaten zusammen...</div>
         </div>
       `;
 
       try {
-        // Wir schicken die Daten jetzt an unser eigenes, sicheres Backend!
         const response = await fetch('/.netlify/functions/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
