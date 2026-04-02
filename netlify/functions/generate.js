@@ -25,8 +25,7 @@ exports.handler = async function(event, context) {
       Antworte AUSSCHLIESSLICH mit einem validen JSON-Objekt.
       Das JSON muss exakt diese Struktur haben:
       {
-        "title": "Kreativer Rezeptname mit passendem Emoji am Anfang",
-        "tags": ["Tag1", "Tag2"],
+        "title": "Kreativer Rezeptname OHNE Emojis und OHNE Symbole",
         "ingredients": ["Zutat 1 mit Menge", "Zutat 2 mit Menge"],
         "steps": ["Schritt 1", "Schritt 2", "Schritt 3"]
       }
