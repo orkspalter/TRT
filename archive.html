@@ -247,7 +247,33 @@
       renderDatabase();
     });
     
-    document.addEventListener("DOMContentLoaded", () => {
+    // === HIER STARTEN DIE NEUEN ÄNDERUNGEN FÜR DIE DATENBANK ===
+
+    // 1. NEUE FUNKTION: Holt die Rezepte aus Supabase und fügt sie zur Liste hinzu
+    async function loadSupabaseRecipes() {
+      try {
+        const response = await fetch('/.netlify/functions/getRecipes');
+        if (!response.ok) return; // Wenn etwas schiefgeht, machen wir einfach ohne KI-Rezepte weiter
+        
+        const dbRecipes = await response.json();
+
+        dbRecipes.forEach(dbRecipe => {
+          // Wir hängen jedes KI-Rezept an deine bestehende 'recipes' Liste (aus rezepte.js) an
+          recipes.push({
+            id: dbRecipe.id, // Supabase gibt jedem Rezept automatisch eine einzigartige ID
+            title: dbRecipe.title,
+            tags: ["KI-Zauberei"], // Bekommt automatisch diesen neuen Filter-Tag!
+            ingredients: dbRecipe.ingredients,
+            steps: dbRecipe.steps
+          });
+        });
+      } catch (error) {
+        console.error("Konnte KI-Rezepte nicht laden:", error);
+      }
+    }
+
+    // 2. ANGEPASST: Das 'async' Wort hinzugefügt und den loadSupabaseRecipes-Befehl eingebaut
+    document.addEventListener("DOMContentLoaded", async () => {
       const headerTitle = document.querySelector("header h1");
       const modeBtn = document.getElementById("modeBtn");
       
@@ -264,9 +290,13 @@
         modeBtn.title = "Zu Salaten wechseln";
       }
 
+      // NEU: Wir warten kurz, bis die Supabase-Rezepte geladen und der Liste hinzugefügt wurden...
+      await loadSupabaseRecipes();
+
+      // ...und bauen ERST DANN die Filter-Buttons und das Rezept-Gitter auf!
       renderFilters();
       renderDatabase();
     });
   </script>
-  </body>
+</body>
 </html>
