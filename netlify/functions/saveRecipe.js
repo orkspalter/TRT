@@ -1,8 +1,10 @@
 // netlify/functions/saveRecipe.js
 
 exports.handler = async function(event, context) {
-  // 1. WICHTIG: Hier wieder deine ECHTE Netlify-URL eintragen!
-  const allowedOrigin = "https://orkspalter.netlify.app/generator.html"; 
+  console.log("🚀 Funktion saveRecipe gestartet!"); 
+
+  // KORREKTUR: Nur die Basis-URL (ohne /generator.html am Ende!)
+  const allowedOrigin = "https://orkspalter.netlify.app"; 
 
   const headers = {
     "Access-Control-Allow-Origin": allowedOrigin,
@@ -21,25 +23,28 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    // Das Rezept, das der Browser uns schickt
+    console.log("📥 Empfangene Daten:", event.body);
     const recipe = JSON.parse(event.body);
     
     // Die Tresor-Schlüssel abrufen
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
+    console.log("🔑 Supabase URL da?", !!supabaseUrl);
+    console.log("🔑 Supabase Key da?", !!supabaseKey);
+
     if (!supabaseUrl || !supabaseKey) {
-      return { statusCode: 500, headers: headers, body: JSON.stringify({ error: "Supabase Keys fehlen im Tresor!" }) };
+      throw new Error("Supabase Keys fehlen im Tresor! (Bitte Netlify neu deployen)");
     }
 
-    // Die Daten an Supabase senden
+    console.log("📡 Sende an Supabase...");
     const response = await fetch(`${supabaseUrl}/rest/v1/saved_recipes`, {
       method: 'POST',
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
-        'Prefer': 'return=minimal' // Sagt Supabase: "Wir brauchen keine Antwort, nur ein OK"
+        'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
         title: recipe.title,
@@ -48,12 +53,14 @@ exports.handler = async function(event, context) {
       })
     });
 
+    console.log("📨 Supabase Antwort-Status:", response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Supabase Fehler: ${errorText}`);
     }
 
-    // Alles hat geklappt!
+    console.log("✅ Erfolgreich gespeichert!");
     return {
       statusCode: 200,
       headers: headers,
@@ -61,6 +68,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (error) {
+    console.error("💥 FEHLER ABGEFANGEN:", error.message); 
     return { 
       statusCode: 500, 
       headers: headers, 

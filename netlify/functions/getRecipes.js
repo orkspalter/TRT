@@ -1,8 +1,10 @@
 // netlify/functions/getRecipes.js
 
 exports.handler = async function(event, context) {
-  // WICHTIG: Hier wieder deine echte Netlify-Adresse eintragen!
-  const allowedOrigin = "https://orkspalter.netlify.app/generator.html"; 
+  console.log("🚀 Funktion getRecipes gestartet!"); 
+
+  // KORREKTUR: Nur die Basis-URL eintragen, ohne Pfad am Ende!
+  const allowedOrigin = "https://orkspalter.netlify.app"; 
 
   const headers = {
     "Access-Control-Allow-Origin": allowedOrigin,
@@ -19,9 +21,11 @@ exports.handler = async function(event, context) {
     const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      return { statusCode: 500, headers: headers, body: JSON.stringify({ error: "Supabase Keys fehlen!" }) };
+      throw new Error("Supabase Keys fehlen im Tresor!");
     }
 
+    console.log("📡 Hole Rezepte aus Supabase...");
+    
     // Wir rufen alle Rezepte aus der Tabelle 'saved_recipes' ab
     const response = await fetch(`${supabaseUrl}/rest/v1/saved_recipes?select=*`, {
       method: 'GET',
@@ -33,10 +37,11 @@ exports.handler = async function(event, context) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Supabase Fehler: ${errorText}`);
+      throw new Error(`Supabase Datenbank-Fehler: ${errorText}`);
     }
 
     const data = await response.json();
+    console.log(`✅ Erfolgreich ${data.length} Rezepte geladen!`);
 
     // Die Liste der Rezepte erfolgreich ans Frontend schicken
     return {
@@ -46,6 +51,7 @@ exports.handler = async function(event, context) {
     };
 
   } catch (error) {
+    console.error("💥 FEHLER ABGEFANGEN:", error.message);
     return { 
       statusCode: 500, 
       headers: headers, 
