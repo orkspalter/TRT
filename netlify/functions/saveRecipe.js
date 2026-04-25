@@ -2,7 +2,7 @@
 
 exports.handler = async function(event, context) {
   // 1. WICHTIG: Hier wieder deine ECHTE Netlify-URL eintragen!
-  const allowedOrigin = "https://orkspalter.netlify.app/"; 
+  const allowedOrigin = "https://orkspalter.netlify.app/generator.html"; 
 
   const headers = {
     "Access-Control-Allow-Origin": allowedOrigin,
